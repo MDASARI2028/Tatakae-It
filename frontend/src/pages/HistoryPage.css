@@ -1,0 +1,25 @@
+/* frontend/src/pages/HistoryPage.css */
+
+.filter-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-unit);
+    margin-bottom: calc(var(--spacing-unit) * 3);
+}
+.filter-controls .form-input {
+    width: auto;
+}
+
+.history-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--spacing-unit) * 4);
+    align-items: start;
+}
+
+.history-section {
+    background-color: var(--color-surface-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: calc(var(--spacing-unit) * 3);
+}

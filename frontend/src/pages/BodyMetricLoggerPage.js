@@ -1,0 +1,19 @@
+// frontend/src/pages/BodyMetricLoggerPage.js
+
+import React from 'react'; // Removed useState
+import BodyMetricLogger from '../components/BodyMetricLogger';
+import Card from '../components/Card';
+
+const BodyMetricLoggerPage = () => {
+    // The useState and handleLog functions are no longer needed here.
+    // The onMetricLogged prop is also no longer needed.
+
+    return (
+        <Card>
+            <h2>System Task: Log Body Metrics</h2>
+            <BodyMetricLogger />
+        </Card>
+    );
+};
+
+export default BodyMetricLoggerPage;

@@ -1,0 +1,42 @@
+/* frontend/src/components/Layout.css */
+
+.app-header {
+    display: flex;
+    justify-content: space-between; /* Change this */
+    align-items: center;
+    padding: var(--spacing-unit) 0;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    /* Remove position: relative and the app-title-link styles */
+}
+
+.app-title-link {
+    position: absolute; /* Take the title out of the normal flow */
+    left: 50%; /* Move its left edge to the center */
+    transform: translateX(-50%); /* Pull it back by half its own width */
+    text-decoration: none;
+}
+
+.app-header h1 {
+    font-size: 2.5rem;
+    color: var(--color-mana-blue);
+    text-shadow: 0 0 5px var(--color-mana-blue);
+    margin: 0;
+}
+
+.header-user-info span {
+    margin-right: var(--spacing-unit);
+    color: var(--color-text-secondary);
+}
+
+.logout-button {
+  background: var(--color-surface-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-unit) calc(var(--spacing-unit) * 2);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+.logout-button:hover {
+  background-color: var(--color-border);
+}

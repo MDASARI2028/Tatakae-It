@@ -1,0 +1,35 @@
+/* frontend/src/components/EditWorkoutModal.css */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--color-surface-primary);
+  padding: var(--space-xl);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
+  width: 90%;
+  max-width: 600px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-unit);
+  margin-top: var(--space-lg);
+}
+.exercises-list-container {
+  max-height: 40vh; /* Sets the maximum height to 40% of the viewport's height */
+  overflow-y: auto; /* Adds a vertical scrollbar only when needed */
+  padding-right: 10px; /* Adds some space for the scrollbar */
+  margin-top: var(--space-md);
+}

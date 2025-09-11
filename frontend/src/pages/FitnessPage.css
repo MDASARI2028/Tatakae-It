@@ -1,0 +1,40 @@
+/* frontend/src/pages/FitnessPage.css */
+.fitness-grid-container {
+  display: grid;
+  grid-template-columns: 200px 1fr; /* 200px sidebar, the rest for content */
+  gap: calc(var(--spacing-unit) * 4);
+  align-items: start;
+}
+
+.sub-nav-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-unit);
+  position: sticky;
+  top: var(--spacing-unit);
+}
+
+.sub-nav-panel a {
+  font-family: var(--font-family-heading);
+  padding: var(--spacing-unit) calc(var(--spacing-unit) * 2);
+  border-radius: var(--border-radius);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: all var(--transition-speed) ease;
+  border-left: 3px solid transparent;
+}
+
+.sub-nav-panel a:hover {
+  background-color: var(--color-surface-secondary);
+  color: var(--color-text-primary);
+}
+
+.sub-nav-panel a.active {
+  background-color: var(--color-surface-primary);
+  color: var(--color-mana-blue);
+  border-left-color: var(--color-mana-blue);
+}
+
+.fitness-content-area {
+  min-width: 0; /* Prevents overflow issues with grid */
+}

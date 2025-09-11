@@ -23,6 +23,9 @@ connection.once('open', () => {
 // --- API ROUTES ---
 // We are telling our app to use the user routes file for any URL that starts with /api/users
 app.use('/api/users', require('./routes/user.routes'));
+app.use('/api/workouts', require('./routes/workout.routes'));
+app.use('/api/metrics', require('./routes/bodyMetric.routes'));
+app.use('/api/templates', require('./routes/template.routes'));
 
 app.listen(port, () => {
     console.log(`[SYSTEM] Backend server is running on port: ${port}`);

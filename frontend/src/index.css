@@ -1,15 +1,56 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #121212;
-  color: #e0e0e0;
+/* frontend/src/index.css */
+
+:root {
+  /* --- The Tatakae It "System" Theme --- */
+  /* Colors inspired by Solo Leveling's UI, glows, and ranks */
+  --color-background: #0D0E14;         /* Deep, dark void black */
+  --color-surface-primary: #1A1C2A;    /* Dark blue/purple surface for cards */
+  --color-surface-secondary: #2C2F48;  /* Lighter surface for interactive elements */
+  --color-border: #4A4E88;             /* Muted purple border color */
+  
+  --color-mana-blue: #00A3FF;           /* Electric blue for primary actions and glows */
+  --color-mana-blue-hover: #58C5FF;     /* Lighter blue for hover */
+  --color-gold-accent: #FFD700;        /* Gold for highlights (S-Rank items) */
+  
+  --color-text-primary: #F0F2F5;       /* Bright, clear text */
+  --color-text-secondary: #A0A3BD;     /* Softer, secondary text color */
+  --color-error: #E53E3E;               /* Sharp red for errors */
+  
+  /* Typography */
+  --font-family-heading: 'Orbitron', sans-serif;
+  --font-family-body: 'Inter', sans-serif;
+
+  /* Other Variables */
+  --border-radius: 6px;
+  --spacing-unit: 8px;
+  --transition-speed: 0.2s;
+  --glow-shadow: 0 0 8px var(--color-mana-blue), 0 0 12px var(--color-mana-blue);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-body);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-family-heading);
+  color: var(--color-text-primary);
+  margin-bottom: calc(var(--spacing-unit) * 2);
+  font-weight: 700;
+}
+
+.App > h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--color-mana-blue);
+  text-shadow: 0 0 5px var(--color-mana-blue);
+  margin-bottom: calc(var(--spacing-unit) * 4);
 }

@@ -1,0 +1,82 @@
+/* frontend/src/components/WorkoutLogger.css */
+.workout-logger-form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-unit) * 2.5);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--spacing-unit) * 2);
+}
+
+/* Base styles for inputs, selects, and textareas */
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: calc(var(--spacing-unit) * 1.5);
+  font-family: var(--font-family-body);
+  font-size: 1rem;
+  transition: all var(--transition-speed) ease;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--color-mana-blue);
+  box-shadow: var(--glow-shadow);
+}
+
+.exercise-grid {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr 1fr 40px; /* Name, Sets, Reps, Weight, Remove Button */
+  gap: var(--spacing-unit);
+  align-items: center;
+}
+
+.remove-exercise-btn {
+  background: none;
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
+  cursor: pointer;
+  height: 45px;
+  border-radius: var(--border-radius);
+  transition: all var(--transition-speed) ease;
+}
+.remove-exercise-btn:hover {
+  background-color: var(--color-error);
+  color: var(--color-text-primary);
+}
+
+/* System Buttons */
+.system-button {
+  padding: calc(var(--spacing-unit) * 1.5);
+  font-family: var(--font-family-heading);
+  font-size: 1rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: var(--color-mana-blue);
+  color: var(--color-text-primary);
+}
+.btn-primary:hover {
+  background-color: var(--color-mana-blue-hover);
+  box-shadow: var(--glow-shadow);
+}
+
+.btn-secondary {
+  background-color: var(--color-surface-secondary);
+  color: var(--color-text-secondary);
+}
+.btn-secondary:hover {
+  background-color: var(--color-border);
+  color: var(--color-text-primary);
+}

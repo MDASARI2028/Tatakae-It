@@ -1,0 +1,91 @@
+/* frontend/src/components/Dashboard.css */
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center everything horizontally */
+    justify-content: center;
+    text-align: center;
+    min-height: 60vh; /* Ensure it takes up significant screen space */
+    position: relative; /* For positioning the header */
+}
+
+.dashboard-header-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.dashboard-header-info span {
+    color: var(--color-text-secondary);
+}
+
+.minimal-logout-button {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: var(--space-sm);
+    transition: color var(--transition-speed) ease;
+}
+.minimal-logout-button:hover {
+    color: var(--color-mana-blue);
+}
+
+.dashboard-quote {
+    font-size: var(--font-size-xl);
+    font-weight: 300; /* Lighter font weight for style */
+    max-width: 600px;
+    margin: var(--space-xl) 0;
+    color: var(--color-text-primary);
+    text-shadow: 0 0 10px rgba(0, 163, 255, 0.3);
+}
+
+/* --- New Innovative Tab Design --- */
+.main-tabs {
+    display: flex;
+    gap: var(--space-lg);
+    margin-top: var(--space-xl);
+    border: none;
+    background: none;
+}
+
+.main-tabs a {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    padding: var(--space-sm) 0;
+    position: relative;
+    text-decoration: none;
+    transition: color var(--transition-speed) ease;
+}
+
+.main-tabs a:hover {
+    color: var(--color-text-primary);
+}
+
+/* The innovative underline effect */
+.main-tabs a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-mana-blue);
+    transform: scaleX(0); /* Initially hidden */
+    transform-origin: center;
+    transition: transform var(--transition-speed) ease;
+}
+
+.main-tabs a.active-tab {
+    color: var(--color-mana-blue);
+}
+
+.main-tabs a.active-tab::after {
+    transform: scaleX(1); /* Reveal the line for the active tab */
+}

@@ -1,19 +1,18 @@
 /* frontend/src/index.css */
 
 :root {
-  /* --- The Tatakae It "System" Theme --- */
-  /* Colors inspired by Solo Leveling's UI, glows, and ranks */
-  --color-background: #0D0E14;         /* Deep, dark void black */
-  --color-surface-primary: #1A1C2A;    /* Dark blue/purple surface for cards */
-  --color-surface-secondary: #2C2F48;  /* Lighter surface for interactive elements */
-  --color-border: #4A4E88;             /* Muted purple border color */
+  --color-background: #0D0E14;
+  --color-surface-primary: #1A1C2A;
+  --color-surface-secondary: #2C2F48;
+  --color-border: #4A4E88;
+
+  /* --- CHANGE FROM BLUE TO PURPLE --- */
+  --color-primary-accent: #8A2BE2;      /* Vibrant Violet/Purple */
+  --color-primary-accent-hover: #9932CC; /* Lighter Violet */
+  --color-gold-accent: #FFD700;
   
-  --color-mana-blue: #00A3FF;           /* Electric blue for primary actions and glows */
-  --color-mana-blue-hover: #58C5FF;     /* Lighter blue for hover */
-  --color-gold-accent: #FFD700;        /* Gold for highlights (S-Rank items) */
-  
-  --color-text-primary: #F0F2F5;       /* Bright, clear text */
-  --color-text-secondary: #A0A3BD;     /* Softer, secondary text color */
+  --color-text-primary: #F0F2F5;
+  --color-text-secondary: #A0A3BD;
   --color-error: #E53E3E;               /* Sharp red for errors */
   
   /* Typography */
@@ -53,4 +52,21 @@ h1, h2, h3, h4 {
   color: var(--color-mana-blue);
   text-shadow: 0 0 5px var(--color-mana-blue);
   margin-bottom: calc(var(--spacing-unit) * 4);
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background-color: rgba(13, 14, 20, 0.5); /* Semi-transparent dark background */
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: calc(var(--spacing-unit) * 1.5);
+  font-family: var(--font-family-body);
+  font-size: 1rem;
+  transition: all var(--transition-speed) ease;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-accent);
+  box-shadow: var(--glow-shadow);
 }

@@ -1,93 +1,93 @@
-import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+// frontend/src/context/AuthContext.js
 
-const AuthContext = createContext();
+import React, { createContext, useState, useEffect, useCallback } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
-const AuthProvider = ({ children }) => {
-  const [authState, setAuthState] = useState({
-    token: localStorage.getItem('token'),
-    isAuthenticated: null,
-    isLoading: true,
-    user: null,
-  });
+export const AuthContext = createContext();
 
-  // This effect will run ONCE when the app loads to check for a token
-  useEffect(() => {
-    const loadUser = async () => {
-      // Read the token directly from localStorage, NOT from the state
-      const token = localStorage.getItem('token'); 
+export const AuthProvider = ({ children }) => {
+    const [token, setToken] = useState(localStorage.getItem('token'));
+    const [user, setUser] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-      if (token) {
-        axios.defaults.headers.common['x-auth-token'] = token;
-        try {
-          const res = await axios.get('http://localhost:5000/api/users/me');
-          setAuthState({
-            token: token,
-            isAuthenticated: true,
-            isLoading: false,
-            user: res.data,
-          });
-        } catch (err) {
-          localStorage.removeItem('token');
-          setAuthState({
-            token: null,
-            isAuthenticated: false,
-            isLoading: false,
-            user: null,
-          });
+    const checkToken = useCallback(() => {
+        const storedToken = localStorage.getItem('token');
+        if (storedToken) {
+            try {
+                const decoded = jwtDecode(storedToken);
+                const isExpired = decoded.exp * 1000 < Date.now();
+                if (!isExpired) {
+                    setToken(storedToken);
+                    setUser({ id: decoded.id, username: decoded.username });
+                    setIsAuthenticated(true);
+                } else {
+                    localStorage.removeItem('token');
+                }
+            } catch (error) {
+                localStorage.removeItem('token');
+            }
         }
-      } else {
-        // If there's no token, we're done loading
-        setAuthState({
-          token: null,
-          isAuthenticated: false,
-          isLoading: false,
-          user: null,
-        });
-      }
+        setLoading(false);
+    }, []);
+
+    useEffect(() => {
+        checkToken();
+    }, [checkToken]);
+
+    const login = async (email, password) => {
+        try {
+            const response = await fetch('/api/users/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.msg || 'Login failed.');
+            }
+            localStorage.setItem('token', data.token);
+            checkToken(); // Re-check token to update state
+            return { success: true };
+        } catch (error) {
+            console.error("Login Error:", error.message);
+            // --- THIS IS THE FIX ---
+            // Ensure we always return an object, even on error
+            return { success: false, error: error.message };
+        }
     };
 
-    loadUser();
-  }, []); // The empty array ensures this effect ONLY runs once.
+    const register = async (username, email, password, password2) => {
+        try {
+            const response = await fetch('/api/users/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // Add password2 to the request body
+                body: JSON.stringify({ username, email, password, password2 }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.msg || 'Registration failed.');
+            }
+            return { success: true };
+        } catch (error) {
+            console.error("Registration Error:", error.message);
+            return { success: false, error: error.message };
+        }
+    };
 
-  const login = async (token) => {
-    localStorage.setItem('token', token);
-    axios.defaults.headers.common['x-auth-token'] = token;
-    try {
-      // After login, fetch the user data immediately
-      const res = await axios.get('http://localhost:5000/api/users/me');
-      setAuthState({
-        token,
-        isAuthenticated: true,
-        isLoading: false,
-        user: res.data,
-      });
-    } catch (err) {
-      // Handle case where token is bad for some reason
-      logout();
-    }
-  };
+    const logout = () => {
+        localStorage.removeItem('token');
+        setToken(null);
+        setUser(null);
+        setIsAuthenticated(false);
+    };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    delete axios.defaults.headers.common['x-auth-token'];
-    setAuthState({
-      token: null,
-      isAuthenticated: false,
-      isLoading: false,
-      user: null,
-    });
-  };
+    const contextValue = { token, user, isAuthenticated, loading, login, register, logout };
 
-  // We pass the functions in the value, but now also the state itself
-  const contextValue = { ...authState, login, logout };
-
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {/* We prevent children from rendering until the initial token check is done */}
-      {!authState.isLoading && children}
-    </AuthContext.Provider>
-  );
+    return (
+        <AuthContext.Provider value={contextValue}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
-
-export { AuthContext, AuthProvider };

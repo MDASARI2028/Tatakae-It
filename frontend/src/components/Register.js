@@ -1,92 +1,74 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+// frontend/src/components/Register.js
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import './AuthForms.css'; // Import the new CSS
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import icons
 
 const Register = () => {
-  const navigate = useNavigate(); // Initialize the navigate hook
+    const { register } = useContext(AuthContext);
+    const [formData, setFormData] = useState({ 
+        username: '', 
+        email: '', 
+        password: '', 
+        password2: '' // For confirmation
+    });
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false); // State for the icon
+    const { username, email, password, password2 } = formData;
+    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-  });
+    const onSubmit = async e => {
+        e.preventDefault();
+        setError('');
+        setSuccess('');
 
-  const { username, email, password } = formData;
+        if (password !== password2) {
+            setError('Passwords do not match.');
+            return;
+        }
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+        const result = await register(username, email, password, password2);
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    
-    const newUser = {
-      username,
-      email,
-      password,
+        if (result.success) {
+            setSuccess('You have Awakened! Switch to the Level Up tab to level up.');
+            setFormData({ username: '', email: '', password: '', password2: '' });
+        } else {
+            setError(result.error);
+        }
     };
-
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-
-      const body = JSON.stringify(newUser);
-      const res = await axios.post('http://localhost:5000/api/users/register', body, config);
-
-      console.log('Registration successful:', res.data);
-      alert('Registration successful! Please login.'); // Keep alert for user feedback
-      navigate('/login'); // Redirect to login page
-
-    } catch (err) {
-      console.error('Registration error:', err.response.data);
-      alert('Registration failed: ' + err.response.data.message);
-    }
-  };
-
-  return (
-    <div className="form-container">
-      <h2>Register</h2>
-      <form onSubmit={onSubmit}>
-        <div className="form-group">
-          <label>Username</label>
-          <input
-            type="text"
-            name="username"
-            value={username}
-            onChange={onChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Email Address</label>
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={onChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={onChange}
-            minLength="6"
-            required
-          />
-        </div>
-        <button type="submit">Register</button>
-      </form>
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
-    </div>
-  );
+     const handleMouseMove = (e) => {
+      const btn = e.currentTarget;
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      btn.style.setProperty('--x', `${x}px`);
+      btn.style.setProperty('--y', `${y}px`);
+    };
+    return (
+        <form onSubmit={onSubmit} className="auth-form">
+            {error && <p className="error-message">{error}</p>}
+            {success && <p className="success-message">{success}</p>}
+            <div>
+                <label htmlFor="username">Hunter Name</label>
+                <input id="username" type="text" name="username" className="form-input" value={username} onChange={onChange} required />
+            </div>
+            <div>
+                <label htmlFor="email">Hunter ID (Email)</label>
+                <input id="email" type="email" name="email" className="form-input" value={email} onChange={onChange} required />
+            </div>
+            <div>
+                <label htmlFor="password">Create Shadow Key</label>
+                <input id="password" type="password" name="password" className="form-input" value={password} onChange={onChange} minLength="6" required />
+            </div>
+            <div>
+                <label htmlFor="password2">Confirm Shadow Key</label>
+                <input id="password2" type="password" name="password2" className="form-input" value={password2} onChange={onChange} minLength="6" required />
+            </div>
+            <button type="submit" className="system-button btn-primary" onMouseMove={handleMouseMove} // <-- ADD THIS
+            >Awaken</button>
+        </form>
+    );
 };
 
 export default Register;

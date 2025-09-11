@@ -1,0 +1,157 @@
+/* frontend/pages/AuthPage.css */
+@keyframes glow-pulse {
+  0%, 100% {
+    text-shadow: 0 0 10px var(--color-primary-accent);
+  }
+  50% {
+    text-shadow: 0 0 20px var(--color-primary-accent-hover);
+  }
+}
+
+.auth-page-title {
+  position: absolute;
+  top: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cinzel', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: 2px;
+  animation: glow-pulse 4s ease-in-out infinite;
+  cursor: pointer;
+}
+
+/* This rule now correctly targets ONLY the span with the Japanese text */
+.auth-page-title .japanese-part {
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+.auth-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 10vh;
+  min-height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.auth-card {
+  background-color: rgba(13, 14, 20, 0.6);
+  backdrop-filter: blur(12px);
+  border: none; /* <-- CHANGE THIS LINE */
+  border-radius: var(--border-radius);
+  padding: var(--space-xl);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 40px 20px rgba(13, 14, 20, 0.8);
+}
+
+.auth-card h2 {
+  font-family: var(--font-family-heading);
+  font-size: 1.8rem;
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-primary);
+}
+
+.auth-card p {
+  font-family: 'Text Me One', sans-serif; /* <-- NEW FONT */
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+.auth-toggle {
+  display: flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--space-lg);
+}
+
+.auth-toggle button {
+  flex: 1;
+  padding: var(--space-md);
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.auth-toggle button.active {
+  background-color: var(--color-primary-accent);
+  color: var(--color-text-primary);
+  box-shadow: 0 0 10px var(--color-primary-accent);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  text-align: left;
+}
+
+.auth-form label {
+  font-family: 'Text Me One', sans-serif; /* <-- NEW FONT */
+  font-size: 1rem;
+  text-transform: uppercase; /* Gives it a more official "system" look */
+  letter-spacing: 1px;
+  color: var(--color-text-secondary);
+}
+
+.auth-footer-link {
+  margin-top: var(--space-lg);
+  color: var(--color-text-secondary);
+}
+
+.auth-footer-link button {
+  background: none;
+  border: none;
+  color: var(--color-primary-accent);
+  cursor: pointer;
+  font-size: inherit;
+  font-weight: 600;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.system-button.btn-primary {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-primary-accent);
+    color: var(--color-text-primary);
+    transition: all 0.3s ease;
+}
+
+.system-button.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-shadow);
+}
+
+.system-button.btn-primary::before {
+    content: '';
+    position: absolute;
+    /* Position is set by JavaScript using CSS variables */
+    left: var(--x, 50%);
+    top: var(--y, 50%);
+    transform: translate(-50%, -50%) scale(0);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    opacity: 0;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.system-button.btn-primary:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}

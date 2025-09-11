@@ -18,6 +18,7 @@ import BodyMetricLoggerPage from './pages/BodyMetricLoggerPage';
 import HistoryPage from './pages/HistoryPage';
 import ProgressPage from './pages/ProgressPage';
 import ManageTemplatesPage from './pages/ManageTemplatesPage'; // <-- IMPORT
+import AuthPage from './pages/AuthPage'; // Import the new page
 
 // --- Routing Imports ---
 import PrivateRoute from './routing/PrivateRoute';
@@ -33,8 +34,8 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* --- Public Routes --- */}
-      <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-      <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+      <Route path="/login" element={<PublicRoute><AuthPage /></PublicRoute>} />
+      <Route path="/register" element={<PublicRoute><AuthPage /></PublicRoute>} />
 
       {/* --- Main Private Routes --- */}
       {/* The Layout component is the main wrapper for all private pages */}

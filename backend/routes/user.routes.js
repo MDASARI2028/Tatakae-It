@@ -1,120 +1,86 @@
+// backend/routes/user.routes.js
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user.model'); // Import the User model
+const User = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth.middleware');
 
-// --- REGISTRATION ROUTE ---
 // @route   POST /api/users/register
 // @desc    Register a new user
 // @access  Public
 router.post('/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
+    try {
+        const { username, email, password, password2 } = req.body;
 
-    // 1. Check for missing fields
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: 'Please enter all fields' });
+        // Validation
+        if (!username || !email || !password) {
+            return res.status(400).json({ msg: 'Please enter all fields.' });
+        }
+        if (password !== password2) {
+            return res.status(400).json({ msg: 'Passwords do not match.' });
+        }
+        let user = await User.findOne({ email });
+        if (user) {
+            return res.status(400).json({ msg: 'User with this email already exists.' });
+        }
+
+        // Create new user (password will be hashed automatically by the model's pre-save hook)
+        user = new User({ username, email, password });
+        await user.save();
+
+        res.status(201).json({ msg: 'Registration successful!' });
+
+    } catch (err) {
+        console.error("Registration Error:", err.message);
+        res.status(500).json({ msg: 'Server error' });
     }
-
-    // 2. Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'User with this email already exists' });
-    }
-
-    // 3. Create a new user instance
-    const newUser = new User({
-      username,
-      email,
-      password,
-    });
-
-    // 4. Save the new user (password will be hashed by the pre-save hook)
-    const savedUser = await newUser.save();
-
-    // 5. Respond with success message and user data (excluding password)
-    res.status(201).json({
-      message: 'Hunter registered successfully!',
-      user: {
-        id: savedUser._id,
-        username: savedUser.username,
-        email: savedUser.email,
-      },
-    });
-
-  } catch (error) {
-    res.status(500).json({ message: 'Server error during registration', error: error.message });
-  }
 });
 
-// --- LOGIN ROUTE ---
 // @route   POST /api/users/login
 // @desc    Authenticate user and get token
 // @access  Public
 router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
+    try {
+        const { email, password } = req.body;
 
-    // 1. Check for missing fields
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Please enter all fields' });
-    }
+        if (!email || !password) {
+            return res.status(400).json({ msg: 'Please enter all fields.' });
+        }
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ msg: 'Invalid credentials.' });
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ msg: 'Invalid credentials.' });
+        }
 
-    // 2. Find the user by email
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid Credentials' });
-    }
-
-    // 3. Compare the provided password with the stored hashed password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid Credentials' });
-    }
-
-    // 4. If credentials are correct, create the JWT payload
-    const payload = {
-      user: {
-        id: user.id,
-      },
-    };
-
-    // 5. Sign the token with your secret key
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' },
-      (err, token) => {
-        if (err) throw err;
-        // 6. Send the token back to the user
-        res.json({
-          message: 'Login successful!',
-          token,
-          user: {
-            id: user.id,
-            username: user.username,
-          },
+        // Create JWT payload consistent with the rest of the app
+        const payload = { id: user.id, username: user.username };
+        
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '5h' }, (err, token) => {
+            if (err) throw err;
+            res.json({ token });
         });
-      }
-    );
-  } catch (error) {
-    res.status(500).json({ message: 'Server error during login', error: error.message });
-  }
+
+    } catch (err) {
+        console.error("Login Error:", err.message);
+        res.status(500).json({ msg: 'Server error' });
+    }
 });
-// --- GET LOGGED-IN USER'S PROFILE ---
+
 // @route   GET /api/users/me
-// @desc    Get current user's data (protected)
+// @desc    Get current user's data
 // @access  Private
 router.get('/me', auth, async (req, res) => {
-  try {
-    // The user's ID is attached to the request object by the auth middleware
-    // We find the user but exclude the password field from the response
-    const user = await User.findById(req.user.id).select('-password');
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
-  }
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        res.json(user);
+    } catch (err) {
+        console.error("Get User Error:", err.message);
+        res.status(500).json({ msg: 'Server Error' });
+    }
 });
+
 module.exports = router;

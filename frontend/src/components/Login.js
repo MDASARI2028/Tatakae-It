@@ -1,81 +1,71 @@
+// frontend/src/components/Login.js
+
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { AuthContext } from '../context/AuthContext';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import './AuthForms.css';
 
 const Login = () => {
+  // CORRECT: All hooks are called inside the component function.
   const { login } = useContext(AuthContext);
-  const navigate = useNavigate(); // Initialize the navigate hook
-
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const { email, password } = formData;
+  const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const onSubmit = async (e) => {
+  const onSubmit = async e => {
     e.preventDefault();
-
-    const user = {
-      email,
-      password,
-    };
-
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-
-      const body = JSON.stringify(user);
-      const res = await axios.post('http://localhost:5000/api/users/login', body, config);
-      
-      login(res.data.token); // Save token to global state and localStorage
-      
-      navigate('/dashboard'); // Redirect to dashboard
-
-    } catch (err) {
-      console.error('Login error:', err.response.data);
-      alert('Login failed: ' + err.response.data.message);
+    setError('');
+    const result = await login(email, password);
+    if (!result.success) {
+      setError(result.error);
     }
   };
-
+  const handleMouseMove = (e) => {
+    const btn = e.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    btn.style.setProperty('--x', `${x}px`);
+    btn.style.setProperty('--y', `${y}px`);
+  };
   return (
-    <div className="form-container">
-      <h2>Login</h2>
-      <form onSubmit={onSubmit}>
-        <div className="form-group">
-          <label>Email Address</label>
+    <form onSubmit={onSubmit} className="auth-form">
+      {error && <p className="error-message">{error}</p>}
+      <div>
+        <label htmlFor="email">Hunter ID (Email)</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          className="form-input"
+          value={email}
+          onChange={onChange}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="password">Shadow Key (Password)</label>
+        <div className="password-wrapper">
           <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={onChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
+            id="password"
+            type={isPasswordVisible ? "text" : "password"}
             name="password"
+            className="form-input"
             value={password}
             onChange={onChange}
-            minLength="6"
             required
           />
+          <button type="button" className="eye-icon" onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
+            {isPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
-        <button type="submit">Login</button>
-      </form>
-      <p>
-        Don't have an account? <Link to="/register">Register</Link>
-      </p>
-    </div>
+      </div>
+      <button type="submit" className="system-button btn-primary" onMouseMove={handleMouseMove} // <-- ADD THIS
+        >Use The System</button>
+    </form>
   );
 };
 

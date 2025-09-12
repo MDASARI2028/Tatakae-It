@@ -4,11 +4,9 @@ import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthContext, AuthProvider } from './context/AuthContext';
 import { WorkoutProvider } from './context/WorkoutContext';
-import { TemplateProvider } from './context/TemplateContext'; // <-- IMPORT
+import { TemplateProvider } from './context/TemplateContext';
 
 // --- Component & Page Imports ---
-import Register from './components/Register';
-import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Layout from './components/Layout';
 import FitnessPage from './pages/FitnessPage';
@@ -17,8 +15,8 @@ import WorkoutLoggerPage from './pages/WorkoutLoggerPage';
 import BodyMetricLoggerPage from './pages/BodyMetricLoggerPage';
 import HistoryPage from './pages/HistoryPage';
 import ProgressPage from './pages/ProgressPage';
-import ManageTemplatesPage from './pages/ManageTemplatesPage'; // <-- IMPORT
-import AuthPage from './pages/AuthPage'; // Import the new page
+import ManageTemplatesPage from './pages/ManageTemplatesPage';
+import AuthPage from './pages/AuthPage';
 
 // --- Routing Imports ---
 import PrivateRoute from './routing/PrivateRoute';
@@ -38,20 +36,20 @@ const AppRoutes = () => {
       <Route path="/register" element={<PublicRoute><AuthPage /></PublicRoute>} />
 
       {/* --- Main Private Routes --- */}
-      {/* The Layout component is the main wrapper for all private pages */}
       <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
         
-        {/* The index route is the default page shown at "/" */}
         <Route index element={<Dashboard />} />
         
-        {/* Other pages render inside the Layout's <Outlet /> */}
-        <Route path="fitness" element={<FitnessPage />}>
-          <Route path="workout-logger" element={<WorkoutLoggerPage />} />
-          <Route path="metric-logger" element={<BodyMetricLoggerPage />} />
-          <Route path="history" element={<HistoryPage />} />
-          <Route path="progress" element={<ProgressPage />} />
-          <Route path="templates" element={<ManageTemplatesPage />} />
-        </Route>
+        {/* --- CORRECTED FITNESS ROUTES --- */}
+        {/* The FitnessPage with the cards is the index for the /fitness route */}
+        <Route path="fitness" element={<FitnessPage />} /> 
+        {/* The sub-pages are now direct children of the Layout, not nested */}
+        <Route path="fitness/workout-logger" element={<WorkoutLoggerPage />} />
+        <Route path="fitness/metric-logger" element={<BodyMetricLoggerPage />} />
+        <Route path="fitness/history" element={<HistoryPage />} />
+        <Route path="fitness/progress" element={<ProgressPage />} />
+        <Route path="fitness/templates" element={<ManageTemplatesPage />} />
+
         <Route path="nutrition" element={<NutritionPage />} />
       </Route>
       
@@ -67,7 +65,7 @@ function App() {
       <WorkoutProvider>
         <TemplateProvider>
           <Router>
-            <div className="App">
+            <div className="site-wrapper">
               <AppRoutes />
             </div>
           </Router>

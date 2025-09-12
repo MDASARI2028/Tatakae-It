@@ -70,3 +70,13 @@ h1, h2, h3, h4 {
   border-color: var(--color-primary-accent);
   box-shadow: var(--glow-shadow);
 }
+.App {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-xl); /* <-- Add horizontal padding */
+}
+.site-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--space-xl);
+}

@@ -9,19 +9,33 @@
 }
 
 .auth-page-title {
-  position: absolute;
-  top: 5vh;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Cinzel', serif;
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  letter-spacing: 2px;
-  animation: glow-pulse 4s ease-in-out infinite;
-  cursor: pointer;
+    /* --- POSITIONING RESTORED --- */
+    position: absolute;
+    top: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* --- FONT & WAVE EFFECT STYLES --- */
+    font-family: 'Cinzel', serif;
+    font-size: 3.5rem;
+    cursor: pointer;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(90deg, var(--color-text-primary), var(--color-text-primary));
 }
 
+/* --- THIS IS THE WAVE EFFECT --- */
+.auth-page-title:hover {
+    color: transparent;
+    background-image: linear-gradient(90deg, #8A2BE2, #E0E0E0, #8A2BE2);
+    animation: wave-effect 5s linear infinite;
+}
+
+@keyframes wave-effect {
+    0% { background-position: -200px 0; }
+    100% { background-position: 200px 0; }
+}
 /* This rule now correctly targets ONLY the span with the Japanese text */
 .auth-page-title .japanese-part {
     font-family: 'Noto Sans JP', sans-serif;
@@ -154,4 +168,13 @@
 .system-button.btn-primary:hover::before {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
+}
+@media (max-width: 768px) {
+    .auth-page-title {
+        font-size: 2.5rem;
+    }
+    .auth-card {
+        padding: var(--space-lg);
+        width: 90%;
+    }
 }

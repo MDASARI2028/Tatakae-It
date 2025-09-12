@@ -4,6 +4,7 @@ import React, { useState, useContext } from 'react';
 import WorkoutLogger from '../components/WorkoutLogger';
 import Card from '../components/Card';
 import { TemplateContext } from '../context/TemplateContext';
+import PageHeader from '../components/PageHeader'; // <-- ADD THIS IMPORT
 
 const WorkoutLoggerPage = () => {
     // Get templates directly from our new context!
@@ -17,6 +18,8 @@ const WorkoutLoggerPage = () => {
     };
 
     return (
+        <div>
+            <PageHeader title="System Quest: Log Workout" /> {/* <-- ADD THIS */}
         <Card>
             <h2>System Quest: Log Workout</h2>
             
@@ -34,6 +37,8 @@ const WorkoutLoggerPage = () => {
             
             <WorkoutLogger template={selectedTemplate} />
         </Card>
+        </div>
+
     );
 };
 

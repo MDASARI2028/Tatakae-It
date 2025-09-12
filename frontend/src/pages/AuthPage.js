@@ -15,7 +15,7 @@ const AuthPage = () => {
     };
 
     const pageStyle = {
-      backgroundImage: `linear-gradient(rgba(13, 14, 20, 0.7), rgba(13, 14, 20, 0.7)), url(${backgroundImage})`
+      backgroundImage: `linear-gradient(rgba(25, 14, 45, 0.5), rgba(13, 14, 20, 0.5)), url(${backgroundImage})`
     };
 
     return (

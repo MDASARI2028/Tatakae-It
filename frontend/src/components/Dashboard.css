@@ -1,57 +1,112 @@
 /* frontend/src/components/Dashboard.css */
-
+.dashboard-grid-container {
+    position: relative; /* This is crucial for the particles and crystals */
+}
 .dashboard-container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center everything horizontally */
-    justify-content: center;
+    align-items: center;
+    justify-content: space-around;
     text-align: center;
-    min-height: 60vh; /* Ensure it takes up significant screen space */
-    position: relative; /* For positioning the header */
+    min-height: 80vh;
 }
-
-.dashboard-header-info {
+.dashboard-container-with-particles {
+    position: relative;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height)); /* Ensure it fills available space */
+    width: 100%;
+    overflow: hidden; /* Hide particles outside this area */
+}
+#tsparticles-dashboard {
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Behind everything else */
+}
+.dashboard-content-wrapper {
+    position: relative; /* Bring content to front */
+    z-index: 1; /* Above particles */
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: var(--space-md);
+    justify-content: center;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    padding: var(--space-xl); /* Add some padding around the content */
 }
 
-.dashboard-header-info span {
-    color: var(--color-text-secondary);
-}
-
-.minimal-logout-button {
-    background: none;
-    border: none;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    font-size: 0.9rem;
-    padding: var(--space-sm);
-    transition: color var(--transition-speed) ease;
-}
-.minimal-logout-button:hover {
-    color: var(--color-mana-blue);
-}
-
+/* --- EPIC QUOTE STYLES --- */
 .dashboard-quote {
-    font-size: var(--font-size-xl);
-    font-weight: 300; /* Lighter font weight for style */
-    max-width: 600px;
+    font-family: 'Megrim', cursive;
+    font-size: 3rem;
+    color: var(--color-primary-accent);
+    text-transform: uppercase;
+    
+    /* Use flexbox for alignment control */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align all lines to the left edge */
+    margin-bottom: 100x; /* <-- THIS LINE CONTROLS THE GAP */
     margin: var(--space-xl) 0;
-    color: var(--color-text-primary);
-    text-shadow: 0 0 10px rgba(0, 163, 255, 0.3);
 }
 
-/* --- New Innovative Tab Design --- */
+.quote-line {
+    position: relative;
+    text-shadow: 0 0 15px var(--color-primary-accent);
+    margin: 0;
+    white-space: nowrap; /* Prevent lines from breaking */
+}
+
+/* --- PRECISE STAGGERED ALIGNMENT --- */
+/* The second line is pushed to the right */
+.line-1 { 
+    margin-left: -0.5em; /* Adjust this value for pixel-perfect alignment */
+}
+.line-2 { 
+    margin-left: 8.95em; /* Adjust this value for pixel-perfect alignment */
+}
+/* The third line is pushed further to the right */
+.line-3 {
+    margin-left: 12em; /* Adjust this value for pixel-perfect alignment */
+}
+
+/* Glitch Animation (Optional, but looks cool) */
+.quote-line::after,
+.quote-line::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--color-background);
+    overflow: hidden;
+}
+.quote-line::before {
+    left: 2px;
+    text-shadow: -1px 0 var(--color-gold-accent);
+    animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+}
+.quote-line::after {
+    left: -2px;
+    text-shadow: -1px 0 var(--color-mana-blue-hover);
+    animation: glitch-anim-2 2s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+    0% { clip-path: inset(40% 0 60% 0); }
+    100% { clip-path: inset(60% 0 40% 0); }
+}
+@keyframes glitch-anim-2 {
+    0% { clip-path: inset(20% 0 80% 0); }
+    100% { clip-path: inset(80% 0 20% 0); }
+}
+
+
+/* --- Main Tab Design --- */
 .main-tabs {
     display: flex;
     gap: var(--space-lg);
     margin-top: var(--space-xl);
-    border: none;
-    background: none;
 }
 
 .main-tabs a {
@@ -68,7 +123,6 @@
     color: var(--color-text-primary);
 }
 
-/* The innovative underline effect */
 .main-tabs a::after {
     content: '';
     position: absolute;
@@ -76,16 +130,110 @@
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: var(--color-mana-blue);
-    transform: scaleX(0); /* Initially hidden */
+    background-color: var(--color-primary-accent);
+    transform: scaleX(0);
     transform-origin: center;
     transition: transform var(--transition-speed) ease;
 }
 
 .main-tabs a.active-tab {
-    color: var(--color-mana-blue);
+    color: var(--color-primary-accent);
 }
 
 .main-tabs a.active-tab::after {
-    transform: scaleX(1); /* Reveal the line for the active tab */
+    transform: scaleX(1);
+}
+.gateway-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 24px !important; /* <-- FORCE THE GAP */
+}
+
+.gateway-card {
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--space-xl);
+    text-decoration: none;
+    width: 100%;
+    max-width: 400px;
+    min-height: 150px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-speed) ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Use a more specific selector to force the font */
+.gateway-card h3 {
+    font-family: 'Orbitron', sans-serif !important;
+    font-size: 1.5rem;
+    color: var(--color-text-primary); /* Default white text */
+    margin-bottom: var(--space-sm);
+    position: relative; /* Required for the effect */
+}
+.gateway-card h3::after {
+    content: attr(data-text); /* Uses the text from the data-text attribute */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--color-primary-accent); /* Purple text */
+    
+    /* Hide it initially by clipping it from the right */
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.5s ease; /* Smooth transition */
+}
+.gateway-card:hover h3::after {
+    clip-path: inset(0 0 0 0);
+}
+
+.gateway-card p {
+    font-family: 'Orbitron', sans-serif !important; /* <-- FORCE THE FONT */
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+.gateway-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary-accent);
+    box-shadow: 0 0 25px rgba(138, 43, 226, 0.5);
+}
+.gateway-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%; /* Start off-screen to the left */
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(138, 43, 226, 0.4), /* Wave color */
+        transparent
+    );
+    transform: skewX(-25deg);
+    transition: left 0.5s ease;
+}
+
+.gateway-card:hover::before {
+    left: 150%; /* Move across the card to the right */
+}
+@media (max-width: 768px) {
+    .dashboard-quote {
+        font-size: 1.8rem;
+        width: 100%;
+    }
+    .gateway-container {
+        flex-direction: column;
+    }
+    .gateway-card {
+        max-width: 100%;
+    }
 }

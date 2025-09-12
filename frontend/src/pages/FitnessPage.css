@@ -1,40 +1,97 @@
 /* frontend/src/pages/FitnessPage.css */
+
 .fitness-grid-container {
-  display: grid;
-  grid-template-columns: 200px 1fr; /* 200px sidebar, the rest for content */
-  gap: calc(var(--spacing-unit) * 4);
-  align-items: start;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
 }
 
-.sub-nav-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-unit);
-  position: sticky;
-  top: var(--spacing-unit);
+.fitness-card {
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--space-xl);
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Required for the effect */
+    overflow: hidden;  /* Required for the effect */
+    transition: all var(--transition-speed) ease;
 }
 
-.sub-nav-panel a {
-  font-family: var(--font-family-heading);
-  padding: var(--spacing-unit) calc(var(--spacing-unit) * 2);
-  border-radius: var(--border-radius);
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  transition: all var(--transition-speed) ease;
-  border-left: 3px solid transparent;
+/* --- GLOWING WAVE HOVER EFFECT --- */
+.fitness-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary-accent);
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
 }
 
-.sub-nav-panel a:hover {
-  background-color: var(--color-surface-secondary);
-  color: var(--color-text-primary);
+.fitness-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(138, 43, 226, 0.4),
+        transparent
+    );
+    transform: skewX(-25deg);
+    transition: left 0.7s ease;
 }
 
-.sub-nav-panel a.active {
-  background-color: var(--color-surface-primary);
-  color: var(--color-mana-blue);
-  border-left-color: var(--color-mana-blue);
+.fitness-card:hover::before {
+    left: 150%;
+}
+/* --- END OF EFFECT --- */
+
+
+.fitness-icon {
+    font-size: 2.5rem;
+    color: var(--color-primary-accent);
+    margin-bottom: var(--space-md);
 }
 
-.fitness-content-area {
-  min-width: 0; /* Prevents overflow issues with grid */
+.fitness-card h3 {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-sm);
+    position: relative;
+}
+
+.fitness-card p {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* --- TEXT WAVE EFFECT --- */
+.fitness-card h3::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--color-primary-accent);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.5s ease;
+}
+
+.fitness-card:hover h3::after {
+    clip-path: inset(0 0 0 0);
+}
+@media (max-width: 768px) {
+    .fitness-grid-container {
+        grid-template-columns: 1fr; /* Stack cards in a single column */
+    }
 }

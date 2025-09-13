@@ -1,7 +1,7 @@
 /* frontend/src/index.css */
 
 :root {
-  --color-background: #0D0E14;
+  --color-background: #000000;
   --color-surface-primary: #1A1C2A;
   --color-surface-secondary: #2C2F48;
   --color-border: #4A4E88;
@@ -79,4 +79,8 @@ h1, h2, h3, h4 {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 var(--space-xl);
+}
+::selection {
+  background-color: var(--color-primary-accent); /* Use your theme's purple */
+  color: var(--color-text-primary);
 }

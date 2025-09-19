@@ -1,0 +1,171 @@
+.epic-logger {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.search-container {
+    position: relative;
+    z-index: 100;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    background-color: #111520;
+    border: 1px solid #3a3f5a;
+    color: #c7d2e7;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #764be0;
+    box-shadow: 0 0 15px rgba(118, 75, 224, 0.3);
+}
+
+.search-results {
+    position: absolute;
+    width: 100%;
+    background: #171c28;
+    border: 1px solid #3a3f5a;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.search-results li {
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #3a3f5a;
+}
+
+.log-form {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.items-list-container {
+    min-height: 150px;
+}
+
+.food-item-row.epic.editable {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr 1fr 1fr 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+    background: rgba(58, 63, 90, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid #764be0;
+}
+
+.item-input {
+    background-color: rgba(17, 21, 32, 0.8);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #c7d2e7;
+    padding: 0.5rem;
+    width: 100%;
+    text-align: right;
+    transition: border-color 0.2s;
+}
+
+.item-input:focus {
+    outline: none;
+    border-color: #764be0;
+}
+
+.item-input.food-name {
+    text-align: left;
+    font-weight: bold;
+}
+
+.remove-item-btn.epic {
+    background: #58181f;
+    color: #ff8e8e;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.form-actions-epic {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #3a3f5a;
+}
+
+.add-custom-btn {
+    background: none;
+    border: 1px solid #3a3f5a;
+    color: #8892b0;
+    padding: 0.8rem 1.5rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-custom-btn:hover {
+    border-color: #764be0;
+    color: #fff;
+}
+
+.submit-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.meal-type-select {
+    padding: 0.8rem;
+    background: #111520;
+    border: 1px solid #3a3f5a;
+    color: #c7d2e7;
+    border-radius: 4px;
+}
+
+.submit-meal-btn-epic {
+    background-color: #764be0;
+    padding: 0.8rem 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.spinner {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #764be0;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: translateY(-50%) rotate(360deg); }
+}

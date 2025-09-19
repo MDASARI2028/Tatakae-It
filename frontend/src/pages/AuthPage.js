@@ -34,7 +34,7 @@ const AuthPage = () => {
             </h1>
 
             <div className="auth-card">
-                <h2>Welcome, Player</h2>
+                <h2>Welcome</h2>
                 <p>ENTER THE REALM OF POWERING UP</p>
 
                 <div className="auth-toggle">

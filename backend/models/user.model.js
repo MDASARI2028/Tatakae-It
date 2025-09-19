@@ -19,6 +19,16 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    nutritionGoals: {
+        calorieGoal: { type: Number, default: 2200 },
+        proteinGoal: { type: Number, default: 150 },
+        carbGoal: { type: Number, default: 250 },
+        fatGoal: { type: Number, default: 70 },
+    },
+    streakStartDate: {
+        type: Date,
+        default: Date.now // Defaults to when the user signs up
     }
 }, { timestamps: true });
 

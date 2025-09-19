@@ -4,8 +4,8 @@
     display: grid;
     grid-template-columns: 1fr auto 1fr; 
     align-items: center;
-    padding: var(--space-unit) 0;
-    margin-bottom: 60px; /* <-- INCREASED THIS VALUE */
+    padding: 1rem 0; /* Use a consistent unit */
+    margin-bottom: 2rem; /* ✅ Reduced from 60px to a more standard gap */
     height: 60px;
 }
 .app-container {

@@ -1,7 +1,6 @@
-// frontend/src/context/AuthContext.js
-
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 
 export const AuthContext = createContext();
 
@@ -11,83 +10,95 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const checkToken = useCallback(() => {
+    const loadUser = useCallback(async () => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
-            try {
-                const decoded = jwtDecode(storedToken);
-                const isExpired = decoded.exp * 1000 < Date.now();
-                if (!isExpired) {
-                    setToken(storedToken);
-                    setUser({ id: decoded.id, username: decoded.username });
-                    setIsAuthenticated(true);
-                } else {
-                    localStorage.removeItem('token');
-                }
-            } catch (error) {
+            // First, decode the token to check if it's expired
+            const decoded = jwtDecode(storedToken);
+            const isExpired = decoded.exp * 1000 < Date.now();
+
+            if (isExpired) {
+                // If expired, clear everything without an API call
                 localStorage.removeItem('token');
+                setUser(null);
+                setIsAuthenticated(false);
+                setToken(null);
+            } else {
+                // If not expired, fetch the latest user data
+                try {
+                    const config = { headers: { 'x-auth-token': storedToken } };
+                    const res = await axios.get('/api/users/me', config);
+                    setUser(res.data);
+                    setIsAuthenticated(true);
+                    setToken(storedToken);
+                } catch (error) {
+                    localStorage.removeItem('token'); // Clean up on error
+                }
             }
         }
         setLoading(false);
     }, []);
 
     useEffect(() => {
-        checkToken();
-    }, [checkToken]);
+        loadUser();
+    }, [loadUser]);
 
-    const login = async (email, password) => {
+    const login = useCallback(async (email, password) => {
         try {
-            const response = await fetch('/api/users/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.msg || 'Login failed.');
-            }
-            localStorage.setItem('token', data.token);
-            checkToken(); // Re-check token to update state
+            const res = await axios.post('/api/users/login', { email, password });
+            localStorage.setItem('token', res.data.token);
+            setUser(res.data.user);
+            setIsAuthenticated(true);
+            setToken(res.data.token);
             return { success: true };
         } catch (error) {
-            console.error("Login Error:", error.message);
-            // --- THIS IS THE FIX ---
-            // Ensure we always return an object, even on error
-            return { success: false, error: error.message };
+            return { success: false, error: error.response?.data?.msg || error.message };
         }
-    };
+    }, []);
 
-    const register = async (username, email, password, password2) => {
+    const register = useCallback(async (username, email, password) => {
         try {
-            const response = await fetch('/api/users/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                // Add password2 to the request body
-                body: JSON.stringify({ username, email, password, password2 }),
-            });
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.msg || 'Registration failed.');
-            }
-            return { success: true };
+            const res = await axios.post('/api/users/register', { username, email, password });
+            return { success: true, msg: res.data.msg };
         } catch (error) {
-            console.error("Registration Error:", error.message);
-            return { success: false, error: error.message };
+            return { success: false, error: error.response?.data?.msg || 'Registration failed.' };
         }
-    };
-
-    const logout = () => {
+    }, []);
+    
+    const logout = useCallback(() => {
         localStorage.removeItem('token');
-        setToken(null);
         setUser(null);
         setIsAuthenticated(false);
-    };
+        setToken(null);
+    }, []);
 
-    const contextValue = { token, user, isAuthenticated, loading, login, register, logout };
+    const updateGoals = useCallback(async (goals) => {
+        if (!token) return { success: false, error: 'Not authenticated' };
+        try {
+            const config = { headers: { 'x-auth-token': token } };
+            const res = await axios.put('/api/users/goals', goals, config);
+            setUser(prevUser => ({ ...prevUser, nutritionGoals: res.data.nutritionGoals }));
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: error.response?.data?.msg || 'Failed to update goals.'};
+        }
+    }, [token]);
+    
+    const resetStreak = useCallback(async () => {
+        if (!token) return { success: false, error: 'Not authenticated' };
+        try {
+            const config = { headers: { 'x-auth-token': token } };
+            const res = await axios.put('/api/users/reset-streak', {}, config);
+            setUser(res.data);
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: 'Failed to reset streak.' };
+        }
+    }, [token]);
 
-    return (
-        <AuthContext.Provider value={contextValue}>
-            {children}
-        </AuthContext.Provider>
-    );
+    const contextValue = useMemo(() => ({
+        token, user, isAuthenticated, loading, login, register, logout, updateGoals, resetStreak 
+    }), [token, user, isAuthenticated, loading, login, register, logout, updateGoals, resetStreak]);
+
+    return ( <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider> );
 };

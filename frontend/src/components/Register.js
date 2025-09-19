@@ -50,19 +50,19 @@ const Register = () => {
             {error && <p className="error-message">{error}</p>}
             {success && <p className="success-message">{success}</p>}
             <div>
-                <label htmlFor="username">Hunter Name</label>
+                <label htmlFor="username">Code Name</label>
                 <input id="username" type="text" name="username" className="form-input" value={username} onChange={onChange} required />
             </div>
             <div>
-                <label htmlFor="email">Hunter ID (Email)</label>
+                <label htmlFor="email">Email ID</label>
                 <input id="email" type="email" name="email" className="form-input" value={email} onChange={onChange} required />
             </div>
             <div>
-                <label htmlFor="password">Create Shadow Key</label>
+                <label htmlFor="password">Create Password</label>
                 <input id="password" type="password" name="password" className="form-input" value={password} onChange={onChange} minLength="6" required />
             </div>
             <div>
-                <label htmlFor="password2">Confirm Shadow Key</label>
+                <label htmlFor="password2">Confirm Password</label>
                 <input id="password2" type="password" name="password2" className="form-input" value={password2} onChange={onChange} minLength="6" required />
             </div>
             <button type="submit" className="system-button btn-primary" onMouseMove={handleMouseMove} // <-- ADD THIS

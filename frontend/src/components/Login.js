@@ -35,7 +35,7 @@ const Login = () => {
     <form onSubmit={onSubmit} className="auth-form">
       {error && <p className="error-message">{error}</p>}
       <div>
-        <label htmlFor="email">Hunter ID (Email)</label>
+        <label htmlFor="email">Email ID</label>
         <input
           id="email"
           type="email"
@@ -47,7 +47,7 @@ const Login = () => {
         />
       </div>
       <div>
-        <label htmlFor="password">Shadow Key (Password)</label>
+        <label htmlFor="password">Password</label>
         <div className="password-wrapper">
           <input
             id="password"

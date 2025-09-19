@@ -1,0 +1,88 @@
+/* ... (keep existing styles for progress-display, progress-bar, etc.) ... */
+.hydration-tracker { display: flex; flex-direction: column; align-items: center; gap: 2rem; padding: 1rem; }
+.progress-display { text-align: center; }
+.progress-display h3 { margin: 0; font-size: 2.5rem; color: #fff; font-weight: 300; }
+.progress-display span { font-size: 1.2rem; color: var(--secondary-color); }
+.progress-bar-container { width: 100%; height: 25px; background-color: rgba(0, 0, 0, 0.3); border-radius: 15px; border: 1px solid var(--primary-color-dark); overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, #3a7bd5, #3a97d5); border-radius: 15px; transition: width 0.5s ease-in-out; text-align: right; display: flex; align-items: center; justify-content: flex-end; }
+.progress-percent { color: #fff; font-weight: bold; font-size: 0.8rem; padding-right: 10px; }
+
+
+/* ✅ ADD & UPDATE STYLES BELOW */
+
+.edit-goal-btn {
+    background: none;
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.add-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.quick-add-buttons, .custom-add {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.custom-add button {
+    background-color: var(--secondary-color);
+}
+
+.custom-input {
+    width: 100px;
+    padding: 0.8rem;
+}
+
+/* ... (keep .log-list styles) ... */
+.log-list { width: 100%; margin-top: 1rem; }
+.log-list h4 { border-bottom: 1px solid var(--primary-color-dark); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+
+.log-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    color: #aab4c1;
+    border-bottom: 1px solid var(--primary-color-dark);
+}
+
+.log-item:last-child {
+    border-bottom: none;
+}
+
+.log-time {
+    font-size: 0.8rem;
+    color: #8892b0;
+    margin-left: 1rem;
+}
+
+.delete-log-btn {
+    background: #58181f;
+    color: #ff8e8e;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.delete-log-btn:hover {
+    background: #9e2a2b;
+    color: white;
+}

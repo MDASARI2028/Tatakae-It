@@ -1,5 +1,5 @@
 /* frontend/src/index.css */
-
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 :root {
   --color-background: #000000;
   --color-surface-primary: #1A1C2A;

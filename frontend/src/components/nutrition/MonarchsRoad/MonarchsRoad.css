@@ -1,0 +1,31 @@
+.monarchs-road-container {
+    width: 100%;
+    height: 250px; /* Set a fixed height for the container */
+    background: rgba(17, 21, 32, 0.5);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto; /* ✅ Allow horizontal scrolling for the path */
+    overflow-y: hidden;
+}
+
+/* Custom scrollbar for a better theme match */
+.monarchs-road-container::-webkit-scrollbar {
+    height: 8px;
+}
+.monarchs-road-container::-webkit-scrollbar-track {
+    background: #111520;
+    border-radius: 4px;
+}
+.monarchs-road-container::-webkit-scrollbar-thumb {
+    background: #3a3f5a;
+    border-radius: 4px;
+}
+.monarchs-road-container::-webkit-scrollbar-thumb:hover {
+    background: #764be0;
+}
+
+
+.monarchs-road-path {
+    position: relative;
+    height: 100%;
+}

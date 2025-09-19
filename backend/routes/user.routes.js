@@ -1,4 +1,3 @@
-// backend/routes/user.routes.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user.model');
@@ -11,28 +10,20 @@ const auth = require('../middleware/auth.middleware');
 // @access  Public
 router.post('/register', async (req, res) => {
     try {
-        const { username, email, password, password2 } = req.body;
+        const { username, email, password } = req.body; // Removed password2 as it's not in the model
 
-        // Validation
         if (!username || !email || !password) {
             return res.status(400).json({ msg: 'Please enter all fields.' });
-        }
-        if (password !== password2) {
-            return res.status(400).json({ msg: 'Passwords do not match.' });
         }
         let user = await User.findOne({ email });
         if (user) {
             return res.status(400).json({ msg: 'User with this email already exists.' });
         }
 
-        // Create new user (password will be hashed automatically by the model's pre-save hook)
         user = new User({ username, email, password });
         await user.save();
-
         res.status(201).json({ msg: 'Registration successful!' });
-
     } catch (err) {
-        console.error("Registration Error:", err.message);
         res.status(500).json({ msg: 'Server error' });
     }
 });
@@ -56,16 +47,22 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ msg: 'Invalid credentials.' });
         }
 
-        // Create JWT payload consistent with the rest of the app
         const payload = { id: user.id, username: user.username };
         
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '5h' }, (err, token) => {
-            if (err) throw err;
-            res.json({ token });
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '5h' });
+
+        // ✅ THE FIX: Send the token AND the full user object
+        res.json({
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                nutritionGoals: user.nutritionGoals
+            }
         });
 
     } catch (err) {
-        console.error("Login Error:", err.message);
         res.status(500).json({ msg: 'Server error' });
     }
 });
@@ -78,9 +75,47 @@ router.get('/me', auth, async (req, res) => {
         const user = await User.findById(req.user.id).select('-password');
         res.json(user);
     } catch (err) {
-        console.error("Get User Error:", err.message);
         res.status(500).json({ msg: 'Server Error' });
     }
 });
 
+// @route   PUT /api/users/goals
+// @desc    Update nutrition goals for the logged in user
+// @access  Private
+router.put('/goals', auth, async (req, res) => {
+    try {
+        const { calorieGoal, proteinGoal, carbGoal, fatGoal } = req.body;
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+        user.nutritionGoals = { calorieGoal, proteinGoal, carbGoal, fatGoal };
+        await user.save();
+        res.json({ msg: 'Goals updated successfully', nutritionGoals: user.nutritionGoals });
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+// @route   PUT /api/users/reset-streak
+// @desc    Resets the user's streak start date to today
+// @access  Private
+router.put('/reset-streak', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        user.streakStartDate = new Date(); // Set to today
+        await user.save();
+        
+        // Return the updated user object to sync the frontend
+        const updatedUser = await User.findById(req.user.id).select('-password');
+        res.json(updatedUser);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
 module.exports = router;

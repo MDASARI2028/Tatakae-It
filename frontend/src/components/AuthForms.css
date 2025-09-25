@@ -1,0 +1,24 @@
+/* frontend/src/components/AuthForms.css */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper .form-input {
+  padding-right: 40px; /* Make space for the icon */
+}
+
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+}
+
+.eye-icon:hover {
+    color: var(--color-text-primary);
+}

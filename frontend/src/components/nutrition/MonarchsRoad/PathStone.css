@@ -1,0 +1,71 @@
+.path-stone {
+    width: 90px;
+    height: 100px;
+    background-color: #3a3f5a;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    transition: all 0.5s ease-in-out;
+    cursor: pointer;
+    background-image: linear-gradient(
+        135deg, 
+        rgba(255, 255, 255, 0.05) 0%, 
+        rgba(255, 255, 255, 0) 50%, 
+        rgba(0, 0, 0, 0.1) 100%
+    );
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); 
+}
+
+.stone-day-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #8892b0;
+}
+
+/* --- Status Styles --- */
+.path-stone.status-future {
+    background-color: rgba(58, 63, 90, 0.1);
+    border: 2px dashed #3a3f5a;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+.path-stone.status-future .stone-day-number {
+    opacity: 0.4;
+    color: #8892b0;
+}
+
+/* ✅ This rule is now identical to flawless */
+.path-stone.status-standard {
+    background-color: #007bff;
+    box-shadow: 0 0 15px 5px rgba(0, 123, 255, 0.7),
+                0 0 25px 8px rgba(0, 123, 255, 0.5),
+                inset 0 0 10px rgba(0, 0, 0, 0.5);
+    border: 1px solid #0056b3;
+}
+.path-stone.status-standard .stone-day-number {
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+
+.path-stone.status-flawless {
+    background-color: #007bff;
+    box-shadow: 0 0 15px 5px rgba(0, 123, 255, 0.7),
+                0 0 25px 8px rgba(0, 123, 255, 0.5),
+                inset 0 0 10px rgba(0, 0, 0, 0.5);
+    border: 1px solid #0056b3;
+}
+.path-stone.status-flawless .stone-day-number {
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+.path-stone.status-broken {
+    background-color: #9e2a2b;
+    border: 1px solid #58181f;
+}
+.path-stone.status-broken .stone-day-number {
+    color: #ff8e8e;
+    text-decoration: line-through;
+}

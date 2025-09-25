@@ -1,0 +1,125 @@
+.nutrition-progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.progress-section {
+    background: #171c28;
+    border: 1px solid #3a3f5a;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #c7d2e7;
+}
+
+/* Goal Setter Form */
+.goal-setter-form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.goal-inputs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    flex-grow: 1;
+}
+.goal-inputs input {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #111520;
+    border: 1px solid #3a3f5a;
+    color: #c7d2e7;
+    border-radius: 4px;
+    text-align: center;
+}
+.goal-setter-form button {
+    background-color: #764be0;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.status-message {
+    font-size: 0.8rem;
+    color: #45b682;
+}
+
+/* Period Selector */
+.period-selector button {
+    background: none;
+    border: 1px solid #3a3f5a;
+    color: #8892b0;
+    padding: 0.4rem 1rem;
+    margin-left: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.period-selector button.active {
+    background-color: #764be0;
+    color: #fff;
+    border-color: #764be0;
+}
+
+/* Main Grid for Charts */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* Grid for the Stat Cards */
+.stat-cards-grid {
+    grid-column: 1 / -1; /* Make it span the full width */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+/* Container for each Chart */
+.chart-container {
+    background: rgba(17, 21, 32, 0.5);
+    border-radius: 4px;
+    padding: 1rem;
+}
+.chart-container h4 {
+    margin: 0 0 1rem 0;
+    text-align: center;
+    color: #8892b0;
+    font-weight: 500;
+}
+
+/* Custom Tooltip for Charts */
+.custom-tooltip {
+    background-color: rgba(17, 21, 32, 0.9);
+    border: 1px solid #3a3f5a;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    color: #c7d2e7;
+}
+/* Add this to NutritionProgress.css */
+.chart-container.full-width {
+    grid-column: 1 / -1; /* Make the heatmap span the full width */
+}
+.reset-streak-btn {
+    background: none;
+    border: 1px solid #9e2a2b;
+    color: #ff8e8e;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+}

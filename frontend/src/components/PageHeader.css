@@ -1,0 +1,24 @@
+/* frontend/src/components/PageHeader.css */
+.page-header {
+    margin-bottom: var(--space-lg);
+}
+
+.page-header h2 {
+    text-align: center;
+    font-family: var(--font-family-heading);
+    color: var(--color-text-secondary);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    margin-bottom: var(--space-md);
+    transition: color var(--transition-speed) ease;
+}
+
+.back-link:hover {
+    color: var(--color-primary-accent);
+}

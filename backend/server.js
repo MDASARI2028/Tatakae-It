@@ -26,6 +26,10 @@ app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/workouts', require('./routes/workout.routes'));
 app.use('/api/metrics', require('./routes/bodyMetric.routes'));
 app.use('/api/templates', require('./routes/template.routes'));
+app.use('/api/nutrition', require('./routes/nutrition.routes.js'));
+app.use('/api/hydration', require('./routes/hydration.routes.js'));
+app.use('/api/recipes', require('./routes/recipe.routes.js'));
+app.use('/api/food-search', require('./routes/foodSearch.routes.js'));
 
 app.listen(port, () => {
     console.log(`[SYSTEM] Backend server is running on port: ${port}`);

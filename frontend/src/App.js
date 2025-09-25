@@ -13,6 +13,10 @@ import FitnessPage from './pages/FitnessPage';
 import NutritionPage from './pages/nutrition/NutritionPage';
 import AuthPage from './pages/AuthPage';
 // Add any other page imports you have here
+import WorkoutLoggerPage from './pages/WorkoutLoggerPage';
+import HistoryPage from './pages/HistoryPage';
+import BodyMetricLoggerPage from './pages/BodyMetricLoggerPage';
+import ProgressPage from './pages/ProgressPage';
 
 // --- Routing Imports ---
 import PrivateRoute from './routing/PrivateRoute';
@@ -33,6 +37,10 @@ const AppRoutes = () => {
             <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
                 <Route index element={<Dashboard />} />
                 <Route path="fitness" element={<FitnessPage />} />
+                <Route path="fitness/workout-logger" element={<WorkoutLoggerPage />} />
+                <Route path="fitness/history" element={<HistoryPage />} />
+                <Route path="fitness/metric-logger" element={<BodyMetricLoggerPage />} />
+                <Route path="fitness/progress" element={<ProgressPage />} />
                 <Route path="nutrition" element={<NutritionPage />} />
                 {/* Ensure all your other page routes are nested here if they use the Layout */}
             </Route>

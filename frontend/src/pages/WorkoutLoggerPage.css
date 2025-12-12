@@ -1,0 +1,213 @@
+/* frontend/src/pages/WorkoutLoggerPage.css */
+
+/* Wrapper for background */
+.workout-logger-page-wrapper {
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: #000;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+/* Solid Black Background */
+.gradient-mesh-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: #000;
+}
+
+.workout-logger-page {
+    position: relative;
+    padding: 2rem 2rem 2rem 2rem;
+    min-height: 100vh;
+}
+
+/* Split Layout */
+.logger-split-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 3rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    align-items: start;
+}
+
+/* Left Panel */
+.logger-left-panel {
+    position: sticky;
+    top: 120px;
+}
+
+/* Right Panel */
+.logger-right-panel {
+    min-height: 100%;
+    margin-top: 1.5rem;
+}
+
+/* Hero Header */
+.logger-hero-header {
+    text-align: left;
+    margin-bottom: 2.5rem;
+}
+
+.hero-title-section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.hero-icon {
+    font-size: 3rem;
+    color: #8A2BE2;
+    filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.6));
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(135deg, #8A2BE2 0%, #9932CC 50%, #DA70D6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.02em;
+}
+
+.hero-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+}
+
+/* Quick Stats Stack */
+.quick-stats-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, rgba(26, 28, 42, 0.9), rgba(44, 47, 72, 0.9));
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.stat-card:hover {
+    border-color: rgba(138, 43, 226, 0.6);
+    box-shadow: 0 12px 40px rgba(138, 43, 226, 0.4);
+    transform: translateX(10px);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    padding: 0.8rem;
+    border-radius: 12px;
+    background: rgba(138, 43, 226, 0.1);
+}
+
+.stat-icon.fire {
+    color: #FF6B6B;
+    background: rgba(255, 107, 107, 0.1);
+}
+
+.stat-icon.calendar {
+    color: #4ECDC4;
+    background: rgba(78, 205, 196, 0.1);
+}
+
+.stat-icon.trophy {
+    color: #FFD93D;
+    background: rgba(255, 217, 61, 0.1);
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .logger-split-layout {
+        grid-template-columns: 350px 1fr;
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .logger-split-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .logger-left-panel {
+        position: static;
+    }
+
+    .logger-hero-header {
+        text-align: center;
+    }
+
+    .hero-title-section {
+        justify-content: center;
+    }
+
+    .quick-stats-stack {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        flex: 1;
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .workout-logger-page {
+        padding: 1rem;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-icon {
+        font-size: 2.5rem;
+    }
+
+    .quick-stats-stack {
+        flex-direction: column;
+    }
+}

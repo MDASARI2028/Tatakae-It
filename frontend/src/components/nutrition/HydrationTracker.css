@@ -1,0 +1,54 @@
+.hydration-shell { display: grid; grid-template-columns: 1fr 320px; gap: 1.2rem; align-items: start }
+
+.hydration-left { background: linear-gradient(180deg, rgba(20,22,36,0.6), rgba(12,14,26,0.6)); border-radius: 12px; padding: 1rem; border: 1px solid rgba(138,43,226,0.08); box-shadow: 0 8px 28px rgba(6,8,20,0.6) }
+
+.hydration-header { margin-bottom: 0.8rem }
+.h-title { display: flex; gap: 0.9rem; align-items: center }
+.water-icon { font-size: 1.6rem; color: #fff; background: linear-gradient(135deg, #2196F3, #1976D2); padding: 8px; border-radius: 8px }
+.h-title h3 { margin: 0; color: var(--color-text-primary) }
+.h-title .hint { margin: 0; font-size: 0.85rem; color: var(--color-text-secondary) }
+
+.progress-card { background: linear-gradient(135deg, rgba(33,150,243,0.08), rgba(25,118,210,0.08)); border-radius: 10px; padding: 1rem; border: 1px solid rgba(33,150,243,0.06) }
+.intake-display { text-align: center; margin-bottom: 1rem }
+.big-number { font-size: 2.4rem; font-weight: 300; color: #fff; margin: 0 }
+.sub-text { color: var(--color-text-secondary); font-size: 0.95rem }
+
+.progress-bar-container { width: 100%; height: 24px; background: rgba(33,150,243,0.08); border-radius: 12px; border: 1px solid rgba(33,150,243,0.08); overflow: hidden }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, #1976D2, #2196F3); border-radius: 12px; transition: width 0.5s ease; display: flex; align-items: center; justify-content: flex-end }
+.progress-percent { color: #fff; font-weight: 700; font-size: 0.75rem; padding-right: 8px }
+
+.edit-goal-link { background: transparent; border: 1px solid rgba(33,150,243,0.2); color: var(--color-text-secondary); font-size: 0.85rem; padding: 6px 10px; border-radius: 8px; cursor: pointer; margin-top: 8px }
+
+.add-water-section { display: flex; flex-direction: column; gap: 1rem; margin: 1rem 0 }
+.quick-buttons { display: flex; gap: 0.8rem }
+.quick-btn { flex: 1; padding: 10px; background: linear-gradient(135deg, rgba(33,150,243,0.12), rgba(25,118,210,0.1)); border: 1px solid rgba(33,150,243,0.1); color: var(--color-text-primary); border-radius: 8px; cursor: pointer; font-weight: 600 }
+.quick-btn:hover { background: linear-gradient(135deg, rgba(33,150,243,0.2), rgba(25,118,210,0.15)) }
+
+.custom-input-group { display: flex; gap: 0.8rem }
+.custom-input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(100,100,140,0.08); background: transparent; color: var(--color-text-primary) }
+.custom-btn { background: linear-gradient(135deg, #2196F3, #1976D2); border: none; color: #fff; padding: 10px; border-radius: 8px; cursor: pointer }
+
+.log-section { margin-top: 1rem }
+.log-section h4 { margin: 0 0 10px 0; color: var(--color-text-primary) }
+.log-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow: auto }
+.log-item { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; padding: 10px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius: 8px; border: 1px solid rgba(138,43,226,0.04) }
+.log-content { display: flex; flex-direction: column; gap: 4px }
+.log-amount { color: var(--color-text-primary); font-weight: 700 }
+.log-time { color: var(--color-text-secondary); font-size: 0.82rem }
+.delete-btn { background: transparent; border: none; color: rgba(255,100,100,0.8); cursor: pointer; font-size: 0.9rem }
+.empty-state { text-align: center; color: var(--color-text-secondary); padding: 1.5rem 0; font-size: 0.95rem }
+
+.hydration-right { min-width: 300px }
+.hydration-info-card { background: linear-gradient(180deg, rgba(12,14,20,0.6), rgba(18,20,30,0.6)); border-radius: 12px; padding: 1rem; border: 1px solid rgba(33,150,243,0.06) }
+.hydration-info-card h4 { margin: 0 0 8px 0; color: var(--color-text-primary) }
+.goal-value { font-size: 1.8rem; margin: 0; color: #2196F3; font-weight: 300 }
+.info-text { color: var(--color-text-secondary); font-size: 0.9rem; margin: 8px 0 }
+.tips { margin-top: 1rem }
+.tips h5 { margin: 0 0 8px 0; color: var(--color-text-primary) }
+.tips ul { margin: 0; padding-left: 20px; color: var(--color-text-secondary); font-size: 0.9rem }
+.tips li { margin: 4px 0 }
+
+@media (max-width: 980px) {
+    .hydration-shell { grid-template-columns: 1fr }
+    .hydration-right { order: 2 }
+}

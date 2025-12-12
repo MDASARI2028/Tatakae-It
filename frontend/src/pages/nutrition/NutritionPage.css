@@ -1,0 +1,101 @@
+/* Nutrition Page - Single Screen Layout */
+.nutrition-page {
+    height: calc(100vh - 80px);
+    /* 80px for header */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0 1.5rem;
+}
+
+.nutrition-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    flex-shrink: 0;
+}
+
+.nutrition-header-left h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    color: var(--color-text-primary);
+}
+
+.nutrition-header-left .sub {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.nutrition-header-right .date-navigator {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.nav-btn {
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(153, 50, 204, 0.12));
+    border: 1px solid rgba(138, 43, 226, 0.25);
+    color: var(--color-primary-accent);
+    padding: 0.4rem 0.7rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.nutrition-tabs {
+    display: flex;
+    gap: 0.4rem;
+    margin: 0.8rem 0;
+    justify-content: flex-start;
+    flex-shrink: 0;
+}
+
+.nutrition-tabs button {
+    background: rgba(13, 14, 20, 0.5);
+    border: 1px solid rgba(138, 43, 226, 0.12);
+    color: var(--color-text-secondary);
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.nutrition-tabs button.active {
+    background: linear-gradient(135deg, #8A2BE2, #9932CC);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(138, 43, 226, 0.15);
+}
+
+.tab-content {
+    background: linear-gradient(135deg, rgba(26, 28, 42, 0.65), rgba(44, 47, 72, 0.65));
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(138, 43, 226, 0.12);
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .nutrition-page {
+        padding: 0 1rem;
+    }
+
+    .nutrition-header-left h2 {
+        font-size: 1.4rem;
+    }
+
+    .nutrition-tabs {
+        gap: 0.3rem;
+    }
+
+    .nutrition-tabs button {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.85rem;
+    }
+}

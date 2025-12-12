@@ -1,0 +1,200 @@
+/* frontend/src/components/Dashboard.css */
+
+/* This is the main container that holds the particle effect and the content */
+.dashboard-container-with-particles {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* This targets the particle canvas and places it in the background */
+#constellation-particles,
+#constellation-particles>canvas {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 0 !important;
+    /* canvas sits above page background (body) but below content (z-10) */
+}
+
+/* This wrapper holds your content and ensures it's centered and on top of the particles */
+.dashboard-content-wrapper {
+    position: relative;
+    z-index: 2;
+    /* Sits on top of the particles */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    min-height: 80vh;
+    padding: var(--space-xl);
+}
+
+.dashboard-quote {
+    font-family: 'Megrim', cursive;
+    font-size: 3rem;
+    color: var(--color-primary-accent);
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.quote-line {
+    position: relative;
+    height: 1.2em;
+    text-align: left;
+    font-weight: 700;
+}
+
+/* Violet filled style for first and third lines */
+.quote-line.line-1,
+.quote-line.line-3 {
+    color: #8A2BE2;
+    -webkit-text-fill-color: #8A2BE2;
+    text-shadow: 0 0 8px rgba(138, 43, 226, 0.25), 0 0 18px rgba(138, 43, 226, 0.12);
+}
+
+.line-1 {
+    left: -320px;
+}
+
+.line-2 {
+    left: 150px;
+}
+
+.line-3 {
+    left: 300px;
+}
+
+.gateway-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+}
+
+.gateway-card {
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--space-xl);
+    text-decoration: none;
+    width: 100%;
+    max-width: 400px;
+    min-height: 150px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-speed) ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.gateway-card h3 {
+    font-family: 'Orbitron', sans-serif !important;
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-sm);
+    position: relative;
+}
+
+.gateway-card p {
+    font-family: 'Orbitron', sans-serif !important;
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.gateway-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary-accent);
+    box-shadow: 0 0 25px rgba(138, 43, 226, 0.5);
+}
+
+.gateway-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.4), transparent);
+    transform: skewX(-25deg);
+    transition: left 0.7s ease;
+}
+
+.gateway-card:hover::before {
+    left: 150%;
+}
+
+.gateway-card h3::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--color-primary-accent);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.5s ease;
+}
+
+.gateway-card:hover h3::after {
+    clip-path: inset(0 0 0 0);
+}
+
+/* Glass Wave Effect for Dashboard Cards */
+.dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.3), transparent);
+    transform: skewX(-25deg);
+    transition: left 0.7s ease;
+    z-index: 1;
+}
+
+.dashboard-card:hover::before {
+    left: 150%;
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+    .dashboard-content-wrapper {
+        justify-content: center;
+        padding: var(--space-md);
+        min-height: 100vh;
+    }
+
+    .dashboard-quote {
+        font-size: 2rem;
+        /* Smaller font for mobile */
+        width: 100%;
+        align-items: center;
+        /* Center everything on mobile */
+    }
+
+    /* Reset absolute positioning offsets so text doesn't fly off screen */
+    .line-1,
+    .line-2,
+    .line-3 {
+        left: 0 !important;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .quote-line {
+        font-size: 1.8rem !important;
+        /* Ensure it fits */
+        text-align: center !important;
+    }
+}

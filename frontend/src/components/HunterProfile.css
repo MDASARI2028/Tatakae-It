@@ -1,0 +1,61 @@
+/* frontend/src/components/HunterProfile.css */
+.hunter-profile-widget {
+    display: grid;
+    grid-template-areas: "icon username"
+        "logout logout";
+    /* The logout button spans both columns */
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0 var(--space-md);
+    /* No row gap initially */
+    background-color: var(--color-surface-primary);
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    transition: all var(--transition-speed) ease;
+    width: fit-content;
+    position: relative;
+    z-index: 1000;
+}
+
+.profile-icon {
+    grid-area: icon;
+    font-size: 1.5rem;
+    color: var(--color-text-secondary);
+}
+
+.profile-username {
+    grid-area: username;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.profile-logout-button {
+    grid-area: logout;
+    background-color: var(--color-primary-accent);
+    color: var(--color-text-primary);
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    border-radius: var(--border-radius);
+
+    /* --- HIDE THE BUTTON INITIALLY --- */
+    opacity: 0;
+    max-height: 0;
+    padding: 0 var(--space-md);
+    margin-top: 0;
+
+    transition: all 0.3s ease-in-out;
+}
+
+/* --- REVEAL THE BUTTON ON HOVER --- */
+.hunter-profile-widget:hover .profile-logout-button {
+    opacity: 1;
+    max-height: 50px;
+    /* Animate height */
+    padding: var(--space-sm) var(--space-md);
+    /* Animate padding */
+    margin-top: var(--space-sm);
+    /* Add space when revealed */
+}

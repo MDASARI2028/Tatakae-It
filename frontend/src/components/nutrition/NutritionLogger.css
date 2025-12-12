@@ -1,0 +1,562 @@
+.epic-logger {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.search-container {
+    position: relative;
+    z-index: 100;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    background-color: #111520;
+    border: 1px solid #3a3f5a;
+    color: #c7d2e7;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #764be0;
+    box-shadow: 0 0 15px rgba(118, 75, 224, 0.3);
+}
+
+.search-results {
+    position: absolute;
+    width: 100%;
+    background: #171c28;
+    border: 1px solid #3a3f5a;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.search-results li {
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #3a3f5a;
+}
+
+.log-form {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.items-list-container {
+    min-height: 150px;
+}
+
+.food-item-row.epic.editable {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr 1fr 1fr 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+    background: rgba(58, 63, 90, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid #764be0;
+}
+
+.item-input {
+    background-color: rgba(17, 21, 32, 0.8);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #c7d2e7;
+    padding: 0.5rem;
+    width: 100%;
+    text-align: right;
+    transition: border-color 0.2s;
+}
+
+.item-input:focus {
+    outline: none;
+    border-color: #764be0;
+}
+
+.item-input.food-name {
+    text-align: left;
+    font-weight: bold;
+}
+
+.remove-item-btn.epic {
+    background: #58181f;
+    color: #ff8e8e;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.form-actions-epic {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #3a3f5a;
+}
+
+.add-custom-btn {
+    background: none;
+    border: 1px solid #3a3f5a;
+    color: #8892b0;
+    padding: 0.8rem 1.5rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-custom-btn:hover {
+    border-color: #764be0;
+    color: #fff;
+}
+
+.submit-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.meal-type-select {
+    padding: 0.8rem;
+    background: #111520;
+    border: 1px solid #3a3f5a;
+    color: #c7d2e7;
+    border-radius: 4px;
+}
+
+.submit-meal-btn-epic {
+    background-color: #764be0;
+    padding: 0.8rem 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.spinner {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #764be0;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
+
+/* ------------------ New modern logger styles ------------------ */
+.nutrition-logger-shell {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.2rem;
+    align-items: start;
+}
+
+.logger-left {
+    background: linear-gradient(180deg, rgba(20, 22, 36, 0.6), rgba(12, 14, 26, 0.6));
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid rgba(138, 43, 226, 0.08);
+    box-shadow: 0 8px 28px rgba(6, 8, 20, 0.6);
+}
+
+.logger-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.title {
+    display: flex;
+    gap: 0.9rem;
+    align-items: center;
+}
+
+.food-ico {
+    font-size: 1.6rem;
+    color: #fff;
+    background: linear-gradient(135deg, #8A2BE2, #9932CC);
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.title h3 {
+    margin: 0;
+    color: var(--color-text-primary);
+}
+
+.title .hint {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.mini-controls {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center
+}
+
+.date-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem
+}
+
+.date-label {
+    color: var(--color-text-secondary);
+    font-size: 0.92rem
+}
+
+.icon-btn {
+    background: transparent;
+    border: 1px solid rgba(138, 43, 226, 0.08);
+    padding: 6px;
+    border-radius: 8px;
+    color: var(--color-primary-accent);
+    cursor: pointer
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 0.8rem
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(138, 43, 226, 0.06);
+    background: rgba(10, 12, 20, 0.5);
+    color: var(--color-text-primary);
+    font-size: 0.98rem
+}
+
+.search-input:focus {
+    box-shadow: 0 6px 18px rgba(138, 43, 226, 0.06);
+    outline: none
+}
+
+.spinner.small {
+    width: 16px;
+    height: 16px;
+    right: 12px
+}
+
+.search-results {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(14, 16, 26, 0.96), rgba(18, 20, 30, 0.96));
+    border-radius: 8px;
+    border: 1px solid rgba(138, 43, 226, 0.06);
+    padding: 6px;
+    max-height: 260px;
+    overflow: auto;
+    z-index: 50
+}
+
+.search-results li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    align-items: center;
+    transition: background 0.12s
+}
+
+.search-results li:hover {
+    background: rgba(138, 43, 226, 0.06)
+}
+
+.sr-left .sr-title {
+    font-weight: 700;
+    color: var(--color-text-primary)
+}
+
+.sr-sub {
+    font-size: 0.82rem;
+    color: var(--color-text-secondary)
+}
+
+.sr-right {
+    color: var(--color-text-secondary);
+    font-weight: 600
+}
+
+.log-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem
+}
+
+.items-list-container {
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem
+}
+
+.food-item-card {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(138, 43, 226, 0.04)
+}
+
+.food-item-card .left-col {
+    flex: 1
+}
+
+.food-item-card .right-col {
+    width: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end
+}
+
+.food-item-card .item-input {
+    background: transparent;
+    border: 1px solid rgba(80, 85, 120, 0.08);
+    color: var(--color-text-primary);
+    padding: 8px;
+    border-radius: 8px
+}
+
+.food-item-card .item-input.tiny {
+    width: 85px
+}
+
+.food-item-card .food-name {
+    font-weight: 700
+}
+
+.meta-row,
+.macro-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 6px
+}
+
+.remove-item-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 100, 100, 0.9);
+    font-size: 1rem;
+    cursor: pointer
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px
+}
+
+.add-custom-btn {
+    background: linear-gradient(90deg, #6f4be8, #9b3bd6);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+.add-custom-btn svg {
+    font-size: 0.95rem
+}
+
+.submit-block {
+    display: flex;
+    gap: 1rem;
+    align-items: center
+}
+
+.totals {
+    display: flex;
+    gap: 0.75rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem
+}
+
+.totals strong {
+    color: var(--color-text-primary);
+    display: inline-block;
+    min-width: 40px;
+    text-align: right
+}
+
+.submit-meal-btn {
+    background: linear-gradient(90deg, #8A2BE2, #9932CC);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer
+}
+
+.logger-preview {
+    min-width: 300px
+}
+
+.preview-card {
+    background: linear-gradient(180deg, rgba(12, 14, 20, 0.6), rgba(18, 20, 30, 0.6));
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid rgba(138, 43, 226, 0.06)
+}
+
+.preview-card h4 {
+    margin: 0 0 8px 0;
+    color: var(--color-text-primary)
+}
+
+.preview-list {
+    max-height: 340px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px
+}
+
+.preview-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.01)
+}
+
+.preview-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px
+}
+
+.preview-footer .ghost {
+    background: transparent;
+    border: 1px solid rgba(138, 43, 226, 0.06);
+    color: var(--color-text-secondary);
+    padding: 6px 10px;
+    border-radius: 8px
+}
+
+@media (max-width: 980px) {
+    .nutrition-logger-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .logger-preview {
+        order: 2
+    }
+}
+
+/* Modal styles for custom item */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 6, 12, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+
+.custom-modal {
+    width: 680px;
+    max-width: 95%;
+    background: linear-gradient(180deg, rgba(18, 20, 30, 0.96), rgba(12, 14, 20, 0.96));
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(138, 43, 226, 0.06);
+    box-shadow: 0 18px 60px rgba(6, 8, 20, 0.7);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.custom-modal h4 {
+    margin: 0;
+    color: var(--color-text-primary)
+}
+
+.modal-row {
+    display: flex;
+    gap: 10px
+}
+
+.modal-row input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(100, 100, 140, 0.06);
+    background: transparent;
+    color: var(--color-text-primary)
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 4px
+}
+
+.btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer
+}
+
+.btn.ghost {
+    background: transparent;
+    border: 1px solid rgba(138, 43, 226, 0.06);
+    color: var(--color-text-secondary)
+}
+
+.btn.primary {
+    background: linear-gradient(90deg, #8A2BE2, #9932CC);
+    color: #fff
+}

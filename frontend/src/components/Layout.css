@@ -1,0 +1,71 @@
+/* frontend/src/components/Layout.css */
+
+/* Ensure page background is black so particles show naturally */
+body {
+    background-color: #000;
+}
+
+.app-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; 
+    align-items: center;
+    padding: 1rem 0; /* Use a consistent unit */
+    margin-bottom: 2rem; /* ✅ Reduced from 60px to a more standard gap */
+    height: 60px;
+}
+.app-container {
+    padding: 0 var(--space-xl); /* <-- ADD THIS LINE */
+}
+.app-header > :last-child {
+    justify-self: end;
+}
+
+/* The title container is now a grid item, no longer needs absolute positioning */
+.title-container {
+    text-align: center;
+}
+
+.app-title-link h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 3.5rem;
+    margin: 0;
+    transition: color 0.25s ease;
+}
+
+/* New app title style used by `Layout.js` for both English and Japanese */
+.app-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-decoration: none !important; /* ensure underline removed */
+    background: linear-gradient(90deg, #e0e0e0 0%, #8A2BE2 25%, #e0e0e0 50%, #8A2BE2 75%, #e0e0e0 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: violetWave 4s linear infinite;
+}
+
+@keyframes wave-effect {
+    0% { background-position: -200px 0; }
+    100% { background-position: 200px 0; }
+}
+@keyframes violetWave {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+@media (max-width: 768px) {
+    .app-header {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        gap: var(--space-md);
+    }
+    .title-container {
+        position: static;
+        transform: none;
+    }
+}
+.app-title-link:visited h1 {
+    background-image: linear-gradient(90deg, var(--color-text-primary), var(--color-text-primary));
+}

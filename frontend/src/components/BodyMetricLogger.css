@@ -1,0 +1,208 @@
+/* frontend/src/components/BodyMetricLogger.css */
+
+.metric-logger-enhanced {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, rgba(26, 28, 42, 0.7), rgba(44, 47, 72, 0.7));
+    border-radius: 12px;
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+/* --- ALERTS --- */
+.alert {
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-weight: 500;
+}
+
+.alert-error {
+    background: linear-gradient(135deg, rgba(229, 62, 62, 0.15), rgba(229, 62, 62, 0.08));
+    border: 1px solid rgba(229, 62, 62, 0.4);
+    color: #ff6b6b;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(51, 217, 178, 0.15), rgba(51, 217, 178, 0.08));
+    border: 1px solid rgba(51, 217, 178, 0.4);
+    color: #2ecc71;
+}
+
+/* --- HEADER --- */
+.metric-header {
+    margin-bottom: 2rem;
+}
+
+.metric-header h3 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.metric-header p {
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+/* --- DATE SELECTOR --- */
+.date-selector {
+    margin-bottom: 2rem;
+}
+
+.date-selector label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    color: var(--color-text-primary);
+}
+
+/* --- FORM --- */
+.metric-logger-form-enhanced {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-input-metric {
+    width: 100%;
+    background: rgba(13, 14, 20, 0.7);
+    color: var(--color-text-primary);
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    border-radius: 8px;
+    padding: 0.9rem 1.2rem;
+    font-family: var(--font-family-body);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-input-metric:focus {
+    outline: none;
+    border-color: #8A2BE2;
+    background: rgba(13, 14, 20, 0.9);
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.3), inset 0 0 15px rgba(138, 43, 226, 0.05);
+}
+
+/* --- METRICS GRID --- */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+}
+
+.metric-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    position: relative;
+}
+
+.metric-input-wrapper label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    font-size: 0.95rem;
+}
+
+.metric-icon {
+    font-size: 1.2rem;
+    color: #8A2BE2;
+}
+
+.required {
+    color: #ff6b6b;
+    font-weight: 700;
+}
+
+.input-underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #8A2BE2, #9932CC);
+    transform-origin: left;
+    pointer-events: none;
+}
+
+/* --- SUMMARY --- */
+.metric-summary {
+    background: rgba(138, 43, 226, 0.08);
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.metric-summary h4 {
+    margin-top: 0;
+    color: #8A2BE2;
+    font-size: 1rem;
+}
+
+.summary-values {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item span {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.summary-item strong {
+    color: var(--color-text-primary);
+    font-size: 1rem;
+}
+
+/* --- SUBMIT BUTTON --- */
+.btn-save-metrics {
+    padding: 1.1rem 1.5rem;
+    background: linear-gradient(135deg, #8A2BE2, #9932CC);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: var(--font-family-heading);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+}
+
+.btn-save-metrics:hover {
+    background: linear-gradient(135deg, #9932CC, #BA55D3);
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
+}
+
+.btn-save-metrics:active {
+    transform: scale(0.98);
+}
+
+/* --- LEGACY STYLES --- */
+.metric-logger-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-unit);
+    align-items: end;
+}

@@ -1,0 +1,8 @@
+/* frontend/src/components/Card.css */
+.card {
+  background-color: var(--color-surface-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: calc(var(--spacing-unit) * 3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}

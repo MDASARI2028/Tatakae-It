@@ -1,0 +1,247 @@
+/* frontend/src/pages/FitnessPage.css - Nutrition Page Style */
+
+/* ===== PAGE LAYOUT ===== */
+.fitness-page {
+    padding: 2rem 1.5rem;
+    color: var(--color-text-primary);
+}
+
+/* ===== HEADER ===== */
+.fitness-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 0;
+    margin-bottom: 1.5rem;
+}
+
+.fitness-header-left h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--color-text-primary);
+    font-weight: 700;
+}
+
+.fitness-header-left .sub {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+}
+
+.fitness-header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.date-display {
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(153, 50, 204, 0.12));
+    border: 1px solid rgba(138, 43, 226, 0.25);
+    color: var(--color-primary-accent);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ===== TABS NAVIGATION ===== */
+.fitness-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1.5rem 0 1.8rem 0;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.fitness-tab-btn {
+    background: rgba(13, 14, 20, 0.5);
+    border: 1px solid rgba(138, 43, 226, 0.12);
+    color: var(--color-text-secondary);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.fitness-tab-btn:hover {
+    border-color: rgba(138, 43, 226, 0.3);
+    background: rgba(13, 14, 20, 0.7);
+}
+
+.fitness-tab-btn.active {
+    background: linear-gradient(135deg, #8A2BE2, #9932CC);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(138, 43, 226, 0.15);
+    border-color: rgba(138, 43, 226, 0.5);
+}
+
+.tab-icon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+/* ===== TAB CONTENT ===== */
+.fitness-tab-content {
+    background: linear-gradient(135deg, rgba(26, 28, 42, 0.65), rgba(44, 47, 72, 0.65));
+    padding: 1.8rem;
+    border-radius: 12px;
+    border: 1px solid rgba(138, 43, 226, 0.12);
+    backdrop-filter: blur(8px);
+}
+
+/* ===== CARDS GRID ===== */
+.fitness-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.fitness-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.fitness-card {
+    background: linear-gradient(135deg, rgba(30, 27, 75, 0.4), rgba(55, 48, 90, 0.3));
+    border: 1px solid rgba(138, 43, 226, 0.15);
+    border-radius: 12px;
+    padding: 1.6rem;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.fitness-card:hover {
+    border-color: rgba(138, 43, 226, 0.3);
+    background: linear-gradient(135deg, rgba(30, 27, 75, 0.6), rgba(55, 48, 90, 0.5));
+    box-shadow: 0 12px 40px rgba(138, 43, 226, 0.1);
+    transform: translateY(-4px);
+}
+
+.fitness-card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 1rem;
+    box-shadow: 0 8px 16px rgba(138, 43, 226, 0.2);
+}
+
+.fitness-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 0.6rem 0;
+    color: var(--color-text-primary);
+}
+
+.fitness-card p {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    margin: 0 0 1rem 0;
+    flex-grow: 1;
+    line-height: 1.5;
+}
+
+.fitness-card-cta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--color-primary-accent);
+    transition: gap 0.3s ease;
+}
+
+.fitness-card:hover .fitness-card-cta {
+    gap: 0.75rem;
+}
+
+.arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.fitness-card:hover .arrow {
+    transform: translateX(4px);
+}
+
+/* ===== TAB PLACEHOLDERS ===== */
+.fitness-tab-placeholder {
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.fitness-tab-placeholder h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0 0 0.8rem 0;
+    color: var(--color-text-primary);
+}
+
+.fitness-tab-placeholder p {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    margin: 0 0 1.5rem 0;
+}
+
+.fitness-cta-button {
+    display: inline-block;
+    background: linear-gradient(135deg, #8A2BE2, #9932CC);
+    color: #fff;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(138, 43, 226, 0.15);
+}
+
+.fitness-cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(138, 43, 226, 0.25);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .fitness-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .fitness-header-right {
+        width: 100%;
+    }
+
+    .date-display {
+        width: 100%;
+        text-align: center;
+    }
+
+    .fitness-tabs {
+        gap: 0.4rem;
+    }
+
+    .fitness-tab-btn {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .fitness-cards-grid {
+        grid-template-columns: 1fr;
+    }
+}

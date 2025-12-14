@@ -3,7 +3,7 @@
 import React from 'react';
 
 const BodyMetricHistory = ({ metrics }) => {
-    const formatDate = (dateString) => new Date(dateString).toLocaleDate-String();
+    const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
 
     return (
         <div className="metric-history">

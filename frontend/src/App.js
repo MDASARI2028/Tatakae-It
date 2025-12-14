@@ -5,6 +5,7 @@ import { WorkoutProvider } from './context/WorkoutContext';
 import { TemplateProvider } from './context/TemplateContext';
 import { NutritionProvider } from './context/NutritionContext';
 import { RecipeProvider } from './context/RecipeContext';
+import { LevelUpProvider } from './context/LevelUpContext';
 
 // --- Routing Configuration ---
 import routes from './routes.config';
@@ -92,17 +93,19 @@ function App() {
     return (
         <Router>
             <AuthProvider>
-                <WorkoutProvider>
-                    <TemplateProvider>
-                        <NutritionProvider>
-                            <RecipeProvider>
-                                <div className="site-wrapper">
-                                    <AppRoutes />
-                                </div>
-                            </RecipeProvider>
-                        </NutritionProvider>
-                    </TemplateProvider>
-                </WorkoutProvider>
+                <LevelUpProvider>
+                    <WorkoutProvider>
+                        <TemplateProvider>
+                            <NutritionProvider>
+                                <RecipeProvider>
+                                    <div className="site-wrapper">
+                                        <AppRoutes />
+                                    </div>
+                                </RecipeProvider>
+                            </NutritionProvider>
+                        </TemplateProvider>
+                    </WorkoutProvider>
+                </LevelUpProvider>
             </AuthProvider>
         </Router>
     );

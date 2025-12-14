@@ -12,8 +12,10 @@ import './NutritionProgress.css';
 // GoalSetter sub-component
 const GoalSetter = () => {
     const { user, updateGoals } = useContext(AuthContext);
+    const { setNutritionGoals } = useNutrition(); // Get setNutritionGoals from NutritionContext
     const [goals, setGoals] = useState({ calorieGoal: 2200, proteinGoal: 150, carbGoal: 250, fatGoal: 70 });
     const [status, setStatus] = useState('');
+    const [isLoading, setIsLoading] = useState(false); // Add loading state
 
     useEffect(() => {
         if (user && user.nutritionGoals) {
@@ -25,11 +27,24 @@ const GoalSetter = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true); // Set loading to true
         const result = await updateGoals(goals);
-        setStatus(result.success ? 'Goals updated!' : result.error);
+        if (result.success) {
+            // Update context with new goals
+            setNutritionGoals({
+                calories: parseInt(goals.calorieGoal),
+                protein: parseInt(goals.proteinGoal),
+                fat: parseInt(goals.fatGoal),
+                carbs: parseInt(goals.carbGoal)
+            });
+            setStatus('Goals updated!');
+        } else {
+            setStatus(result.error);
+        }
+        setIsLoading(false); // Set loading to false
         setTimeout(() => setStatus(''), 3000);
     };
-    
+
     return (
         <motion.form onSubmit={onSubmit} className="goal-setter-form" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
             <div className="goal-inputs-grid">
@@ -99,7 +114,7 @@ const NutritionProgress = () => {
                 </div>
                 <GoalSetter />
             </motion.section>
-            
+
             <motion.section className="progress-section" initial={{ y: 12 }} animate={{ y: 0 }}>
                 <div className="section-header">
                     <div className="section-title-group">
@@ -122,29 +137,29 @@ const NutritionProgress = () => {
                         </div>
 
                         <motion.div className="chart-container" initial={{ scale: 0.98 }} animate={{ scale: 1 }}>
-                            <h4><FaFire/> Calorie Trend</h4>
+                            <h4><FaFire /> Calorie Trend</h4>
                             <CalorieTrendChart data={progressData} goal={user.nutritionGoals.calorieGoal} />
                         </motion.div>
-                        
+
                         <motion.div className="chart-container" initial={{ scale: 0.98 }} animate={{ scale: 1 }}>
                             <h4>Macro Breakdown</h4>
                             <MacroPieChart data={stats} />
                         </motion.div>
-                        
+
                         <motion.div className="chart-container full-width" initial={{ scale: 0.98 }} animate={{ scale: 1 }}>
                             <div className="consistency-header">
                                 <h4>Logging Consistency</h4>
                                 <motion.button onClick={resetStreak} whileHover={{ scale: 1.05 }} className="reset-streak-btn">Reset Streak</motion.button>
                             </div>
-                            <MonarchsRoad 
-                                data={progressData} 
-                                user={user} 
+                            <MonarchsRoad
+                                data={progressData}
+                                user={user}
                                 goal={user.nutritionGoals.calorieGoal}
                             />
                         </motion.div>
                     </div>
                 )}
-                 {!loading && (!progressData || progressData.length === 0) && <p className="no-data-msg">No data to analyze. Start logging meals to see your progress!</p>}
+                {!loading && (!progressData || progressData.length === 0) && <p className="no-data-msg">No data to analyze. Start logging meals to see your progress!</p>}
             </motion.section>
         </motion.div>
     );

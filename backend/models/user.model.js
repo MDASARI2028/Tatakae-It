@@ -29,6 +29,36 @@ const userSchema = new mongoose.Schema({
     streakStartDate: {
         type: Date,
         default: Date.now // Defaults to when the user signs up
+    },
+    levelUpMode: {
+        enabled: { type: Boolean, default: false },
+        xp: { type: Number, default: 0 },
+        rank: {
+            type: String,
+            enum: ['E', 'D', 'C', 'B', 'A', 'S', 'National', 'Monarch'],
+            default: 'E'
+        },
+        seasonStartDate: { type: Date }, // When user activated Level Up Mode
+        lastXpUpdate: { type: Date },
+        streaks: {
+            fitness: {
+                current: { type: Number, default: 0 },
+                longest: { type: Number, default: 0 },
+                lastLog: { type: Date }
+            },
+            nutrition: {
+                current: { type: Number, default: 0 },
+                longest: { type: Number, default: 0 },
+                lastLog: { type: Date }
+            }
+        },
+        legacyAchievements: [{
+            season: { type: Number }, // Season number
+            year: { type: Number },
+            finalRank: { type: String },
+            finalXP: { type: Number },
+            completedAt: { type: Date }
+        }]
     }
 }, { timestamps: true });
 

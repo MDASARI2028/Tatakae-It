@@ -49,12 +49,12 @@
     font-weight: 700;
 }
 
-/* Violet filled style for first and third lines */
+/* White filled style for first and third lines to match "YOU" */
 .quote-line.line-1,
 .quote-line.line-3 {
-    color: #8A2BE2;
-    -webkit-text-fill-color: #8A2BE2;
-    text-shadow: 0 0 8px rgba(138, 43, 226, 0.25), 0 0 18px rgba(138, 43, 226, 0.12);
+    color: #FFFFFF;
+    -webkit-text-fill-color: #FFFFFF;
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.8), 0 0 20px rgba(168, 85, 247, 0.4);
 }
 
 .line-1 {

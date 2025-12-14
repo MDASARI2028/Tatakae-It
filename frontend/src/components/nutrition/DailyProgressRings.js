@@ -6,10 +6,10 @@ import './DailyProgressRings.css';
 // Configuration for all five rings
 const RING_CONFIG = {
     calories: { goal: 2200, color: '#ff007a' },
-    protein:  { goal: 150,  color: '#adff2f' },
-    fat:      { goal: 70,   color: '#ff9f40' },
-    carbs:    { goal: 250,  color: '#00bfff' },
-    water:    { goal: 3000, color: '#8884d8' },
+    protein: { goal: 150, color: '#adff2f' },
+    fat: { goal: 70, color: '#ff9f40' },
+    carbs: { goal: 250, color: '#00bfff' },
+    water: { goal: 3000, color: '#8884d8' },
 };
 
 const OVER_LIMIT_COLOR = '#ff3b30';
@@ -27,7 +27,7 @@ const getDynamicFontSize = (calories) => {
 const getAngle = (value, goal) => (goal > 0 ? (Math.min(value, goal) / goal) * 360 : 0);
 
 const DailyProgressRings = () => {
-    const { nutritionLogs, hydrationLogs } = useNutrition();
+    const { nutritionLogs, hydrationLogs, nutritionGoals, hydrationGoal } = useNutrition();
 
     const dailyTotals = useMemo(() => {
         const totals = { calories: 0, protein: 0, fat: 0, carbs: 0, water: 0 };
@@ -51,10 +51,10 @@ const DailyProgressRings = () => {
         return totals;
     }, [nutritionLogs, hydrationLogs]);
 
-    const isOverLimit = dailyTotals.calories > RING_CONFIG.calories.goal;
+    const isOverLimit = dailyTotals.calories > nutritionGoals.calories;
     const calorieColor = isOverLimit ? OVER_LIMIT_COLOR : RING_CONFIG.calories.color;
     const calorieStatusClass = isOverLimit ? 'over-limit' : '';
-    
+
     const roundedCalories = Math.round(dailyTotals.calories);
     const calorieFontSize = getDynamicFontSize(roundedCalories);
 
@@ -62,12 +62,12 @@ const DailyProgressRings = () => {
         <div className="rings-container-final">
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                    <Pie data={[{value: 1}]} dataKey="value" cx="50%" cy="50%" innerRadius="45%" outerRadius="100%" fill="rgba(58, 63, 90, 0.5)" startAngle={90} endAngle={-270} isAnimationActive={false}/>
-                    <Pie data={[{value: 1}]} dataKey="value" cx="50%" cy="50%" innerRadius="90%" outerRadius="100%" startAngle={90} endAngle={90 - getAngle(dailyTotals.calories, RING_CONFIG.calories.goal)} stroke="none" cornerRadius="50%"><Cell fill={calorieColor} /></Pie>
-                    <Pie data={[{value: 1}]} dataKey="value" cx="50%" cy="50%" innerRadius="80%" outerRadius="90%" startAngle={90} endAngle={90 - getAngle(dailyTotals.protein, RING_CONFIG.protein.goal)} stroke="none" cornerRadius="50%"><Cell fill={RING_CONFIG.protein.color} /></Pie>
-                    <Pie data={[{value: 1}]} dataKey="value" cx="50%" cy="50%" innerRadius="70%" outerRadius="80%" startAngle={90} endAngle={90 - getAngle(dailyTotals.fat, RING_CONFIG.fat.goal)} stroke="none" cornerRadius="50%"><Cell fill={RING_CONFIG.fat.color} /></Pie>
-                    <Pie data={[{value: 1}]} dataKey="value" cx="50%" cy="50%" innerRadius="60%" outerRadius="70%" startAngle={90} endAngle={90 - getAngle(dailyTotals.carbs, RING_CONFIG.carbs.goal)} stroke="none" cornerRadius="50%"><Cell fill={RING_CONFIG.carbs.color} /></Pie>
-                    <Pie data={[{value: 1}]} dataKey="value" cx="50%" cy="50%" innerRadius="50%" outerRadius="60%" startAngle={90} endAngle={90 - getAngle(dailyTotals.water, RING_CONFIG.water.goal)} stroke="none" cornerRadius="50%"><Cell fill={RING_CONFIG.water.color} /></Pie>
+                    <Pie data={[{ value: 1 }]} dataKey="value" cx="50%" cy="50%" innerRadius="45%" outerRadius="100%" fill="rgba(58, 63, 90, 0.5)" startAngle={90} endAngle={-270} isAnimationActive={false} stroke="none" />
+                    <Pie data={[{ value: 1 }]} dataKey="value" cx="50%" cy="50%" innerRadius="90%" outerRadius="100%" startAngle={90} endAngle={90 - getAngle(dailyTotals.calories, nutritionGoals.calories)} stroke="none" cornerRadius="50%"><Cell fill={calorieColor} /></Pie>
+                    <Pie data={[{ value: 1 }]} dataKey="value" cx="50%" cy="50%" innerRadius="80%" outerRadius="90%" startAngle={90} endAngle={90 - getAngle(dailyTotals.protein, nutritionGoals.protein)} stroke="none" cornerRadius="50%"><Cell fill={RING_CONFIG.protein.color} /></Pie>
+                    <Pie data={[{ value: 1 }]} dataKey="value" cx="50%" cy="50%" innerRadius="70%" outerRadius="80%" startAngle={90} endAngle={90 - getAngle(dailyTotals.fat, nutritionGoals.fat)} stroke="none" cornerRadius="50%"><Cell fill={RING_CONFIG.fat.color} /></Pie>
+                    <Pie data={[{ value: 1 }]} dataKey="value" cx="50%" cy="50%" innerRadius="60%" outerRadius="70%" startAngle={90} endAngle={90 - getAngle(dailyTotals.carbs, nutritionGoals.carbs)} stroke="none" cornerRadius="50%"><Cell fill={RING_CONFIG.carbs.color} /></Pie>
+                    <Pie data={[{ value: 1 }]} dataKey="value" cx="50%" cy="50%" innerRadius="50%" outerRadius="60%" startAngle={90} endAngle={90 - getAngle(dailyTotals.water, hydrationGoal)} stroke="none" cornerRadius="50%"><Cell fill={RING_CONFIG.water.color} /></Pie>
                 </PieChart>
             </ResponsiveContainer>
             <div className={`rings-center-text-final ${calorieStatusClass}`}>

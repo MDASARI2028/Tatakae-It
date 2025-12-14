@@ -46,8 +46,17 @@ const HistoryPage = () => {
         fetchMetrics();
     }, [token]);
 
+    // Helper function to normalize date to YYYY-MM-DD format
+    const normalizeDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     const displayedMetrics = filterDate
-        ? metrics.filter(m => new Date(m.date).toISOString().slice(0, 10) === filterDate)
+        ? metrics.filter(m => normalizeDate(m.date) === filterDate)
         : metrics.slice(0, 1);
 
     return (

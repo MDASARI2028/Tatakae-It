@@ -1,0 +1,158 @@
+/* frontend/src/components/levelup/RankBadge.css */
+
+.rank-badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(17, 21, 32, 0.95) 0%, rgba(30, 35, 50, 0.95) 100%);
+    border: 2px solid var(--rank-color);
+    box-shadow: 0 0 20px var(--rank-glow),
+        0 4px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.rank-badge-small {
+    padding: 6px 12px;
+    min-width: 80px;
+}
+
+.rank-badge-medium {
+    padding: 12px 20px;
+    min-width: 140px;
+}
+
+.rank-badge-large {
+    padding: 20px 30px;
+    min-width: 200px;
+}
+
+.rank-badge:hover {
+    box-shadow: 0 0 30px var(--rank-glow),
+        0 6px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+.rank-badge-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    z-index: 2;
+}
+
+.rank-emoji {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 8px var(--rank-glow));
+}
+
+.rank-image {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px var(--rank-glow));
+}
+
+.rank-badge-large .rank-image {
+    width: 48px;
+    height: 48px;
+}
+
+.rank-badge-large .rank-emoji {
+    font-size: 2.5rem;
+}
+
+.rank-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--rank-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px var(--rank-glow);
+}
+
+.rank-badge-large .rank-name {
+    font-size: 1.3rem;
+}
+
+.rank-title {
+    font-size: 0.75rem;
+    color: rgba(240, 242, 245, 0.7);
+    font-style: italic;
+}
+
+/* Monarch special effects */
+.monarch-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.monarch-particles .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--rank-color);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--rank-color);
+}
+
+.monarch-particles .particle:nth-child(1) {
+    left: 10%;
+    top: 20%;
+}
+
+.monarch-particles .particle:nth-child(2) {
+    left: 30%;
+    top: 40%;
+}
+
+.monarch-particles .particle:nth-child(3) {
+    left: 50%;
+    top: 10%;
+}
+
+.monarch-particles .particle:nth-child(4) {
+    left: 70%;
+    top: 30%;
+}
+
+.monarch-particles .particle:nth-child(5) {
+    left: 90%;
+    top: 50%;
+}
+
+.monarch-particles .particle:nth-child(6) {
+    left: 20%;
+    top: 70%;
+}
+
+.monarch-particles .particle:nth-child(7) {
+    left: 60%;
+    top: 80%;
+}
+
+.monarch-particles .particle:nth-child(8) {
+    left: 80%;
+    top: 60%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rank-badge-medium {
+        padding: 10px 16px;
+        min-width: 120px;
+    }
+
+    .rank-badge-large {
+        padding: 16px 24px;
+        min-width: 180px;
+    }
+}

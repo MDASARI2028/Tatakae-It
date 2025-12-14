@@ -13,6 +13,12 @@ const initialState = {
     hydrationLogs: [],
     hydrationGoal: 3000,
     progressData: null,
+    nutritionGoals: {
+        calories: 2200,
+        protein: 150,
+        fat: 70,
+        carbs: 250
+    }
 };
 
 // 2. The Reducer Function (No changes here)
@@ -64,6 +70,8 @@ const nutritionReducer = (state, action) => {
             };
         case 'GET_PROGRESS_SUCCESS':
             return { ...state, progressData: action.payload, loading: false };
+        case 'SET_NUTRITION_GOALS':
+            return { ...state, nutritionGoals: action.payload };
         default:
             return state;
     }
@@ -193,6 +201,11 @@ export const NutritionProvider = ({ children }) => {
             dispatch({ type: 'NUTRITION_ERROR', payload: err.response?.data?.msg || 'Failed to update meal.' });
         }
     };
+
+    const setNutritionGoals = (goals) => {
+        dispatch({ type: 'SET_NUTRITION_GOALS', payload: goals });
+    };
+
     return (
         <NutritionContext.Provider
             value={{
@@ -206,7 +219,8 @@ export const NutritionProvider = ({ children }) => {
                 addHydration,
                 setHydrationGoal,
                 deleteHydration,
-                updateMeal
+                updateMeal,
+                setNutritionGoals
             }}
         >
             {children}

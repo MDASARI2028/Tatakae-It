@@ -14,7 +14,7 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
         bodyFatPercentage: '',
         waist: '',
     };
-    
+
     const [metrics, setMetrics] = useState(initialState);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -50,7 +50,7 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
 
             setSuccess('Metrics logged successfully!');
             setMetrics(initialState);
-            onMetricLogged();
+            onMetricLogged?.(); // Optional chaining - only calls if function exists
             setTimeout(() => setSuccess(''), 3000);
 
         } catch (err) {
@@ -79,14 +79,14 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
     ];
 
     return (
-        <motion.div 
+        <motion.div
             className="metric-logger-enhanced"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
         >
             {error && (
-                <motion.div 
+                <motion.div
                     className="alert alert-error"
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -95,7 +95,7 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
                 </motion.div>
             )}
             {success && (
-                <motion.div 
+                <motion.div
                     className="alert alert-success"
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -112,24 +112,24 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
             <form onSubmit={handleSubmit} className="metric-logger-form-enhanced">
                 <motion.div className="date-selector" variants={itemVariants}>
                     <label>Date</label>
-                    <input 
-                        type="date" 
-                        name="date" 
-                        className="form-input-metric" 
-                        value={metrics.date} 
-                        onChange={handleChange} 
-                        required 
+                    <input
+                        type="date"
+                        name="date"
+                        className="form-input-metric"
+                        value={metrics.date}
+                        onChange={handleChange}
+                        required
                     />
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                     className="metrics-grid"
                     variants={containerVariants}
                 >
                     {metricFields.map((field, idx) => {
                         const Icon = field.icon;
                         return (
-                            <motion.div 
+                            <motion.div
                                 key={field.name}
                                 className="metric-input-wrapper"
                                 variants={itemVariants}
@@ -140,18 +140,18 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
                                     {field.label}
                                     {field.required && <span className="required">*</span>}
                                 </label>
-                                <input 
+                                <input
                                     id={field.name}
-                                    type="number" 
-                                    name={field.name} 
-                                    className="form-input-metric" 
+                                    type="number"
+                                    name={field.name}
+                                    className="form-input-metric"
                                     placeholder={field.label}
-                                    value={metrics[field.name]} 
+                                    value={metrics[field.name]}
                                     onChange={handleChange}
                                     required={field.required}
                                     step="0.1"
                                 />
-                                <motion.div 
+                                <motion.div
                                     className="input-underline"
                                     initial={{ scaleX: 0 }}
                                     whileFocus={{ scaleX: 1 }}
@@ -161,7 +161,7 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
                     })}
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                     className="metric-summary"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -187,8 +187,8 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
                     </div>
                 </motion.div>
 
-                <motion.button 
-                    type="submit" 
+                <motion.button
+                    type="submit"
                     className="btn-save-metrics"
                     whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(138, 43, 226, 0.5)" }}
                     whileTap={{ scale: 0.95 }}

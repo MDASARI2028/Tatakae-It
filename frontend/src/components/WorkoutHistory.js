@@ -11,12 +11,22 @@ const WorkoutHistory = ({ filterDate, onEdit, showToast }) => {
     const { workouts, loading, deleteWorkout } = useContext(WorkoutContext);
     const { saveAsTemplate } = useContext(TemplateContext);
 
-    // Get today's date in YYYY-MM-DD format
-    const today = new Date().toISOString().slice(0, 10);
+    // Get today's date in YYYY-MM-DD format (local timezone)
+    const today = new Date().toISOString().split('T')[0];
+
+    // Helper function to normalize date to YYYY-MM-DD format
+    const normalizeDate = (dateString) => {
+        const date = new Date(dateString);
+        // Get the date in local timezone format YYYY-MM-DD
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     const displayedWorkouts = filterDate
-        ? workouts.filter(w => new Date(w.date).toISOString().slice(0, 10) === filterDate)
-        : workouts.filter(w => new Date(w.date).toISOString().slice(0, 10) === today); // Show today's workouts by default
+        ? workouts.filter(w => normalizeDate(w.date) === filterDate)
+        : workouts.filter(w => normalizeDate(w.date) === today); // Show today's workouts by default
 
     const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-US', {
         weekday: 'short',

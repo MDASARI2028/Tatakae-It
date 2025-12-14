@@ -1,6 +1,6 @@
 // frontend/src/pages/ProgressPage.js
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { AuthContext } from '../context/AuthContext';
@@ -17,6 +17,7 @@ const ProgressPage = () => {
     const [templates, setTemplates] = useState([]);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [exerciseCharts, setExerciseCharts] = useState([]);
+    const [bodyMetrics, setBodyMetrics] = useState([]);
 
     useEffect(() => {
         const fetchTemplates = async () => {
@@ -28,6 +29,22 @@ const ProgressPage = () => {
             }
         };
         fetchTemplates();
+    }, [token]);
+
+    useEffect(() => {
+        const fetchMetrics = async () => {
+            if (!token) return;
+            try {
+                const response = await fetch('/api/metrics', { headers: { 'x-auth-token': token } });
+                if (response.ok) {
+                    const data = await response.json();
+                    setBodyMetrics(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch metrics:', error);
+            }
+        };
+        fetchMetrics();
     }, [token]);
 
     useEffect(() => {
@@ -104,7 +121,86 @@ const ProgressPage = () => {
         };
     };
 
-    const metrics = getProgressMetrics();
+    const workoutMetrics = useMemo(() => getProgressMetrics(), [workouts, selectedTemplate]);
+
+    // Helper function to create body metric chart data
+    const getBodyMetricCharts = () => {
+        if (bodyMetrics.length === 0) return [];
+
+        const sortedMetrics = [...bodyMetrics].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        const charts = [];
+
+        // Weight Chart
+        const weightData = {
+            labels: sortedMetrics.map(m => new Date(m.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+            datasets: [{
+                label: 'Weight (kg)',
+                data: sortedMetrics.map(m => m.weight),
+                borderColor: '#8A2BE2',
+                backgroundColor: 'rgba(138, 43, 226, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 3,
+                pointRadius: 5,
+                pointBackgroundColor: '#8A2BE2',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointHoverRadius: 7
+            }]
+        };
+        charts.push({ name: 'Weight', data: weightData, unit: 'kg' });
+
+        // Body Fat % Chart
+        const bodyFatMetrics = sortedMetrics.filter(m => m.bodyFatPercentage);
+        if (bodyFatMetrics.length > 0) {
+            const bodyFatData = {
+                labels: bodyFatMetrics.map(m => new Date(m.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                datasets: [{
+                    label: 'Body Fat %',
+                    data: bodyFatMetrics.map(m => m.bodyFatPercentage),
+                    borderColor: '#9932CC',
+                    backgroundColor: 'rgba(153, 50, 204, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#9932CC',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 7
+                }]
+            };
+            charts.push({ name: 'Body Fat', data: bodyFatData, unit: '%' });
+        }
+
+        // Waist Chart
+        const waistMetrics = sortedMetrics.filter(m => m.waist);
+        if (waistMetrics.length > 0) {
+            const waistData = {
+                labels: waistMetrics.map(m => new Date(m.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                datasets: [{
+                    label: 'Waist (cm)',
+                    data: waistMetrics.map(m => m.waist),
+                    borderColor: '#BA55D3',
+                    backgroundColor: 'rgba(186, 85, 211, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#BA55D3',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 7
+                }]
+            };
+            charts.push({ name: 'Waist', data: waistData, unit: 'cm' });
+        }
+
+        return charts;
+    };
+
+    const bodyMetricCharts = useMemo(() => getBodyMetricCharts(), [bodyMetrics]);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -120,7 +216,7 @@ const ProgressPage = () => {
     };
 
     return (
-        <motion.div 
+        <motion.div
             className="progress-page-enhanced"
             variants={containerVariants}
             initial="hidden"
@@ -137,10 +233,10 @@ const ProgressPage = () => {
                     <FaBullseye className="filter-icon" />
                     <label htmlFor="progress-template-select">Select Template</label>
                 </div>
-                <select 
-                    id="progress-template-select" 
-                    className="form-select-enhanced" 
-                    onChange={handleTemplateChange} 
+                <select
+                    id="progress-template-select"
+                    className="form-select-enhanced"
+                    onChange={handleTemplateChange}
                     defaultValue=""
                 >
                     <option value="" disabled>📋 Choose a template...</option>
@@ -153,7 +249,7 @@ const ProgressPage = () => {
             {selectedTemplate && (
                 <>
                     {/* --- METRICS CARDS --- */}
-                    <motion.div 
+                    <motion.div
                         className="metrics-cards-grid"
                         variants={containerVariants}
                     >
@@ -163,7 +259,7 @@ const ProgressPage = () => {
                             </div>
                             <div className="metric-content">
                                 <span className="metric-label">Total Workouts</span>
-                                <span className="metric-value">{metrics.totalWorkouts}</span>
+                                <span className="metric-value">{workoutMetrics.totalWorkouts}</span>
                             </div>
                         </motion.div>
 
@@ -173,7 +269,7 @@ const ProgressPage = () => {
                             </div>
                             <div className="metric-content">
                                 <span className="metric-label">Average Weight</span>
-                                <span className="metric-value">{metrics.avgWeight} kg</span>
+                                <span className="metric-value">{workoutMetrics.avgWeight} kg</span>
                             </div>
                         </motion.div>
 
@@ -183,20 +279,20 @@ const ProgressPage = () => {
                             </div>
                             <div className="metric-content">
                                 <span className="metric-label">Max Weight</span>
-                                <span className="metric-value">{metrics.maxWeight} kg</span>
+                                <span className="metric-value">{workoutMetrics.maxWeight} kg</span>
                             </div>
                         </motion.div>
                     </motion.div>
 
                     {/* --- CHARTS GRID --- */}
-                    <motion.div 
+                    <motion.div
                         className="charts-grid-enhanced"
                         variants={containerVariants}
                     >
                         {exerciseCharts.length > 0 ? (
                             exerciseCharts.map((chart, idx) => (
-                                <motion.div 
-                                    key={chart.name} 
+                                <motion.div
+                                    key={chart.name}
                                     className="chart-card-enhanced"
                                     variants={itemVariants}
                                     whileHover={{ y: -8 }}
@@ -207,7 +303,7 @@ const ProgressPage = () => {
                                     </div>
                                     {chart.data.labels.length > 1 ? (
                                         <div className="chart-container">
-                                            <Line 
+                                            <Line
                                                 data={chart.data}
                                                 options={{
                                                     responsive: true,
@@ -247,7 +343,7 @@ const ProgressPage = () => {
                                 </motion.div>
                             ))
                         ) : (
-                            <motion.div 
+                            <motion.div
                                 className="empty-state"
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -262,8 +358,81 @@ const ProgressPage = () => {
                 </>
             )}
 
+            {/* --- BODY METRICS PROGRESS SECTION --- */}
+            {bodyMetricCharts.length > 0 && (
+                <>
+                    <motion.div
+                        className="page-title"
+                        variants={itemVariants}
+                        style={{ marginTop: '3rem' }}
+                    >
+                        <h2>Body Metrics Progress</h2>
+                        <p>Track your physical transformation over time</p>
+                    </motion.div>
+
+                    <motion.div
+                        className="charts-grid-enhanced"
+                        variants={containerVariants}
+                    >
+                        {bodyMetricCharts.map((chart, idx) => (
+                            <motion.div
+                                key={chart.name}
+                                className="chart-card-enhanced"
+                                variants={itemVariants}
+                                whileHover={{ y: -8 }}
+                            >
+                                <div className="chart-header">
+                                    <h3>{chart.name}</h3>
+                                    <div className="chart-badge">{chart.unit}</div>
+                                </div>
+                                {chart.data.labels.length > 0 ? (
+                                    <div className="chart-container">
+                                        <Line
+                                            data={chart.data}
+                                            options={{
+                                                responsive: true,
+                                                maintainAspectRatio: true,
+                                                plugins: {
+                                                    legend: { display: false },
+                                                    tooltip: {
+                                                        backgroundColor: 'rgba(138, 43, 226, 0.8)',
+                                                        padding: 12,
+                                                        borderRadius: 8,
+                                                        titleFont: { size: 12, weight: 'bold' },
+                                                        bodyFont: { size: 11 },
+                                                        callbacks: {
+                                                            label: (context) => ` ${context.parsed.y.toFixed(1)} ${chart.unit}`
+                                                        }
+                                                    }
+                                                },
+                                                scales: {
+                                                    y: {
+                                                        beginAtZero: false,
+                                                        grid: { color: 'rgba(138, 43, 226, 0.1)' },
+                                                        ticks: { color: 'rgba(240, 242, 245, 0.7)' }
+                                                    },
+                                                    x: {
+                                                        grid: { display: false },
+                                                        ticks: { color: 'rgba(240, 242, 245, 0.7)' }
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="no-data">
+                                        <p>📊 Log more metrics to see your progression</p>
+                                    </div>
+                                )}
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </>
+            )}
+
+
             {!selectedTemplate && (
-                <motion.div 
+                <motion.div
                     className="empty-state-large"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

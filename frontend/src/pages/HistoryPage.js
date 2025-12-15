@@ -6,6 +6,7 @@ import BodyMetricHistory from '../components/BodyMetricHistory';
 import EditWorkoutModal from '../components/EditWorkoutModal';
 import { ToastContainer } from '../components/Toast';
 import useToast from '../hooks/useToast';
+import BackButton from '../components/common/BackButton';
 import './HistoryPage.css';
 
 const HistoryPage = () => {
@@ -63,7 +64,8 @@ const HistoryPage = () => {
         <div>
             <ToastContainer toasts={toasts} removeToast={removeToast} />
 
-            <div className="filter-controls">
+            <div className="history-page-header" style={{ marginBottom: '1rem' }}>
+                <BackButton />
                 <label htmlFor="date-filter">Filter by Date:</label>
                 <input
                     type="date"

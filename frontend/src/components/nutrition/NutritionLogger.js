@@ -81,7 +81,14 @@ const NutritionLogger = ({ selectedDate }) => {
             alert('Please add at least one food item.');
             return;
         }
-        const formattedDate = selectedDate.toISOString().split('T')[0];
+        // Use local date components (not UTC) to match the XP calculation
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+        const day = String(selectedDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+
+        console.log('[NutritionLogger] Logging meal for date:', formattedDate);
+
         const mealData = {
             date: formattedDate,
             mealType,

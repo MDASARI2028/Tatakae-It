@@ -26,7 +26,9 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* --- EMPTY STATE --- */
@@ -116,6 +118,34 @@
     white-space: nowrap;
 }
 
+/* Workout Overall Overload Badge */
+.workout-overload-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.workout-overload-badge.improved {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(46, 125, 50, 0.3));
+    border: 1px solid rgba(76, 175, 80, 0.5);
+    color: #4CAF50;
+}
+
+.workout-overload-badge.declined {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(198, 40, 40, 0.3));
+    border: 1px solid rgba(244, 67, 54, 0.5);
+    color: #f44336;
+}
+
+.workout-overload-badge svg {
+    font-size: 0.75rem;
+}
+
 /* --- NOTES --- */
 .workout-notes {
     color: var(--color-text-secondary);
@@ -170,6 +200,34 @@
     color: #8A2BE2;
     font-size: 0.85rem;
     font-weight: 500;
+}
+
+/* Progressive Overload Indicator */
+.progressive-overload {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.progressive-overload.improved {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+.progressive-overload.declined {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.4);
+}
+
+.progressive-overload svg {
+    font-size: 0.7rem;
 }
 
 /* --- WORKOUT ACTIONS --- */
@@ -233,83 +291,86 @@
 
 /* --- LEGACY STYLES --- */
 .workout-list {
-  list-style-type: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-unit);
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-unit);
 }
 
 .workout-item {
-  background-color: var(--color-surface-secondary);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-unit) calc(var(--spacing-unit) * 2);
-  border-left: 3px solid var(--color-mana-blue);
+    background-color: var(--color-surface-secondary);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-unit) calc(var(--spacing-unit) * 2);
+    border-left: 3px solid var(--color-mana-blue);
 }
 
 .workout-item h3 {
-  font-size: 1.1rem;
-  margin-bottom: var(--spacing-unit);
-  color: var(--color-text-primary);
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-unit);
+    color: var(--color-text-primary);
 }
 
 .workout-item p {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-unit);
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-unit);
 }
 
 .exercise-details ul {
-  list-style-type: none;
-  padding-left: var(--spacing-unit);
-  border-left: 2px solid var(--color-border);
+    list-style-type: none;
+    padding-left: var(--spacing-unit);
+    border-left: 2px solid var(--color-border);
 }
 
 .workout-actions {
-  display: flex;
-  gap: var(--spacing-unit);
-  margin-top: calc(var(--spacing-unit) * 2);
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--spacing-unit);
+    display: flex;
+    gap: var(--spacing-unit);
+    margin-top: calc(var(--spacing-unit) * 2);
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--spacing-unit);
 }
 
 .action-button {
-  font-family: var(--font-family-body);
-  font-weight: 500;
-  font-size: 0.8rem;
-  padding: calc(var(--spacing-unit) * 0.5) var(--spacing-unit);
-  border-radius: var(--border-radius);
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all var(--transition-speed) ease;
+    font-family: var(--font-family-body);
+    font-weight: 500;
+    font-size: 0.8rem;
+    padding: calc(var(--spacing-unit) * 0.5) var(--spacing-unit);
+    border-radius: var(--border-radius);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
 }
 
 .edit-button {
-  background-color: transparent;
-  border-color: var(--color-mana-blue);
-  color: var(--color-mana-blue);
+    background-color: transparent;
+    border-color: var(--color-mana-blue);
+    color: var(--color-mana-blue);
 }
+
 .edit-button:hover {
-  background-color: var(--color-mana-blue);
-  color: var(--color-background);
+    background-color: var(--color-mana-blue);
+    color: var(--color-background);
 }
 
 .delete-button {
-  background-color: transparent;
-  border-color: var(--color-error);
-  color: var(--color-error);
+    background-color: transparent;
+    border-color: var(--color-error);
+    color: var(--color-error);
 }
+
 .delete-button:hover {
-  background-color: var(--color-error);
-  color: var(--color-text-primary);
+    background-color: var(--color-error);
+    color: var(--color-text-primary);
 }
 
 .template-button {
-  background-color: transparent;
-  border-color: var(--color-gold-accent);
-  color: var(--color-gold-accent);
+    background-color: transparent;
+    border-color: var(--color-gold-accent);
+    color: var(--color-gold-accent);
 }
+
 .template-button:hover {
-  background-color: var(--color-gold-accent);
-  color: var(--color-background);
+    background-color: var(--color-gold-accent);
+    color: var(--color-background);
 }

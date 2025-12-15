@@ -3,18 +3,50 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth.middleware');
 const User = require('../models/user.model');
-const Workout = require('../models/workout.model');
-const Nutrition = require('../models/nutrition.model');
-const Hydration = require('../models/hydration.model');
-const BodyMetrics = require('../models/bodyMetric.model');
+const { Workout } = require('../models/workout.model');
+// NOTE: XP System is FITNESS ONLY - nutrition/hydration/body metrics XP removed
+const XPHistory = require('../models/XPHistory.model');
 const {
     calculateRank,
     getNextRankXP,
     calculateFitnessXP,
-    calculateNutritionXP,
     calculateStreakBonus,
     checkSeasonReset
 } = require('../utils/levelUpHelpers');
+
+// Helper: Log XP Change (with idempotency check)
+const logXPChange = async (userId, amount, reason, category = 'OTHER') => {
+    try {
+        if (amount === 0) return;
+
+        // Idempotency check: Don't log duplicate entries for same day/reason
+        // Use LOCAL timezone for date calculations
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+
+        const existingEntry = await XPHistory.findOne({
+            user: userId,
+            reason: reason,
+            date: { $gte: today, $lt: tomorrow }
+        });
+
+        if (existingEntry) {
+            console.log(`[XP Log] Skipping duplicate entry for "${reason}" today`);
+            return;
+        }
+
+        await XPHistory.create({
+            user: userId,
+            amount: amount,
+            type: amount > 0 ? 'GAIN' : 'LOSS',
+            reason: reason,
+            category: category
+        });
+    } catch (err) {
+        console.error('Error logging XP change:', err);
+    }
+};
 
 /**
  * @route   POST /api/levelup/toggle
@@ -107,6 +139,8 @@ router.get('/stats', auth, async (req, res) => {
  * @access  Private
  */
 router.post('/calculate-daily', auth, async (req, res) => {
+    console.log('=== /calculate-daily endpoint HIT ===');
+    console.log('User ID:', req.user.id);
     try {
         const user = await User.findById(req.user.id);
 
@@ -114,19 +148,36 @@ router.post('/calculate-daily', auth, async (req, res) => {
             return res.status(400).json({ msg: 'Level Up Mode not enabled' });
         }
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
+        // --- TIMEZONE-AWARE DATE HANDLING ---
+        // Get current time and extract LOCAL date components
+        const now = new Date();
+        const localYear = now.getFullYear();
+        const localMonth = String(now.getMonth() + 1).padStart(2, '0');
+        const localDay = String(now.getDate()).padStart(2, '0');
+        const todayDateString = `${localYear}-${localMonth}-${localDay}`;
+
+        // Create date range for Date-based model queries (starts at local midnight)
+        const today = new Date(localYear, now.getMonth(), now.getDate(), 0, 0, 0, 0);
+        const tomorrow = new Date(localYear, now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+
+        console.log(`[XP Calc] Local date string: ${todayDateString}`);
+        console.log(`[XP Calc] Date range: ${today.toISOString()} to ${tomorrow.toISOString()}`);
 
         let totalXP = 0;
         const breakdown = {};
 
         // 1. Check for workouts today
+        console.log(`[XP Calc] Checking workouts for date: ${todayDateString}`);
+
         const todayWorkouts = await Workout.find({
             user: req.user.id,
             date: { $gte: today, $lt: tomorrow }
         }).sort({ date: -1 });
+
+        console.log(`[XP Calc] Found ${todayWorkouts.length} workouts.`);
+        if (todayWorkouts.length > 0) {
+            console.log(`[XP Calc] Latest workout date: ${todayWorkouts[0].date}`);
+        }
 
         if (todayWorkouts.length > 0) {
             // Get previous workouts for comparison (last 14 days)
@@ -153,76 +204,101 @@ router.post('/calculate-daily', auth, async (req, res) => {
             calculateStreakBonus(user, 'fitness', false);
         }
 
-        // 2. Check for nutrition logs today
-        const todayNutrition = await Nutrition.find({
-            user: req.user.id,
-            date: { $gte: today, $lt: tomorrow }
-        });
+        // NOTE: XP System simplified to FITNESS ONLY
+        // Nutrition, hydration, and body metrics XP have been removed
+        console.log(`[XP Calc] XP System: Fitness Only Mode. Total XP: ${totalXP}`);
 
-        if (todayNutrition.length > 0) {
-            // Calculate daily totals
-            const dailyTotals = {
-                calories: 0,
-                protein: 0,
-                carbs: 0,
-                fat: 0,
-                water: 0
-            };
+        // --- Idempotent XP Awarding Logic ---
+        // IMPORTANT: Declare these variables BEFORE using them
+        const lastCalcDate = user.levelUpMode.lastDailyCalculationDate ? new Date(user.levelUpMode.lastDailyCalculationDate) : null;
+        const isNewDay = !lastCalcDate || lastCalcDate.toDateString() !== today.toDateString();
 
-            todayNutrition.forEach(log => {
-                log.items.forEach(item => {
-                    dailyTotals.calories += item.calories || 0;
-                    dailyTotals.protein += item.protein || 0;
-                    dailyTotals.carbs += item.carbohydrates || 0;
-                    dailyTotals.fat += item.fat || 0;
-                });
-            });
+        // 5. XP Penalties for Missed Logging (Streak Breaking)
+        // Check if there was a gap between lastCalcDate and yesterday
+        if (isNewDay && lastCalcDate) {
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
 
-            // Add hydration
-            const todayHydration = await Hydration.find({
-                user: req.user.id,
-                date: { $gte: today, $lt: tomorrow }
-            });
+            // If last calc was before yesterday, we missed some days
+            if (lastCalcDate < yesterday) {
+                // Calculate days missed (excluding rest days)
+                const restDays = user.levelUpMode.restDays || [];
+                let missedDays = 0;
 
-            dailyTotals.water = todayHydration.reduce((sum, log) => sum + (log.amount || 0), 0);
+                // Check each day between lastCalcDate and yesterday
+                const checkDate = new Date(lastCalcDate);
+                checkDate.setDate(checkDate.getDate() + 1);
 
-            // Calculate nutrition XP
-            const nutritionResult = calculateNutritionXP(dailyTotals, user.nutritionGoals);
-            totalXP += nutritionResult.totalXP;
-            breakdown.nutrition = nutritionResult;
+                while (checkDate < today) {
+                    const checkDateString = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
 
-            // Calculate nutrition streak bonus
-            const nutritionStreakBonus = calculateStreakBonus(user, 'nutrition', true);
-            if (nutritionStreakBonus > 0) {
-                totalXP += nutritionStreakBonus;
-                breakdown.nutritionStreakBonus = nutritionStreakBonus;
+                    // Only count as missed if NOT a rest day
+                    if (!restDays.includes(checkDateString)) {
+                        missedDays++;
+                    }
+
+                    checkDate.setDate(checkDate.getDate() + 1);
+                }
+
+                if (missedDays > 0) {
+                    // Penalty per missed day (e.g. -50 XP)
+                    const penaltyPerDay = 50;
+                    const totalPenalty = missedDays * penaltyPerDay;
+
+                    const penaltyReason = `Missed logging for ${missedDays} day(s)`;
+
+                    totalXP -= totalPenalty;
+                    breakdown.penalty = -totalPenalty;
+
+                    // Log the penalty IMMEDIATELY as it's a separate event from today's potential gains
+                    await logXPChange(req.user.id, -totalPenalty, penaltyReason, 'PENALTY');
+
+                    user.levelUpMode.xp -= totalPenalty;
+                    // Ensure XP doesn't go below 0
+                    if (user.levelUpMode.xp < 0) user.levelUpMode.xp = 0;
+
+                    console.log(`[XP Calc] Penalized ${missedDays} missed days (rest days excluded)`);
+                }
             }
+        }
+
+        if (isNewDay) {
+            console.log('[XP Calc] New day detected. Resetting dailyXPEarned.');
+            user.levelUpMode.dailyXPEarned = 0;
+        }
+
+        const currentlyEarnedToday = user.levelUpMode.dailyXPEarned || 0;
+
+        console.log(`[XP Calc] Total Calculated for Today: ${totalXP}`);
+        console.log(`[XP Calc] Already Earned Today: ${currentlyEarnedToday}`);
+
+        // Calculate the difference (Delta)
+        // If totalXP (freshly calculated) is 500, and currentlyEarned is 200, we add 300.
+        let xpToAdd = totalXP - currentlyEarnedToday;
+
+        // Safety: Ensure we don't subtract XP if for some reason totalXP < currentlyEarned
+        // (This prevents losing XP if a user deletes a workout/log)
+        if (xpToAdd < 0) {
+            console.log('[XP Calc] xpToAdd is negative (log deleted?), checking simple safety.');
+            xpToAdd = 0;
+        }
+
+        if (xpToAdd > 0) {
+            console.log(`[XP Calc] Awarding ${xpToAdd} XP.`);
+            user.levelUpMode.xp += xpToAdd;
+            user.levelUpMode.dailyXPEarned = totalXP; // Update tracker to match current total
+            user.levelUpMode.lastXpUpdate = new Date();
+
+            // LOG THE GAIN (Fitness only mode)
+            await logXPChange(req.user.id, xpToAdd, 'Fitness Activities', 'FITNESS');
         } else {
-            // No meals logged - break streak
-            calculateStreakBonus(user, 'nutrition', false);
+            console.log('[XP Calc] No new XP to award.');
         }
 
-        // 3. Check for body metrics today
-        const todayMetrics = await BodyMetrics.findOne({
-            user: req.user.id,
-            date: { $gte: today, $lt: tomorrow }
-        });
+        // Always update the calculation date to today
+        user.levelUpMode.lastDailyCalculationDate = today;
 
-        if (todayMetrics) {
-            totalXP += 25;
-            breakdown.bodyMetrics = 25;
-        }
-
-        // 4. Check for perfect day bonus
-        if (breakdown.nutrition && breakdown.nutrition.targetsMet === 5 &&
-            breakdown.fitness && breakdown.fitness.improvementRate === '100.0%') {
-            totalXP += 500;
-            breakdown.perfectDayBonus = 500;
-        }
-
-        // Award XP
-        user.levelUpMode.xp += totalXP;
-        user.levelUpMode.lastXpUpdate = new Date();
+        // -------------------------------------
 
         // Update rank based on new XP
         const newRank = calculateRank(user.levelUpMode.xp);
@@ -237,7 +313,8 @@ router.post('/calculate-daily', auth, async (req, res) => {
 
         res.json({
             success: true,
-            xpAwarded: totalXP,
+            xpAwarded: xpToAdd,  // Actual XP added this call
+            dailyTotal: totalXP, // Total XP calculated for today
             breakdown,
             newTotal: user.levelUpMode.xp,
             rank: user.levelUpMode.rank,
@@ -249,6 +326,23 @@ router.post('/calculate-daily', auth, async (req, res) => {
     } catch (err) {
         console.error('Calculate daily XP error:', err);
         res.status(500).json({ msg: 'Server error calculating daily XP' });
+    }
+});
+
+/**
+ * @route   GET /api/levelup/history
+ * @desc    Get XP History logs
+ * @access  Private
+ */
+router.get('/history', auth, async (req, res) => {
+    try {
+        const history = await XPHistory.find({ user: req.user.id })
+            .sort({ date: -1 })
+            .limit(50);
+        res.json(history);
+    } catch (err) {
+        console.error('Get XP history error:', err);
+        res.status(500).json({ msg: 'Server error fetching XP history' });
     }
 });
 
@@ -274,6 +368,8 @@ router.post('/award-xp', auth, async (req, res) => {
         const rankedUp = newRank !== oldRank;
         user.levelUpMode.rank = newRank;
 
+        await logXPChange(req.user.id, amount, reason, 'OTHER');
+
         await user.save();
 
         res.json({
@@ -288,6 +384,124 @@ router.post('/award-xp', auth, async (req, res) => {
     } catch (err) {
         console.error('Award XP error:', err);
         res.status(500).json({ msg: 'Server error awarding XP' });
+    }
+});
+
+/**
+ * @route   POST /api/levelup/reset-xp
+ * @desc    Reset XP for testing (DEV ONLY)
+ * @access  Private
+ */
+router.post('/reset-xp', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        // Reset XP and related fields
+        user.levelUpMode.xp = 0;
+        user.levelUpMode.rank = 'E';
+        user.levelUpMode.dailyXPEarned = 0;
+        user.levelUpMode.lastDailyCalculationDate = null;
+        user.levelUpMode.streaks.fitness.current = 0;
+        user.levelUpMode.streaks.nutrition.current = 0;
+
+        await user.save();
+
+        // Also clear XP History
+        await XPHistory.deleteMany({ user: req.user.id });
+
+        res.json({
+            success: true,
+            message: 'XP reset to 0',
+            levelUpMode: user.levelUpMode
+        });
+    } catch (err) {
+        console.error('Reset XP error:', err);
+        res.status(500).json({ msg: 'Server error resetting XP' });
+    }
+});
+
+/**
+ * @route   POST /api/levelup/log-rest-day
+ * @desc    Mark today as a rest day (no XP penalty, streak maintained)
+ * @access  Private
+ */
+router.post('/log-rest-day', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        if (!user.levelUpMode.enabled) {
+            return res.status(400).json({ msg: 'Level Up Mode not enabled' });
+        }
+
+        // Get today's date string in local timezone
+        const now = new Date();
+        const localYear = now.getFullYear();
+        const localMonth = String(now.getMonth() + 1).padStart(2, '0');
+        const localDay = String(now.getDate()).padStart(2, '0');
+        const todayDateString = `${localYear}-${localMonth}-${localDay}`;
+
+        // Initialize restDays if not exists
+        if (!user.levelUpMode.restDays) {
+            user.levelUpMode.restDays = [];
+        }
+
+        // Check if already logged as rest day
+        if (user.levelUpMode.restDays.includes(todayDateString)) {
+            return res.json({
+                success: true,
+                message: 'Today is already marked as a rest day',
+                date: todayDateString
+            });
+        }
+
+        // Add today to rest days
+        user.levelUpMode.restDays.push(todayDateString);
+
+        // Update lastDailyCalculationDate to prevent penalty on next calculation
+        user.levelUpMode.lastDailyCalculationDate = now;
+
+        // Keep only last 90 days of rest day records (cleanup)
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - 90);
+        user.levelUpMode.restDays = user.levelUpMode.restDays.filter(dateStr => {
+            const [year, month, day] = dateStr.split('-').map(Number);
+            const restDate = new Date(year, month - 1, day);
+            return restDate >= cutoffDate;
+        });
+
+        await user.save();
+
+        // Log as XP History entry (0 XP but tracked)
+        await logXPChange(req.user.id, 0, 'Rest Day (No Penalty)', 'REST_DAY');
+
+        res.json({
+            success: true,
+            message: 'Rest day logged! No XP penalty will be applied.',
+            date: todayDateString,
+            totalRestDays: user.levelUpMode.restDays.length
+        });
+    } catch (err) {
+        console.error('Log rest day error:', err);
+        res.status(500).json({ msg: 'Server error logging rest day' });
+    }
+});
+
+/**
+ * @route   GET /api/levelup/rest-days
+ * @desc    Get user's logged rest days
+ * @access  Private
+ */
+router.get('/rest-days', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        res.json({
+            success: true,
+            restDays: user.levelUpMode.restDays || []
+        });
+    } catch (err) {
+        console.error('Get rest days error:', err);
+        res.status(500).json({ msg: 'Server error fetching rest days' });
     }
 });
 

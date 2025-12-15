@@ -7,6 +7,9 @@ Your personal fitness and nutrition command center. Track workouts, log meals, m
 Built with a dark-themed UI that features glassmorphism effects, constellation particles, and smooth animations that make tracking your gains actually enjoyable.
 
 ---
+Try it out at:
+tatakai-it-web.onrender.com
+---
 
 ## What It Does
 
@@ -47,6 +50,51 @@ Because water matters. Track your daily intake and actually hit that gallon goal
 **Meal History**  
 Review and edit past meals. Perfect for when you realize you logged the wrong serving size.
 
+### Level Up Mode 🎮
+
+**XP & Ranking System**  
+Turn your fitness journey into a game. Earn XP for logging workouts and climb through the ranks:
+
+| Rank | XP Required |
+|------|-------------|
+| E (Beginner) | 0 |
+| D (Bronze) | 8,000 |
+| C (Silver) | 20,000 |
+| B (Gold) | 40,000 |
+| A (Emerald) | 60,000 |
+| S (Sapphire) | 85,000 |
+| National (Ruby) | 115,000 |
+| Monarch (Violet) | 150,000 |
+
+**XP Earning (Fitness Only)**
+- **Base XP**: +25 XP for logging any workout
+- **New Exercise PR**: +15 XP per new exercise
+- **Progressive Overload**: +10 XP per 10% volume improvement (max +25 per exercise)
+- **Volume Decline**: -5 XP per 20% volume drop (max -15 per exercise)
+
+**Streak Bonuses**
+- 7-day streak: +100 XP
+- 14-day streak: +300 XP  
+- 30-day streak: +750 XP
+
+**Missed Day Penalty**  
+Skip a day? Lose -50 XP per missed day. Consistency is key.
+
+**Rest Days**  
+Have a scheduled rest day? Click "😴 Log Rest Day" in the Level Up dropdown to:
+- Avoid the -50 XP penalty for that day
+- Keep your streak intact
+- Stay consistent with your training plan
+
+**Progressive Overload Tracking**  
+Every exercise shows a volume change indicator compared to your last performance:
+- 🟢 Green arrow = Volume improved
+- 🔴 Red arrow = Volume declined
+- Each workout displays an average progressive overload percentage
+
+**XP History**  
+View your complete XP history with categorized entries showing all gains and losses.
+
 ### The Usual Stuff
 
 JWT authentication keeps your data secure. Each user gets their own profile with customizable nutrition goals. Your workouts and meals stay private.
@@ -54,8 +102,6 @@ JWT authentication keeps your data secure. Each user gets their own profile with
 ---
 
 ## Tech Stack
-
-We're running modern tools here:
 
 - **Frontend**: React 19, TailwindCSS, Framer Motion, Chart.js
 - **Backend**: Node.js with Express 5
@@ -126,7 +172,7 @@ npm start
 
 ---
 
-## How to Use This Thing
+## How to Use This App
 
 ### First Time Setup
 
@@ -136,13 +182,13 @@ npm start
 
 ### Daily Workflow
 
-The dashboard gives you two main sections: **Fitness** and **Nutrition**.
+The dashboard gives you two main sections: **Fitness** and **Nutrition**, plus **Level Up Mode** in the top-right.
 
 **Fitness Side:**
 - Click into Fitness to access the workout logger
 - Log your exercises with sets, reps, and weight
 - Save common workouts as templates for faster logging
-- Check your history to see past sessions
+- Check your history to see past sessions with progressive overload indicators
 - View progress charts to track improvements
 - Log body measurements in the metrics section
 
@@ -154,12 +200,23 @@ The dashboard gives you two main sections: **Fitness** and **Nutrition**.
 - Track water intake throughout the day
 - Review meal history to see what you ate
 
+**Level Up Mode:**
+- Enable from the dashboard dropdown (top-right corner)
+- Each workout logged earns XP based on progressive overload
+- View your current rank and XP progress
+- Check XP History page for detailed breakdown
+- Reset XP if needed from the dropdown menu
+
 ### Pro Tips
 
 - Templates are clutch for saving time on repeated workouts
 - Recipes make meal logging way faster
 - Log consistently—the charts look way cooler with more data
 - Adjust your goals as needed, they're not set in stone
+- **Enable Level Up Mode** to gamify your fitness journey
+- **Focus on progressive overload** to maximize XP gains
+- Check your **workout history** to see green/red arrows for each exercise
+- Don't skip days—missing logging costs you 50 XP per day!
 
 ---
 

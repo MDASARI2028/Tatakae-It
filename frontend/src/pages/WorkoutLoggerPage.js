@@ -5,6 +5,7 @@ import WorkoutLogger from '../components/WorkoutLogger';
 import { WorkoutContext } from '../context/WorkoutContext';
 import { motion } from 'framer-motion';
 import { FaDumbbell, FaFire, FaCalendarAlt, FaTrophy } from 'react-icons/fa';
+import BackButton from '../components/common/BackButton';
 import './WorkoutLoggerPage.css';
 
 const WorkoutLoggerPage = () => {
@@ -37,6 +38,11 @@ const WorkoutLoggerPage = () => {
                 <div className="logger-split-layout">
                     {/* Left Side - Title and Stats */}
                     <div className="logger-left-panel">
+                        {/* Back Button */}
+                        <div style={{ marginBottom: '1rem' }}>
+                            <BackButton />
+                        </div>
+
                         {/* Hero Header */}
                         <motion.div
                             className="logger-hero-header"

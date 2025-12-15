@@ -48,7 +48,7 @@ router.post('/login', async (req, res) => {
         }
 
         const payload = { id: user.id, username: user.username };
-        
+
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '5h' });
 
         // ✅ THE FIX: Send the token AND the full user object
@@ -58,7 +58,8 @@ router.post('/login', async (req, res) => {
                 id: user._id,
                 username: user.username,
                 email: user.email,
-                nutritionGoals: user.nutritionGoals
+                nutritionGoals: user.nutritionGoals,
+                levelUpMode: user.levelUpMode
             }
         });
 
@@ -108,7 +109,7 @@ router.put('/reset-streak', auth, async (req, res) => {
 
         user.streakStartDate = new Date(); // Set to today
         await user.save();
-        
+
         // Return the updated user object to sync the frontend
         const updatedUser = await User.findById(req.user.id).select('-password');
         res.json(updatedUser);

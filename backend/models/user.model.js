@@ -40,6 +40,9 @@ const userSchema = new mongoose.Schema({
         },
         seasonStartDate: { type: Date }, // When user activated Level Up Mode
         lastXpUpdate: { type: Date },
+        dailyXPEarned: { type: Number, default: 0 }, // Tracks XP earned specifically today (reset daily)
+        lastDailyCalculationDate: { type: Date },    // Tracks the last date daily XP was calculated
+        restDays: [{ type: String }], // Array of date strings (YYYY-MM-DD) marked as rest days
         streaks: {
             fitness: {
                 current: { type: Number, default: 0 },

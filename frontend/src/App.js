@@ -25,6 +25,8 @@ const WorkoutLoggerPage = lazy(() => import('./pages/WorkoutLoggerPage'));
 const HistoryPage = lazy(() => import('./pages/HistoryPage'));
 const BodyMetricLoggerPage = lazy(() => import('./pages/BodyMetricLoggerPage'));
 const ProgressPage = lazy(() => import('./pages/ProgressPage'));
+const XPHistoryPage = lazy(() => import('./pages/XPHistoryPage'));
+const GuidePage = lazy(() => import('./pages/GuidePage'));
 
 // Component mapping for lazy loading
 const componentMap = {
@@ -35,7 +37,9 @@ const componentMap = {
     WorkoutLoggerPage,
     HistoryPage,
     BodyMetricLoggerPage,
-    ProgressPage
+    ProgressPage,
+    XPHistoryPage,
+    GuidePage
 };
 
 const AppRoutes = () => {

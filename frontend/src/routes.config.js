@@ -71,6 +71,18 @@ const routes = [
         component: 'NutritionPage',
         isProtected: true,
         title: 'Nutrition - Tatakai IT'
+    },
+    {
+        path: '/xp-history',
+        component: 'XPHistoryPage',
+        isProtected: true,
+        title: 'XP History - Tatakai IT'
+    },
+    {
+        path: '/guide',
+        component: 'GuidePage',
+        isProtected: true,
+        title: 'The System Guide - Tatakai IT'
     }
 ];
 

@@ -7,6 +7,7 @@ import { AuthContext } from '../context/AuthContext';
 import { WorkoutContext } from '../context/WorkoutContext';
 import { motion } from 'framer-motion';
 import { FaTrophy, FaFireAlt, FaChartLine, FaBullseye } from 'react-icons/fa';
+import BackButton from '../components/common/BackButton';
 import './ProgressPage.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
@@ -223,8 +224,11 @@ const ProgressPage = () => {
             animate="visible"
         >
             <motion.div className="page-title" variants={itemVariants}>
-                <h2>Performance Analytics</h2>
-                <p>Track your strength progression and celebrate your gains</p>
+                <BackButton />
+                <div style={{ marginTop: '0.5rem' }}>
+                    <h2>Performance Analytics</h2>
+                    <p>Track your strength progression and celebrate your gains</p>
+                </div>
             </motion.div>
 
             {/* --- TEMPLATE SELECTOR --- */}

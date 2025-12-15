@@ -21,6 +21,14 @@ const initialState = {
     }
 };
 
+// Helper to get local date string (YYYY-MM-DD) without UTC conversion
+const getLocalDateString = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
 // 2. The Reducer Function (No changes here)
 const nutritionReducer = (state, action) => {
     switch (action.type) {
@@ -100,7 +108,7 @@ export const NutritionProvider = ({ children }) => {
         try {
             dispatch({ type: 'SET_LOADING' });
             const config = { headers: { 'x-auth-token': token } };
-            const formattedDate = date.toISOString().split('T')[0];
+            const formattedDate = getLocalDateString(date);
             const res = await api.get(`/api/nutrition/date/${formattedDate}`, config);
             dispatch({ type: 'GET_MEALS_SUCCESS', payload: res.data });
         } catch (err) {
@@ -156,7 +164,7 @@ export const NutritionProvider = ({ children }) => {
         try {
             dispatch({ type: 'SET_LOADING' });
             const config = { headers: { 'x-auth-token': token } };
-            const formattedDate = date.toISOString().split('T')[0];
+            const formattedDate = getLocalDateString(date);
             const res = await api.get(`/api/hydration/date/${formattedDate}`, config);
             dispatch({ type: 'GET_HYDRATION_SUCCESS', payload: res.data });
         } catch (err) {

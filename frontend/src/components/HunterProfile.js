@@ -2,7 +2,7 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { FaUserCircle, FaSignOutAlt, FaChevronDown, FaHome, FaArrowLeft } from 'react-icons/fa';
+import { FaUserCircle, FaSignOutAlt, FaChevronDown, FaHome } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const HunterProfile = () => {
@@ -33,10 +33,7 @@ const HunterProfile = () => {
         setIsOpen(false);
     };
 
-    const handleBackClick = () => {
-        navigate(-1);
-        setIsOpen(false);
-    };
+
 
     return (
         <div className="relative" ref={dropdownRef}>
@@ -100,15 +97,6 @@ const HunterProfile = () => {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Go Back Button */}
-                        <motion.button
-                            whileHover={{ backgroundColor: 'rgba(147, 51, 234, 0.3)' }}
-                            onClick={handleBackClick}
-                            className="w-full px-4 py-3 bg-slate-800/50 hover:bg-slate-800/70 text-white font-semibold flex items-center justify-center gap-2 transition-all duration-300 border-b border-purple-500/20"
-                        >
-                            <FaArrowLeft className="text-lg" /> Go Back
-                        </motion.button>
 
                         {/* Dashboard Link */}
                         <motion.button

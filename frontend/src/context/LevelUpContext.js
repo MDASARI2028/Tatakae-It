@@ -1,10 +1,13 @@
 // frontend/src/context/LevelUpContext.js
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { AuthContext } from './AuthContext';
 import api from '../api/axios';
 
 const LevelUpContext = createContext();
+
+// Module-level flag to prevent duplicate API calls (persists across React Strict Mode remounts)
+let hasCalculatedThisSession = false;
 
 export const useLevelUp = () => {
     const context = useContext(LevelUpContext);
@@ -19,6 +22,8 @@ export const LevelUpProvider = ({ children }) => {
     const [levelUpData, setLevelUpData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [recentXpGain, setRecentXpGain] = useState(null);
+    const [hasCalculatedToday, setHasCalculatedToday] = useState(false);
+    const isCalculatingRef = useRef(false); // Additional guard for race conditions
 
     // Fetch Level Up stats
     const fetchLevelUpStats = useCallback(async () => {
@@ -78,29 +83,79 @@ export const LevelUpProvider = ({ children }) => {
     };
 
     // Calculate and award daily XP
-    const calculateDailyXP = async () => {
-        if (!token || !user?.levelUpMode?.enabled) return;
+    // Backend handles idempotency via dailyXPEarned tracking
+    const calculateDailyXP = useCallback(async () => {
+        console.log('[LevelUpContext] calculateDailyXP called');
+
+        // Multiple guards against duplicate calls (React Strict Mode, race conditions)
+        if (hasCalculatedThisSession || hasCalculatedToday || isCalculatingRef.current) {
+            console.log('[LevelUpContext] Already calculated or in progress, skipping');
+            return;
+        }
+
+        if (!token || !user?.levelUpMode?.enabled) {
+            console.log('[LevelUpContext] Returning early - conditions not met');
+            return;
+        }
+
+        try {
+            // Set all guards immediately
+            isCalculatingRef.current = true;
+            hasCalculatedThisSession = true;
+            setHasCalculatedToday(true);
+
+            console.log('[LevelUpContext] Making API call to /api/levelup/calculate-daily');
+            setLoading(true);
+
+            const config = { headers: { 'x-auth-token': token } };
+            const res = await api.post('/api/levelup/calculate-daily', {}, config);
+            console.log('[LevelUpContext] API response:', res.data);
+
+            if (res.data.success) {
+                // Show XP gain notification only if XP was actually awarded
+                if (res.data.xpAwarded > 0) {
+                    setRecentXpGain(res.data);
+                    setTimeout(() => setRecentXpGain(null), 5000);
+                }
+
+                // Refresh stats
+                await fetchLevelUpStats();
+            }
+
+            setLoading(false);
+            isCalculatingRef.current = false;
+            return res.data;
+        } catch (err) {
+            console.error('Failed to calculate daily XP:', err);
+            setLoading(false);
+            isCalculatingRef.current = false;
+            // Reset flags on error to allow retry
+            hasCalculatedThisSession = false;
+            setHasCalculatedToday(false);
+            throw err;
+        }
+    }, [token, user, fetchLevelUpStats, hasCalculatedToday]);
+
+    // Reset XP (for debugging/cleanup)
+    const resetXP = async () => {
+        if (!token) return;
 
         try {
             setLoading(true);
             const config = { headers: { 'x-auth-token': token } };
-            const res = await api.post('/api/levelup/calculate-daily', {}, config);
+            const res = await api.post('/api/levelup/reset-xp', {}, config);
+            console.log('[LevelUpContext] Reset XP response:', res.data);
 
             if (res.data.success) {
-                // Show XP gain notification
-                setRecentXpGain(res.data);
-
-                // Refresh stats
+                // Reset all guards to allow recalculation
+                hasCalculatedThisSession = false;
+                setHasCalculatedToday(false);
                 await fetchLevelUpStats();
-
-                // Clear notification after 5 seconds
-                setTimeout(() => setRecentXpGain(null), 5000);
             }
-
             setLoading(false);
             return res.data;
         } catch (err) {
-            console.error('Failed to calculate daily XP:', err);
+            console.error('Failed to reset XP:', err);
             setLoading(false);
             throw err;
         }
@@ -129,6 +184,24 @@ export const LevelUpProvider = ({ children }) => {
         }
     }, [user, fetchLevelUpStats]);
 
+    // Log a rest day (no XP earned, but no penalty either)
+    const logRestDay = async () => {
+        if (!token) return;
+
+        try {
+            setLoading(true);
+            const config = { headers: { 'x-auth-token': token } };
+            const res = await api.post('/api/levelup/log-rest-day', {}, config);
+            console.log('[LevelUpContext] Log rest day response:', res.data);
+            setLoading(false);
+            return res.data;
+        } catch (err) {
+            console.error('Failed to log rest day:', err);
+            setLoading(false);
+            throw err;
+        }
+    };
+
     const value = {
         levelUpData,
         loading,
@@ -137,7 +210,9 @@ export const LevelUpProvider = ({ children }) => {
         calculateDailyXP,
         fetchLevelUpStats,
         getRankInfo,
-        isEnabled: user?.levelUpMode?.enabled || false
+        resetXP,
+        logRestDay,
+        isEnabled: user && user.levelUpMode ? user.levelUpMode.enabled : false
     };
 
     return (

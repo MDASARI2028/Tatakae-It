@@ -9,13 +9,24 @@ import backgroundImage from '../assets/images/jinwoo.jpg';
 const AuthPage = () => {
     const [isLoginView, setIsLoginView] = useState(true);
     const [isJapanese, setIsJapanese] = useState(false);
+    const [bgLoaded, setBgLoaded] = useState(false);
+
+    // Preload background image
+    React.useEffect(() => {
+        const img = new Image();
+        img.src = backgroundImage;
+        img.onload = () => setBgLoaded(true);
+    }, []);
 
     const toggleTitle = () => {
         setIsJapanese(!isJapanese);
     };
 
     const pageStyle = {
-        backgroundImage: `linear-gradient(rgba(75, 60, 145, 0.5), rgba(45, 30, 95, 0.5)), url(${backgroundImage})`
+        backgroundImage: bgLoaded ? `linear-gradient(rgba(75, 60, 145, 0.5), rgba(45, 30, 95, 0.5)), url(${backgroundImage})` : 'none',
+        backgroundColor: '#1a1a2e', // Fallback/Placeholder color
+        opacity: bgLoaded ? 1 : 0, // Fade in the whole container or just the background
+        transition: 'opacity 0.5s ease-in-out'
     };
 
     return (

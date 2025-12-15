@@ -8,8 +8,18 @@ import './BodyMetricLogger.css';
 
 const BodyMetricLogger = ({ onMetricLogged }) => {
     const { token } = useContext(AuthContext);
+
+    // Helper to get local date string (YYYY-MM-DD) without UTC conversion
+    const getLocalDateString = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     const initialState = {
-        date: new Date().toISOString().split('T')[0],
+        date: getLocalDateString(),
         weight: '',
         bodyFatPercentage: '',
         waist: '',

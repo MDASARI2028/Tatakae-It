@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaDumbbell, FaHistory, FaRulerCombined, FaChartLine } from 'react-icons/fa';
+import BackButton from '../components/common/BackButton';
 import './FitnessPage.css';
 
 const FitnessPage = () => {
@@ -49,7 +50,7 @@ const FitnessPage = () => {
   ];
 
   const getTabContent = () => {
-    switch(activeTab) {
+    switch (activeTab) {
       case 'overview':
         return <OverviewTab cards={cards} />;
       case 'logger':
@@ -68,14 +69,17 @@ const FitnessPage = () => {
   return (
     <div className="fitness-page system-ui">
       {/* Header */}
-      <motion.header 
+      <motion.header
         className="fitness-header"
-        initial={{ opacity: 0, y: -8 }} 
+        initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
       >
         <div className="fitness-header-left">
-          <h2>Fitness Center</h2>
-          <p className="sub">Track workouts, metrics and progress</p>
+          <BackButton />
+          <div>
+            <h2>Fitness Center</h2>
+            <p className="sub">Track workouts, metrics and progress</p>
+          </div>
         </div>
         <div className="fitness-header-right">
           <div className="date-display">
@@ -114,7 +118,7 @@ const FitnessPage = () => {
 // Overview Tab - Grid of cards
 const OverviewTab = ({ cards }) => {
   return (
-    <motion.div 
+    <motion.div
       className="fitness-cards-grid"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

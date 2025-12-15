@@ -85,13 +85,17 @@ router.put('/:id', auth, async (req, res) => {
 router.get('/progress', auth, async (req, res) => {
     try {
         const period = parseInt(req.query.period) || 30; // Default to 30 days
-        
-        // ✅ NEW LOGIC: Generate an array of date strings for the period
+
+        // ✅ Generate date strings using LOCAL timezone (not UTC)
         const dateStrings = [];
         for (let i = 0; i < period; i++) {
             const d = new Date();
             d.setDate(d.getDate() - i);
-            dateStrings.push(d.toISOString().split('T')[0]);
+            // Use local date components instead of toISOString (which converts to UTC)
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            dateStrings.push(`${year}-${month}-${day}`);
         }
 
         const dailyData = await Nutrition.aggregate([

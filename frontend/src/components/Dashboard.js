@@ -2,14 +2,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaFire, FaAppleAlt, FaBolt, FaChevronDown, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+import { FaFire, FaAppleAlt, FaBolt, FaChevronDown, FaHistory, FaBed, FaRedo, FaQuestionCircle } from 'react-icons/fa';
 import ConstellationParticles from './dashboard/ConstellationParticles';
 import { useLevelUp } from '../context/LevelUpContext';
 import RankBadge from './levelup/RankBadge';
 import './Dashboard.css';
 
 const Dashboard = () => {
-    const { isEnabled, toggleLevelUpMode, levelUpData, loading } = useLevelUp();
+    const { isEnabled, toggleLevelUpMode, levelUpData, loading, calculateDailyXP, resetXP, logRestDay } = useLevelUp();
     const [toggling, setToggling] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -39,6 +39,17 @@ const Dashboard = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isDropdownOpen]);
+
+    // XP is now calculated only once per session via LevelUpContext's hasCalculatedToday flag
+    // The useEffect below runs once when the component mounts with Level Up enabled
+    useEffect(() => {
+        if (isEnabled && calculateDailyXP) {
+            calculateDailyXP().catch(err => {
+                console.error('[Dashboard] Failed to calculate daily XP:', err);
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isEnabled]); // Only depend on isEnabled, not calculateDailyXP to prevent re-running
 
     return (
         <div className="relative w-full h-screen overflow-hidden">
@@ -110,11 +121,11 @@ const Dashboard = () => {
 
                             {/* Stats Section (Only if Enabled) */}
                             {isEnabled && levelUpData ? (
-                                <div className="p-4 flex flex-col gap-4">
+                                <div className="p-4 px-3 flex flex-col gap-4">
                                     {/* Rank Display */}
                                     {/* Rank Display - Vertical Stack */}
-                                    <div className="flex flex-col items-center gap-2">
-                                        <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Current Rank</span>
+                                    <div className="flex flex-col items-center gap-2 px-0">
+                                        <span className="text-lg text-slate-400 uppercase tracking-widest font-bold">Current Level</span>
 
                                         <div className="transform scale-125 my-1">
                                             <RankBadge
@@ -155,6 +166,68 @@ const Dashboard = () => {
                                             />
                                         </div>
                                     </div>
+
+                                    {/* Action Buttons Container */}
+                                    <motion.div
+                                        className="flex flex-col gap-2 mt-3 pt-3 border-t border-white/10"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.1 }}
+                                    >
+                                        {/* XP History Link */}
+                                        <motion.div
+                                            whileHover={{ scale: 1.02, boxShadow: '0 0 20px rgba(147, 51, 234, 0.3)' }}
+                                            whileTap={{ scale: 0.98 }}
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.15 }}
+                                        >
+                                            <Link
+                                                to="/xp-history"
+                                                className="flex items-center justify-center gap-2 w-full py-2.5 px-3 text-xs font-medium text-purple-300 bg-gradient-to-r from-purple-500/10 to-purple-600/10 hover:from-purple-500/20 hover:to-purple-600/20 rounded-lg transition-all duration-200 border border-purple-500/20 hover:border-purple-400/50"
+                                            >
+                                                <FaHistory className="text-sm" />
+                                                <span>XP History</span>
+                                            </Link>
+                                        </motion.div>
+
+                                        {/* Log Rest Day Button */}
+                                        <motion.button
+                                            onClick={async () => {
+                                                const result = await logRestDay();
+                                                if (result?.success) {
+                                                    alert(result.message);
+                                                }
+                                            }}
+                                            whileHover={{ scale: 1.02, boxShadow: '0 0 20px rgba(6, 182, 212, 0.3)' }}
+                                            whileTap={{ scale: 0.98 }}
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.2 }}
+                                            className="flex items-center justify-center gap-2 w-full py-2.5 px-3 text-xs font-medium text-cyan-400 bg-gradient-to-r from-cyan-500/10 to-cyan-600/10 hover:from-cyan-500/20 hover:to-cyan-600/20 rounded-lg transition-all duration-200 border border-cyan-500/20 hover:border-cyan-400/50"
+                                        >
+                                            <FaBed className="text-sm" />
+                                            <span>Log Rest Day</span>
+                                        </motion.button>
+
+                                        {/* Reset XP Button */}
+                                        <motion.button
+                                            onClick={async () => {
+                                                if (window.confirm('Reset all XP and history? This cannot be undone.')) {
+                                                    await resetXP();
+                                                }
+                                            }}
+                                            whileHover={{ scale: 1.02, boxShadow: '0 0 15px rgba(239, 68, 68, 0.2)' }}
+                                            whileTap={{ scale: 0.98 }}
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.25 }}
+                                            className="flex items-center justify-center gap-2 w-full py-2.5 px-3 text-xs font-medium text-slate-400 bg-gradient-to-r from-slate-500/10 to-slate-600/10 hover:from-red-500/15 hover:to-red-600/15 hover:text-red-400 rounded-lg transition-all duration-200 border border-slate-500/20 hover:border-red-500/40"
+                                        >
+                                            <FaRedo className="text-sm" />
+                                            <span>Reset Progress</span>
+                                        </motion.button>
+                                    </motion.div>
                                 </div>
                             ) : (
                                 <div className="p-6 text-center">
@@ -319,6 +392,21 @@ const Dashboard = () => {
                     </Link>
                 </div>
             </div>
+
+            {/* Floating Guide Button - Bottom Right */}
+            <Link to="/guide">
+                <motion.div
+                    className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-600/90 to-indigo-600/90 backdrop-blur-md rounded-full border border-white/20 shadow-lg cursor-pointer group"
+                    whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(138, 43, 226, 0.5)' }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                >
+                    <FaQuestionCircle className="text-lg text-white" />
+                    <span className="text-sm font-bold text-white tracking-wide">THE SYSTEM</span>
+                </motion.div>
+            </Link>
         </div>
     );
 };

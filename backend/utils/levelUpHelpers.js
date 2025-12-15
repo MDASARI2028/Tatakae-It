@@ -55,16 +55,25 @@ function getNextRankXP(currentRank) {
 }
 
 /**
- * Calculate progressive overload XP for fitness
- * Returns { baseXP, performanceXP, totalXP, analysisDetails }
+ * Calculate progressive overload XP for fitness using volume comparison
+ * Volume = sets × reps × weight for each exercise
+ * Returns { baseXP, progressiveXP, totalXP, exerciseDetails }
+ * Negative XP is awarded for decreased volume
  */
 async function calculateFitnessXP(workout, previousWorkouts) {
     const baseXP = 25; // For logging
-    let improvedCount = 0;
-    const totalExercises = workout.exercises.length;
+    let totalProgressXP = 0;
+    const totalExercises = workout.exercises?.length || 0;
+    const exerciseDetails = [];
 
     if (totalExercises === 0) {
-        return { baseXP, performanceXP: 0, totalXP: baseXP, improvedExercises: 0, totalExercises: 0 };
+        return {
+            baseXP,
+            progressiveXP: 0,
+            totalXP: baseXP,
+            exerciseDetails: [],
+            summary: 'No exercises logged'
+        };
     }
 
     // Check each exercise for progressive overload
@@ -72,35 +81,72 @@ async function calculateFitnessXP(workout, previousWorkouts) {
         // Find last performance of this exercise (within 14 days)
         const lastPerformance = findLastPerformance(exercise.name, previousWorkouts, 14);
 
+        // Calculate current volume (sets × reps × weight)
+        const currentVolume = (Number(exercise.sets) || 0) *
+            (Number(exercise.reps) || 0) *
+            (Number(exercise.weight) || 1);
+
         if (!lastPerformance) {
-            // First time doing this exercise - neutral
+            // First time doing this exercise - award 15 XP bonus (new PR)
+            const detail = {
+                name: exercise.name,
+                change: null,
+                xp: 15,
+                reason: 'New exercise (PR)'
+            };
+            exerciseDetails.push(detail);
+            totalProgressXP += 15;
             continue;
         }
 
-        // Check for improvement
-        const weightImproved = exercise.weight > lastPerformance.weight;
-        const repsImproved = exercise.weight === lastPerformance.weight &&
-            exercise.reps > lastPerformance.reps;
+        // Calculate previous volume
+        const previousVolume = (Number(lastPerformance.sets) || 0) *
+            (Number(lastPerformance.reps) || 0) *
+            (Number(lastPerformance.weight) || 1);
 
-        if (weightImproved || repsImproved) {
-            improvedCount++;
+        if (previousVolume === 0) {
+            exerciseDetails.push({
+                name: exercise.name,
+                change: null,
+                xp: 0,
+                reason: 'Previous had no volume'
+            });
+            continue;
         }
+
+        // Calculate percentage change
+        const changePercent = ((currentVolume - previousVolume) / previousVolume) * 100;
+
+        // XP per exercise: +10 XP per 10% improvement, -5 XP per 10% decline
+        // Capped at +25 to -15 per exercise
+        let exerciseXP = 0;
+        if (changePercent > 0) {
+            exerciseXP = Math.min(25, Math.round(changePercent / 10) * 10);
+        } else if (changePercent < 0) {
+            exerciseXP = Math.max(-15, Math.round(changePercent / 20) * 5);
+        }
+
+        exerciseDetails.push({
+            name: exercise.name,
+            change: Math.round(changePercent),
+            currentVolume,
+            previousVolume,
+            xp: exerciseXP,
+            reason: changePercent > 0 ? 'Improved' : (changePercent < 0 ? 'Declined' : 'Same')
+        });
+
+        totalProgressXP += exerciseXP;
     }
 
-    // Calculate improvement quotient (percentage)
-    const improvementQuotient = (improvedCount / totalExercises) * 100;
-
-    // Performance XP scales with improvement percentage
-    // 0% = 0 XP, 50% = 75 XP, 100% = 150 XP
-    const performanceXP = Math.round(improvementQuotient * 1.5);
+    // Calculate final XP (base cannot go below 0)
+    const finalXP = Math.max(0, baseXP + totalProgressXP);
 
     return {
         baseXP,
-        performanceXP,
-        totalXP: baseXP + performanceXP,
-        improvedExercises: improvedCount,
-        totalExercises,
-        improvementRate: improvementQuotient.toFixed(1) + '%'
+        progressiveXP: totalProgressXP,
+        totalXP: finalXP,
+        exerciseDetails,
+        summary: `${exerciseDetails.filter(e => e.xp > 0).length}/${totalExercises} exercises improved`
     };
 }
 

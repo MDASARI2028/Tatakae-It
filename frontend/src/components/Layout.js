@@ -49,7 +49,7 @@ const Layout = () => {
                 </Link>
 
                 {/* Hunter Profile - Right side, hidden on mobile when menu is open */}
-                <div className={`${isMobileMenuOpen ? 'hidden md:block' : 'block'}`}>
+                <div className={`${isMobileMenuOpen ? 'hidden md:block' : 'block'} mr-2 md:mr-6 lg:mr-10`}>
                     <HunterProfile />
                 </div>
             </header>

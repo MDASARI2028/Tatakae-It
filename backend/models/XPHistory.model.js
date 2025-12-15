@@ -1,0 +1,33 @@
+const mongoose = require('mongoose');
+
+const XPHistorySchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    type: {
+        type: String,
+        enum: ['GAIN', 'LOSS'],
+        required: true
+    },
+    reason: {
+        type: String,
+        required: true
+    },
+    category: {
+        type: String,
+        enum: ['FITNESS', 'NUTRITION', 'STREAK', 'LEVEL_UP', 'PENALTY', 'OTHER'],
+        default: 'OTHER'
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+module.exports = mongoose.model('XPHistory', XPHistorySchema);

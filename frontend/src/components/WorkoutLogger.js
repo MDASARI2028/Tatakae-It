@@ -11,11 +11,20 @@ const WorkoutLogger = ({ template }) => {
     const { addWorkout } = useContext(WorkoutContext);
     const { templates } = useContext(TemplateContext);
 
+    // Helper to get local date string (YYYY-MM-DD) without UTC conversion
+    const getLocalDateString = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     const initialWorkoutState = {
         type: 'Strength Training',
         duration: 60,
         notes: '',
-        date: new Date().toISOString().split('T')[0]
+        date: getLocalDateString()
     };
     const initialExercisesState = [{ name: '', sets: '', reps: '', weight: '' }];
     const initialCardioExercises = [{ name: '', duration: '', caloriesBurned: '' }];
@@ -90,7 +99,7 @@ const WorkoutLogger = ({ template }) => {
                 type: template.workoutType || 'Strength Training',
                 duration: 60,
                 notes: template.notes || '',
-                date: new Date().toISOString().split('T')[0]
+                date: getLocalDateString()
             });
             // Deep clone the exercises array to avoid reference issues
             const clonedExercises = template.exercises.map(ex => ({

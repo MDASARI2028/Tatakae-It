@@ -1,0 +1,27 @@
+/* frontend/src/components/common/BackButton.css */
+
+.back-button-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    background: rgba(138, 43, 226, 0.1);
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    border-radius: 8px;
+    color: #8A2BE2;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.back-button-nav:hover {
+    background: rgba(138, 43, 226, 0.2);
+    border-color: rgba(138, 43, 226, 0.5);
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.2);
+}
+
+.back-button-nav svg {
+    font-size: 0.8rem;
+}

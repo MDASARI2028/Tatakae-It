@@ -6,6 +6,7 @@ import NutritionLogger from '../../components/nutrition/NutritionLogger';
 import NutritionHistory from '../../components/nutrition/NutritionHistory';
 import HydrationTracker from '../../components/nutrition/HydrationTracker';
 import NutritionProgress from '../../components/nutrition/NutritionProgress';
+import BackButton from '../../components/common/BackButton';
 import './NutritionPage.css';
 
 const NutritionPage = () => {
@@ -57,8 +58,11 @@ const NutritionPage = () => {
         <div className="nutrition-page system-ui">
             <motion.header className="nutrition-top" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
                 <div className="nutrition-header-left">
-                    <h2>Nutrition Center</h2>
-                    <p className="sub">Track meals, hydration and goals</p>
+                    <BackButton />
+                    <div>
+                        <h2>Nutrition Center</h2>
+                        <p className="sub">Track meals, hydration and goals</p>
+                    </div>
                 </div>
                 <div className="nutrition-header-right">
                     <div className="date-navigator">

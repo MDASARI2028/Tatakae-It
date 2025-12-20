@@ -39,11 +39,20 @@ router.post('/', auth, async (req, res) => {
 });
 
 // @route   GET /api/workouts
-// @desc    Get all workouts for a user
+// @desc    Get all workouts for a user (with pagination)
 // @access  Private
 router.get('/', auth, async (req, res) => {
     try {
-        const workouts = await Workout.find({ user: req.user.id }).sort({ date: -1 });
+        const limit = parseInt(req.query.limit) || 50;
+        const skip = parseInt(req.query.skip) || 0;
+
+        const workouts = await Workout.find({ user: req.user.id })
+            .sort({ date: -1 })
+            .skip(skip)
+            .limit(limit)
+            .select('-__v')
+            .lean();
+
         res.json(workouts);
     } catch (err) {
         console.error("Fetch Workouts Error:", err.message);
@@ -71,7 +80,7 @@ router.put('/:id', auth, async (req, res) => {
         workout.notes = notes || workout.notes;
         workout.exercises = exercises || workout.exercises;
         workout.date = date || workout.date;
-        
+
         const updatedWorkout = await workout.save();
         res.json(updatedWorkout);
 

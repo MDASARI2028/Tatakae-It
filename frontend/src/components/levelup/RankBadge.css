@@ -5,13 +5,17 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 8px;
+    /* Changed from 12px to 8px for more rectangular look */
     background: linear-gradient(135deg, rgba(17, 21, 32, 0.95) 0%, rgba(30, 35, 50, 0.95) 100%);
     border: 2px solid var(--rank-color);
     box-shadow: 0 0 20px var(--rank-glow),
         0 4px 15px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     transition: all 0.3s ease;
+    will-change: transform,
+        box-shadow;
+    /* Optimize performance */
 }
 
 .rank-badge-small {

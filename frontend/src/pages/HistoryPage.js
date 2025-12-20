@@ -33,7 +33,7 @@ const HistoryPage = () => {
         const fetchMetrics = async () => {
             if (!token) return;
             try {
-                const response = await fetch('/api/metrics', {
+                const response = await fetch('/api/metrics?limit=100', {
                     headers: { 'x-auth-token': token },
                 });
                 if (response.ok) {

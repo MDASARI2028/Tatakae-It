@@ -41,7 +41,9 @@ router.get('/date/:date', auth, async (req, res) => {
         const logs = await Hydration.find({
             user: req.user.id,
             date: { $gte: startDate, $lt: endDate }
-        }).sort({ createdAt: 'asc' });
+        })
+            .sort({ createdAt: 'asc' })
+            .lean();
 
         res.json(logs);
     } catch (err) {
@@ -64,13 +66,13 @@ router.delete('/:id', auth, async (req, res) => {
         }
 
         // ✅ THE FIX: Changed .remove() to .deleteOne()
-        await log.deleteOne(); 
+        await log.deleteOne();
 
         res.json({ msg: 'Hydration log deleted successfully.' });
 
     } catch (err) {
         // We'll add a temporary console.log here for better debugging
-        console.error("DELETE HYDRATION ERROR:", err); 
+        console.error("DELETE HYDRATION ERROR:", err);
         res.status(500).json({ error: err.message });
     }
 });

@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import './RankBadge.css';
 
-const RankBadge = ({ rank, size = 'medium', showTitle = false, showName = true }) => {
+const RankBadge = React.memo(({ rank, size = 'medium', showTitle = false, showName = true }) => {
     const rankData = {
         'E': { name: 'E Rank', title: 'The Awakening', color: '#9CA3AF', image: '/ranks/E-rank.png', glow: 'rgba(156, 163, 175, 0.5)' },
         'D': { name: 'D Rank', title: 'The Challenger', color: '#CD7F32', image: '/ranks/D-rank.png', glow: 'rgba(205, 127, 50, 0.4)' },
@@ -31,9 +31,10 @@ const RankBadge = ({ rank, size = 'medium', showTitle = false, showName = true }
                 '--rank-color': info.color,
                 '--rank-glow': info.glow
             }}
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+            whileHover={{ scale: 1.02 }}
         >
             <div className="rank-badge-inner">
                 {info.image ? (
@@ -66,6 +67,6 @@ const RankBadge = ({ rank, size = 'medium', showTitle = false, showName = true }
             )}
         </motion.div>
     );
-};
+});
 
 export default RankBadge;

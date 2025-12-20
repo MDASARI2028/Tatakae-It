@@ -73,7 +73,9 @@ router.post('/login', async (req, res) => {
 // @access  Private
 router.get('/me', auth, async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select('-password');
+        const user = await User.findById(req.user.id)
+            .select('-password')
+            .lean();
         res.json(user);
     } catch (err) {
         res.status(500).json({ msg: 'Server Error' });

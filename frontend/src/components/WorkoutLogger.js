@@ -275,40 +275,47 @@ const WorkoutLogger = ({ template }) => {
                             )}
 
                             {/* Template Selector */}
-                            {workoutData.type === 'Strength Training' && templates && templates.length > 0 && !template && (
+                            {workoutData.type === 'Strength Training' && !template && (
                                 <div className="template-selector-section">
                                     <label className="template-selector-label">
                                         <FaDownload className="template-label-icon" />
                                         Load from Template
                                     </label>
                                     <p className="template-selector-hint">Start with a saved workout template</p>
-                                    <select
-                                        className="template-selector-dropdown"
-                                        onChange={(e) => {
-                                            const selectedTemplate = templates.find(t => t._id === e.target.value);
-                                            if (selectedTemplate) {
-                                                // Load template exercises
-                                                const clonedExercises = selectedTemplate.exercises.map(ex => ({
-                                                    name: ex.name || '',
-                                                    sets: ex.sets || '',
-                                                    reps: ex.reps || '',
-                                                    weight: ex.weight || ''
-                                                }));
-                                                setExercises(clonedExercises.length > 0 ? clonedExercises : initialExercisesState);
-                                                setWorkoutData({
-                                                    ...workoutData,
-                                                    type: selectedTemplate.workoutType || 'Strength Training',
-                                                    notes: selectedTemplate.notes || ''
-                                                });
-                                            }
-                                        }}
-                                        defaultValue=""
-                                    >
-                                        <option value="" disabled>Choose a template...</option>
-                                        {templates.map(t => (
-                                            <option key={t._id} value={t._id}>{t.templateName}</option>
-                                        ))}
-                                    </select>
+
+                                    {templates && templates.length > 0 ? (
+                                        <select
+                                            className="template-selector-dropdown"
+                                            onChange={(e) => {
+                                                const selectedTemplate = templates.find(t => t._id === e.target.value);
+                                                if (selectedTemplate) {
+                                                    // Load template exercises
+                                                    const clonedExercises = selectedTemplate.exercises.map(ex => ({
+                                                        name: ex.name || '',
+                                                        sets: ex.sets || '',
+                                                        reps: ex.reps || '',
+                                                        weight: ex.weight || ''
+                                                    }));
+                                                    setExercises(clonedExercises.length > 0 ? clonedExercises : initialExercisesState);
+                                                    setWorkoutData({
+                                                        ...workoutData,
+                                                        type: selectedTemplate.workoutType || 'Strength Training',
+                                                        notes: selectedTemplate.notes || ''
+                                                    });
+                                                }
+                                            }}
+                                            defaultValue=""
+                                        >
+                                            <option value="" disabled>Choose a template...</option>
+                                            {templates.map(t => (
+                                                <option key={t._id} value={t._id}>{t.templateName}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <div className="no-templates-message">
+                                            <p>No templates found. Save a workout as a template to see it here!</p>
+                                        </div>
+                                    )}
                                 </div>
                             )}
 

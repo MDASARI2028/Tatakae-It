@@ -18,7 +18,8 @@ const bodyMetricSchema = new Schema({
     date: {
         type: Date,
         default: Date.now,
-        required: true
+        required: true,
+        index: true
     },
     weight: {
         type: Number, // in Kilograms (kg)

@@ -41,8 +41,12 @@ router.post('/', auth, async (req, res) => {
 // @access  Private
 router.get('/', auth, async (req, res) => {
     try {
+        const limit = parseInt(req.query.limit) || 100;
         // Find metrics for the logged-in user and sort by most recent date
-        const metrics = await BodyMetric.find({ user: req.user.id }).sort({ date: -1 });
+        const metrics = await BodyMetric.find({ user: req.user.id })
+            .sort({ date: -1 })
+            .limit(limit)
+            .lean();
         res.json(metrics);
     } catch (err) {
         console.error("Fetch Body Metrics Error:", err.message);

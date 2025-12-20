@@ -1,6 +1,6 @@
 // frontend/src/context/WorkoutContext.js
 
-import React, { createContext, useState, useEffect, useContext,useCallback } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { AuthContext } from './AuthContext';
 
 export const WorkoutContext = createContext();
@@ -14,7 +14,7 @@ export const WorkoutProvider = ({ children }) => {
     const fetchWorkouts = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await fetch('/api/workouts', { headers: { 'x-auth-token': token } });
+            const response = await fetch('/api/workouts?limit=50', { headers: { 'x-auth-token': token } });
             if (response.ok) {
                 const data = await response.json();
                 setWorkouts(data);
@@ -26,9 +26,9 @@ export const WorkoutProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    }, [token]); 
+    }, [token]);
 
-        useEffect(() => {
+    useEffect(() => {
         if (token) {
             fetchWorkouts();
         } else {
@@ -36,9 +36,17 @@ export const WorkoutProvider = ({ children }) => {
             setWorkouts([]);
         }
     }, [token, fetchWorkouts]);
-    
+
     // This function will be used by the WorkoutLogger
     const addWorkout = async (workoutData) => {
+        // --- OPTIMISTIC UPDATE ---
+        const tempId = Date.now().toString();
+        const optimisticWorkout = { ...workoutData, _id: tempId, user: 'temp' };
+
+        // Save previous state for rollback
+        const previousWorkouts = workouts;
+        setWorkouts(prev => [optimisticWorkout, ...prev]);
+
         try {
             const response = await fetch('/api/workouts', {
                 method: 'POST',
@@ -48,30 +56,42 @@ export const WorkoutProvider = ({ children }) => {
                 },
                 body: JSON.stringify(workoutData)
             });
+
             if (!response.ok) {
                 throw new Error('Failed to add workout.');
             }
-            // After successfully adding, refresh the list
-            await fetchWorkouts();
+
+            const savedWorkout = await response.json();
+
+            // Replace optimistic workout with real one
+            setWorkouts(prev => prev.map(w => w._id === tempId ? savedWorkout : w));
+
             return { success: true };
         } catch (error) {
             console.error("Error adding workout:", error);
+            // ROLLBACK
+            setWorkouts(previousWorkouts);
             return { success: false, error: error.message };
         }
     };
-    const deleteWorkout = async (workoutId) => {
-        if (!window.confirm("Are you sure you want to delete this workout?")) return;
+    const deleteWorkout = async (id) => {
+        // --- OPTIMISTIC UPDATE ---
+        const previousWorkouts = workouts;
+        setWorkouts(prev => prev.filter(w => w._id !== id));
 
         try {
-            const response = await fetch(`/api/workouts/${workoutId}`, {
+            const response = await fetch(`/api/workouts/${id}`, {
                 method: 'DELETE',
-                headers: { 'x-auth-token': token },
+                headers: { 'x-auth-token': token }
             });
-            if (!response.ok) throw new Error('Failed to delete workout.');
-            await fetchWorkouts(); // Refresh the list
+            if (!response.ok) {
+                throw new Error('Failed to delete workout.');
+            }
             return { success: true };
         } catch (error) {
             console.error("Error deleting workout:", error);
+            // ROLLBACK
+            setWorkouts(previousWorkouts);
             return { success: false, error: error.message };
         }
     };

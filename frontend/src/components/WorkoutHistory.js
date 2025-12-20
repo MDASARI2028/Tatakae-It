@@ -22,8 +22,13 @@ const WorkoutHistory = ({ filterDate, onEdit, showToast }) => {
     const today = getLocalToday();
 
     // Helper function to normalize date to YYYY-MM-DD format
+    // Handles both ISO date strings and simple date strings
     const normalizeDate = (dateString) => {
+        if (!dateString) return '';
         const date = new Date(dateString);
+        // If invalid date, return original string (fallback)
+        if (isNaN(date.getTime())) return dateString;
+
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
@@ -118,9 +123,10 @@ const WorkoutHistory = ({ filterDate, onEdit, showToast }) => {
         };
     };
 
-    const displayedWorkouts = filterDate
-        ? workouts.filter(w => normalizeDate(w.date) === filterDate)
-        : workouts.filter(w => normalizeDate(w.date) === today);
+    const displayedWorkouts = useMemo(() => {
+        const targetDate = filterDate || today;
+        return workouts.filter(w => normalizeDate(w.date) === targetDate);
+    }, [workouts, filterDate, today]);
 
     const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-US', {
         weekday: 'short',

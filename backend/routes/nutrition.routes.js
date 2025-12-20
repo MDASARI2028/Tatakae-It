@@ -33,7 +33,9 @@ router.get('/date/:date', auth, async (req, res) => {
         const meals = await Nutrition.find({
             user: req.user.id,
             date: dateStr
-        }).sort({ createdAt: 'asc' });
+        })
+            .sort({ createdAt: 'asc' })
+            .lean();
         res.json(meals);
     } catch (err) {
         console.error("FETCH MEALS ERROR:", err);

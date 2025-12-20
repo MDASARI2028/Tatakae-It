@@ -2,24 +2,24 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const foodItemSchema = new Schema({
-    foodName: { 
-        type: String, 
+    foodName: {
+        type: String,
         required: [true, 'Food name is required'],
-        trim: true 
+        trim: true
     },
-    calories: { 
-        type: Number, 
-        required: [true, 'Calories are required'] 
+    calories: {
+        type: Number,
+        required: [true, 'Calories are required']
     },
     protein: { type: Number, default: 0 },
     carbohydrates: { type: Number, default: 0 },
     fat: { type: Number, default: 0 },
-    servingSize: { 
-        type: Number, 
+    servingSize: {
+        type: Number,
         required: [true, 'Serving size is required']
     },
-    servingUnit: { 
-        type: String, 
+    servingUnit: {
+        type: String,
         required: [true, 'Serving unit is required'],
         trim: true
     }
@@ -29,11 +29,13 @@ const nutritionSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        index: true
     },
     date: {
         type: String, // This is correct
-        required: true
+        required: true,
+        index: true
     },
     mealType: {
         type: String,

@@ -30,7 +30,9 @@ router.post('/', auth, async (req, res) => {
 // @access  Private
 router.get('/', auth, async (req, res) => {
     try {
-        const recipes = await Recipe.find({ user: req.user.id }).sort({ name: 'asc' });
+        const recipes = await Recipe.find({ user: req.user.id })
+            .sort({ name: 'asc' })
+            .lean();
         res.json(recipes);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -45,7 +47,7 @@ router.delete('/:id', auth, async (req, res) => {
         const recipe = await Recipe.findById(req.params.id);
         if (!recipe) return res.status(404).json({ msg: 'Recipe not found.' });
         if (recipe.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorized.' });
-        
+
         await recipe.deleteOne();
         res.json({ msg: 'Recipe deleted successfully.' });
     } catch (err) {

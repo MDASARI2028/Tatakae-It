@@ -7,11 +7,13 @@ const hydrationSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        index: true
     },
     date: {
         type: Date,
-        required: true
+        required: true,
+        index: true
     },
     amount: {
         type: Number,

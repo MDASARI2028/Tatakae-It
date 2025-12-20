@@ -4,7 +4,8 @@ const XPHistorySchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        index: true
     },
     amount: {
         type: Number,
@@ -26,7 +27,8 @@ const XPHistorySchema = new mongoose.Schema({
     },
     date: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        index: true
     }
 });
 

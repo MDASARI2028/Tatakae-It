@@ -9,7 +9,7 @@ const ConstellationParticles = () => {
         await loadSlim(engine);
     }, []);
 
-    const options = {
+    const options = React.useMemo(() => ({
         fullScreen: {
             enable: true,
             zIndex: 0 // place canvas above page background but below UI content
@@ -55,7 +55,7 @@ const ConstellationParticles = () => {
             },
         },
         detectRetina: true,
-    };
+    }), []);
 
     return <Particles id="constellation-particles" init={particlesInit} options={options} />;
 };

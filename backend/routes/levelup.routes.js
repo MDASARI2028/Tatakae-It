@@ -172,7 +172,10 @@ router.post('/calculate-daily', auth, async (req, res) => {
         const todayWorkouts = await Workout.find({
             user: req.user.id,
             date: { $gte: today, $lt: tomorrow }
-        }).sort({ date: -1 });
+        })
+            .sort({ date: -1 })
+            .select('-__v')
+            .lean();
 
         console.log(`[XP Calc] Found ${todayWorkouts.length} workouts.`);
         if (todayWorkouts.length > 0) {
@@ -186,7 +189,9 @@ router.post('/calculate-daily', auth, async (req, res) => {
             const previousWorkouts = await Workout.find({
                 user: req.user.id,
                 date: { $gte: twoWeeksAgo, $lt: today }
-            });
+            })
+                .select('-__v')
+                .lean();
 
             // Calculate fitness XP with progressive overload
             const fitnessResult = await calculateFitnessXP(todayWorkouts[0], previousWorkouts);
@@ -338,7 +343,9 @@ router.get('/history', auth, async (req, res) => {
     try {
         const history = await XPHistory.find({ user: req.user.id })
             .sort({ date: -1 })
-            .limit(50);
+            .limit(50)
+            .select('-__v')
+            .lean();
         res.json(history);
     } catch (err) {
         console.error('Get XP history error:', err);

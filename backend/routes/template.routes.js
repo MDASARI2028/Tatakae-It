@@ -31,7 +31,7 @@ router.post('/', auth, async (req, res) => {
         if (err.code === 11000) {
             return res.status(400).json({ msg: 'A template with this name already exists.' });
         }
-        res.status(500).json({ msg: 'Server Error' }); 
+        res.status(500).json({ msg: 'Server Error' });
     }
 });
 
@@ -40,7 +40,9 @@ router.post('/', auth, async (req, res) => {
 // @access  Private
 router.get('/', auth, async (req, res) => {
     try {
-        const templates = await Template.find({ user: req.user.id }).sort({ createdAt: -1 });
+        const templates = await Template.find({ user: req.user.id })
+            .sort({ createdAt: -1 })
+            .lean();
         res.json(templates);
     } catch (err) {
         res.status(500).send('Server Error');

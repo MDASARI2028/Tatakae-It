@@ -129,33 +129,54 @@ export const NutritionProvider = ({ children }) => {
     }, [token]);
 
     const addMeal = async (mealData) => {
-        // ✅ FIX #2: Add the same check here.
         if (!token) {
             dispatch({ type: 'NUTRITION_ERROR', payload: 'You must be logged in to add a meal.' });
             return;
         }
+
+        // --- OPTIMISTIC UPDATE ---
+        const tempId = Date.now().toString();
+        const optimisticMeal = { ...mealData, _id: tempId, items: mealData.items || [] };
+        const previousLogs = state.nutritionLogs;
+
+        dispatch({ type: 'GET_MEALS_SUCCESS', payload: [...state.nutritionLogs, optimisticMeal] });
+
         try {
-            dispatch({ type: 'SET_LOADING' });
             const config = { headers: { 'x-auth-token': token } };
             const res = await api.post('/api/nutrition', mealData, config);
-            dispatch({ type: 'ADD_MEAL_SUCCESS', payload: res.data });
+
+            // Replace optimistic meal with real one
+            dispatch({
+                type: 'GET_MEALS_SUCCESS',
+                payload: previousLogs.concat(res.data)
+            });
         } catch (err) {
+            console.error("Error adding meal:", err);
+            dispatch({ type: 'GET_MEALS_SUCCESS', payload: previousLogs });
             dispatch({ type: 'NUTRITION_ERROR', payload: err.response?.data?.msg || 'Failed to add meal.' });
         }
     };
 
     const deleteMeal = async (mealId) => {
-        // ✅ FIX #3: And add the same check here.
         if (!token) {
             dispatch({ type: 'NUTRITION_ERROR', payload: 'You must be logged in to delete a meal.' });
             return;
         }
+
+        // --- OPTIMISTIC UPDATE ---
+        const previousLogs = state.nutritionLogs;
+        dispatch({
+            type: 'GET_MEALS_SUCCESS',
+            payload: state.nutritionLogs.filter(log => log._id !== mealId)
+        });
+
         try {
-            dispatch({ type: 'SET_LOADING' });
             const config = { headers: { 'x-auth-token': token } };
             await api.delete(`/api/nutrition/${mealId}`, config);
-            dispatch({ type: 'DELETE_MEAL_SUCCESS', payload: mealId });
+            // No need to do anything else, already removed optimistically
         } catch (err) {
+            console.error("Error deleting meal:", err);
+            dispatch({ type: 'GET_MEALS_SUCCESS', payload: previousLogs });
             dispatch({ type: 'NUTRITION_ERROR', payload: err.response?.data?.msg || 'Failed to delete meal.' });
         }
     };
@@ -174,12 +195,28 @@ export const NutritionProvider = ({ children }) => {
 
     const addHydration = async (logData) => {
         if (!token) return;
+
+        // --- OPTIMISTIC UPDATE ---
+        const tempId = Date.now().toString();
+        const optimisticHydration = { ...logData, _id: tempId };
+        const previousHydration = state.hydrationLogs;
+
+        dispatch({
+            type: 'GET_HYDRATION_SUCCESS',
+            payload: [...state.hydrationLogs, optimisticHydration]
+        });
+
         try {
-            dispatch({ type: 'SET_LOADING' });
             const config = { headers: { 'x-auth-token': token } };
             const res = await api.post('/api/hydration', logData, config);
-            dispatch({ type: 'ADD_HYDRATION_SUCCESS', payload: res.data });
+            // Replace with real data
+            dispatch({
+                type: 'GET_HYDRATION_SUCCESS',
+                payload: previousHydration.concat(res.data)
+            });
         } catch (err) {
+            console.error("Error adding hydration:", err);
+            dispatch({ type: 'GET_HYDRATION_SUCCESS', payload: previousHydration });
             dispatch({ type: 'NUTRITION_ERROR', payload: err.response?.data?.msg || 'Failed to add hydration log.' });
         }
     };
@@ -189,12 +226,20 @@ export const NutritionProvider = ({ children }) => {
     };
     const deleteHydration = async (logId) => {
         if (!token) return;
+
+        // --- OPTIMISTIC UPDATE ---
+        const previousHydration = state.hydrationLogs;
+        dispatch({
+            type: 'GET_HYDRATION_SUCCESS',
+            payload: state.hydrationLogs.filter(log => log._id !== logId)
+        });
+
         try {
-            dispatch({ type: 'SET_LOADING' });
             const config = { headers: { 'x-auth-token': token } };
             await api.delete(`/api/hydration/${logId}`, config);
-            dispatch({ type: 'DELETE_HYDRATION_SUCCESS', payload: logId });
         } catch (err) {
+            console.error("Error deleting hydration:", err);
+            dispatch({ type: 'GET_HYDRATION_SUCCESS', payload: previousHydration });
             dispatch({ type: 'NUTRITION_ERROR', payload: err.response?.data?.msg || 'Failed to delete log.' });
         }
     };

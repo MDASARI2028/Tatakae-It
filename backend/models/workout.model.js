@@ -24,7 +24,8 @@ const workoutSchema = new Schema({
     date: {
         type: Date,
         default: Date.now,
-        required: true
+        required: true,
+        index: true
     },
     type: {
         type: String,
@@ -48,7 +49,10 @@ const workoutSchema = new Schema({
     caloriesBurned: { type: Number, min: 0 },
     steps: { type: Number, min: 0 }
 }, {
-    timestamps: true
+    timestamps: true,
+    indexes: [
+        { user: 1, date: -1 }
+    ]
 });
 
 const Workout = mongoose.model('Workout', workoutSchema);

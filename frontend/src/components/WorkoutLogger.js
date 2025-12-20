@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { WorkoutContext } from '../context/WorkoutContext';
 import { TemplateContext } from '../context/TemplateContext';
+import { useLevelUp } from '../context/LevelUpContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaDumbbell, FaRunning, FaClock, FaFeatherAlt, FaCheck, FaDownload } from 'react-icons/fa';
 import './WorkoutLogger.css';
@@ -10,6 +11,7 @@ import './WorkoutLogger.css';
 const WorkoutLogger = ({ template }) => {
     const { addWorkout } = useContext(WorkoutContext);
     const { templates } = useContext(TemplateContext);
+    const { calculateDailyXP } = useLevelUp();
 
     // Helper to get local date string (YYYY-MM-DD) without UTC conversion
     const getLocalDateString = () => {
@@ -87,6 +89,13 @@ const WorkoutLogger = ({ template }) => {
             setExercises(initialExercisesState);
             setCardioExercises(initialCardioExercises);
             setActiveStep(1);
+
+            // Trigger XP Calculation
+            if (calculateDailyXP) {
+                console.log('Triggering XP calculation after workout...');
+                calculateDailyXP(true).catch(err => console.error('XP Trigger Error:', err));
+            }
+
             setTimeout(() => setSuccess(''), 3000);
         } else {
             setError(result.error || 'Failed to log workout.');

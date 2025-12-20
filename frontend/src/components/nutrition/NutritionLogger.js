@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { useNutrition } from '../../context/NutritionContext';
+import { useLevelUp } from '../../context/LevelUpContext'; // Import hook
 import { AuthContext } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/axios';
@@ -8,6 +9,7 @@ import './NutritionLogger.css';
 
 const NutritionLogger = ({ selectedDate }) => {
     const { addMeal, loading } = useNutrition();
+    const { calculateDailyXP } = useLevelUp();
     const { token } = useContext(AuthContext);
 
     const [items, setItems] = useState([]);
@@ -102,6 +104,11 @@ const NutritionLogger = ({ selectedDate }) => {
 
         addMeal(mealData).then(() => {
             setItems([]);
+            // Trigger XP Calculation
+            if (calculateDailyXP) {
+                console.log('Triggering XP calculation after meal...');
+                calculateDailyXP(true).catch(err => console.error('XP Trigger Error:', err));
+            }
         });
     };
 

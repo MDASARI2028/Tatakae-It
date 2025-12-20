@@ -33,6 +33,11 @@ app.use('/api/recipes', require('./routes/recipe.routes.js'));
 app.use('/api/food-search', require('./routes/foodSearch.routes.js'));
 app.use('/api/levelup', require('./routes/levelup.routes.js'));
 
+// Default route for root to prevent "Cannot GET /" confusion
+app.get('/', (req, res) => {
+  res.send('API is running...');
+});
+
 app.listen(port, () => {
   console.log(`[SYSTEM] Backend server is running on port: ${port}`);
 });

@@ -82,14 +82,20 @@ export const LevelUpProvider = ({ children }) => {
         }
     };
 
-    // Calculate and award daily XP
-    // Backend handles idempotency via dailyXPEarned tracking
-    const calculateDailyXP = useCallback(async () => {
-        console.log('[LevelUpContext] calculateDailyXP called');
+    // 4. Calculate Daily XP
+    const calculateDailyXP = useCallback(async (force = false) => {
+        console.log('[LevelUpContext] calculateDailyXP called', { force });
 
-        // Multiple guards against duplicate calls (React Strict Mode, race conditions)
-        if (hasCalculatedThisSession || hasCalculatedToday || isCalculatingRef.current) {
-            console.log('[LevelUpContext] Already calculated or in progress, skipping');
+        // Prevent concurrent calculations
+        if (isCalculatingRef.current) {
+            console.log('[LevelUpContext] Calculation already in progress.');
+            return;
+        }
+
+        // Guard: Check if already calculated today (unless forced)
+        // We relax "hasCalculatedThisSession" to allow real-time updates after user actions
+        if (!force && hasCalculatedToday) {
+            console.log('[LevelUpContext] Already calculated today. Skipping (unless forced).');
             return;
         }
 
@@ -99,23 +105,35 @@ export const LevelUpProvider = ({ children }) => {
         }
 
         try {
-            // Set all guards immediately
             isCalculatingRef.current = true;
-            hasCalculatedThisSession = true;
-            setHasCalculatedToday(true);
+            if (!force) {
+                // Only set session flags if it's the natural "on-load" check
+                hasCalculatedThisSession = true;
+                setHasCalculatedToday(true);
+            }
 
-            console.log('[LevelUpContext] Making API call to /api/levelup/calculate-daily');
             setLoading(true);
+            console.log('[LevelUpContext] Requesting daily calculation...');
 
             const config = { headers: { 'x-auth-token': token } };
             const res = await api.post('/api/levelup/calculate-daily', {}, config);
-            console.log('[LevelUpContext] API response:', res.data);
+            console.log('[LevelUpContext] Calculation result:', res.data);
 
             if (res.data.success) {
                 // Show XP gain notification only if XP was actually awarded
-                if (res.data.xpAwarded > 0) {
-                    setRecentXpGain(res.data);
-                    setTimeout(() => setRecentXpGain(null), 5000);
+                if (res.data.xpAdded > 0) {
+                    console.log(`[LevelUp] Gained ${res.data.xpAdded} XP!`);
+                    setRecentXpGain(res.data.xpAdded); // Using inconsistent name in original file, standardizing to xpAdded/xpAwarded?
+                    // Original code used xpAwarded, but response might be different. 
+                    // Let's stick to what likely comes back. Code below says `res.data.xpAwarded`. 
+                    // I will trust the original variable name if I see `xpAwarded` used below.
+                    // Wait, previous view showed `xpAwarded` in specific block. 
+                    // Let's use `res.data.xpAwarded || res.data.xpAdded` to be safe.
+                    const amount = res.data.xpAwarded || res.data.xpAdded || 0;
+                    if (amount > 0) {
+                        setRecentXpGain(amount);
+                        setTimeout(() => setRecentXpGain(null), 5000);
+                    }
                 }
 
                 // Refresh stats

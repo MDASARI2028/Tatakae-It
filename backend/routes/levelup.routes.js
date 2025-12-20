@@ -4,12 +4,14 @@ const router = express.Router();
 const auth = require('../middleware/auth.middleware');
 const User = require('../models/user.model');
 const { Workout } = require('../models/workout.model');
-// NOTE: XP System is FITNESS ONLY - nutrition/hydration/body metrics XP removed
+const Nutrition = require('../models/nutrition.model');
+// NOTE: XP System now includes Nutrition
 const XPHistory = require('../models/XPHistory.model');
 const {
     calculateRank,
     getNextRankXP,
     calculateFitnessXP,
+    calculateNutritionXP,
     calculateStreakBonus,
     checkSeasonReset
 } = require('../utils/levelUpHelpers');
@@ -209,9 +211,45 @@ router.post('/calculate-daily', auth, async (req, res) => {
             calculateStreakBonus(user, 'fitness', false);
         }
 
-        // NOTE: XP System simplified to FITNESS ONLY
-        // Nutrition, hydration, and body metrics XP have been removed
-        console.log(`[XP Calc] XP System: Fitness Only Mode. Total XP: ${totalXP}`);
+        // 2. Check for nutrition logs today
+        console.log(`[XP Calc] Checking nutrition for date: ${todayDateString}`);
+        const todayNutrition = await Nutrition.find({
+            user: req.user.id,
+            date: todayDateString
+        }).lean();
+
+        if (todayNutrition.length > 0) {
+            // Calculate daily totals
+            const dailyTotals = todayNutrition.reduce((acc, log) => {
+                if (log.items) {
+                    log.items.forEach(item => {
+                        acc.calories += (Number(item.calories) || 0);
+                        acc.protein += (Number(item.protein) || 0);
+                        acc.carbs += (Number(item.carbohydrates) || 0);
+                        acc.fat += (Number(item.fat) || 0);
+                    });
+                }
+                return acc;
+            }, { calories: 0, protein: 0, carbs: 0, fat: 0, water: 0 }); // Water not tracked yet in logs but helper expects it
+
+            // Calculate Nutrition XP
+            const nutritionResult = calculateNutritionXP(dailyTotals, user.nutritionGoals || {});
+            totalXP += nutritionResult.totalXP;
+            breakdown.nutrition = nutritionResult;
+
+            // Calculate nutrition streak bonus
+            const nutritionStreakBonus = calculateStreakBonus(user, 'nutrition', true);
+            if (nutritionStreakBonus > 0) {
+                totalXP += nutritionStreakBonus;
+                breakdown.nutritionStreakBonus = nutritionStreakBonus;
+            }
+        } else {
+            // No nutrition log - break streak
+            calculateStreakBonus(user, 'nutrition', false);
+        }
+
+        // NOTE: XP System now includes Fitness AND Nutrition
+        console.log(`[XP Calc] XP System: Fitness & Nutrition Mode. Total XP: ${totalXP}`);
 
         // --- Idempotent XP Awarding Logic ---
         // IMPORTANT: Declare these variables BEFORE using them
@@ -294,8 +332,23 @@ router.post('/calculate-daily', auth, async (req, res) => {
             user.levelUpMode.dailyXPEarned = totalXP; // Update tracker to match current total
             user.levelUpMode.lastXpUpdate = new Date();
 
-            // LOG THE GAIN (Fitness only mode)
-            await logXPChange(req.user.id, xpToAdd, 'Fitness Activities', 'FITNESS');
+            // LOG THE GAIN
+            // Determine primary source for log reason
+            let reason = 'Daily Activity';
+            let category = 'OTHER';
+
+            if (breakdown.fitness && breakdown.nutrition) {
+                reason = 'Workout & Nutrition Logged';
+                category = 'MIXED';
+            } else if (breakdown.fitness) {
+                reason = 'Workout Logged';
+                category = 'FITNESS';
+            } else if (breakdown.nutrition) {
+                reason = 'Nutrition Logged';
+                category = 'NUTRITION';
+            }
+
+            await logXPChange(req.user.id, xpToAdd, reason, category);
         } else {
             console.log('[XP Calc] No new XP to award.');
         }

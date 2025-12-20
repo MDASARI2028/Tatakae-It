@@ -22,7 +22,7 @@ const XPHistorySchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['FITNESS', 'NUTRITION', 'STREAK', 'LEVEL_UP', 'PENALTY', 'OTHER'],
+        enum: ['FITNESS', 'NUTRITION', 'STREAK', 'LEVEL_UP', 'PENALTY', 'OTHER', 'MIXED'],
         default: 'OTHER'
     },
     date: {

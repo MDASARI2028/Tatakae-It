@@ -247,15 +247,39 @@ function calculateStreakBonus(user, activityType, hasActivity) {
     let bonusXP = 0;
 
     if (hasActivity) {
-        // Increment streak
-        streakData.current++;
+        // Check if already logged today to prevent double counting
+        const now = new Date();
+        const lastLog = streakData.lastLog ? new Date(streakData.lastLog) : null;
 
-        // Update longest streak if current exceeds it
-        if (streakData.current > streakData.longest) {
-            streakData.longest = streakData.current;
+        const isSameDay = lastLog &&
+            lastLog.getDate() === now.getDate() &&
+            lastLog.getMonth() === now.getMonth() &&
+            lastLog.getFullYear() === now.getFullYear();
+
+        if (!isSameDay) {
+            // Increment streak only if new day
+            streakData.current++;
+
+            // Update longest streak if current exceeds it
+            if (streakData.current > streakData.longest) {
+                streakData.longest = streakData.current;
+            }
+
+            // Update last log time
+            streakData.lastLog = now;
         }
 
-        // Award milestone bonuses
+        // Award milestone bonuses (re-calculate even if same day to ensure we catch it if bonus logic changes, 
+        // essentially ensuring consistency, but since current didn't change, bonus won't trigger repeatedly)
+        // Wait, if we don't increment, 'current' stays same.
+        // We should ensure bonus is only returned if it was JUST reached? 
+        // Actually, if we use idempotency in dailyCalc, we just need stable 'totalXP'.
+        // So we return the calculated bonus for the *current* streak value.
+        // If 'current' is 7, bonus is 100. calculateDailyXP adds 100.
+        // If we call it again, 'current' is still 7. Bonus is 100. TotalXP includes 100.
+        // dailyEarned includes 100. xpToAdd is 0.
+        // THIS IS CORRECT.
+
         const current = streakData.current;
         if (current === 365) bonusXP = 15000; // Monarch streak!
         else if (current === 180) bonusXP = 6000;
@@ -264,7 +288,10 @@ function calculateStreakBonus(user, activityType, hasActivity) {
         else if (current === 14) bonusXP = 300;
         else if (current === 7) bonusXP = 100;
 
-        streakData.lastLog = new Date();
+        // If isSameDay, we update lastLog? No need, it's already today.
+        if (isSameDay) {
+            streakData.lastLog = now; // Update timestamp to latest activity
+        }
     } else {
         // Streak broken
         streakData.current = 0;

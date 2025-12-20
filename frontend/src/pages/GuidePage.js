@@ -74,7 +74,7 @@ const GuidePage = () => {
     const levelUpRanks = [
         { rank: 'E', name: 'The Awakening', xp: '0', color: '#6B7280' },
         { rank: 'D', name: 'The Challenger', xp: '8K', color: '#CD7F32' },
-        { rank: 'C', name: 'The Warrior', xp: '20K', color: '#C0C0C0' },
+        { rank: 'C', name: 'The Warrior', xp: '20K', color: '#FF6347' },
         { rank: 'B', name: 'The Beast', xp: '40K', color: '#FFD700' },
         { rank: 'A', name: 'The Titan', xp: '60K', color: '#50C878' },
         { rank: 'S', name: 'The Legend', xp: '85K', color: '#0F52BA' },
@@ -126,48 +126,83 @@ const GuidePage = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.25 }}
             >
-                <h2>⚡ Quick Navigation Tips</h2>
-                <div className="tips-grid">
-                    <div className="tip-item">
-                        <div className="tip-icon">🏠</div>
-                        <div className="tip-content">
-                            <h4>Go to Dashboard</h4>
-                            <p>Click the <strong>TATAKAI-IT</strong> logo at the top of any page</p>
+                <h2>🗺️ Hunter's Orientation</h2>
+                <div className="orientation-grid">
+                    <div className="orientation-step">
+                        <div className="step-number">01</div>
+                        <div className="step-content">
+                            <h4>Initialize The System</h4>
+                            <p>Go to your <Link to="/profile">Hunter Profile</Link> or the <Link to="/dashboard">Dashboard</Link> dropdown. Toggle <strong>Level Up Mode</strong> ON. This activates XP tracking, ranks, and streaks.</p>
                         </div>
                     </div>
-                    <div className="tip-item">
-                        <div className="tip-icon">👤</div>
-                        <div className="tip-content">
-                            <h4>Hunter Profile</h4>
-                            <p>Click your profile in top-right → Access Status, Streak, Dashboard and Logout</p>
+                    <div className="orientation-step">
+                        <div className="step-number">02</div>
+                        <div className="step-content">
+                            <h4>Log First Workout</h4>
+                            <p>Head to the <strong>Fitness</strong> section. Click "Log Workout". Pick a template or start from scratch. Complete it to earn your first +25 XP.</p>
                         </div>
                     </div>
-                    <div className="tip-item">
-                        <div className="tip-icon">⬅️</div>
-                        <div className="tip-content">
-                            <h4>Go Back</h4>
-                            <p>Use browser back button or look for back arrows within pages</p>
+                    <div className="orientation-step">
+                        <div className="step-number">03</div>
+                        <div className="step-content">
+                            <h4>Track Nutrition</h4>
+                            <p>Enter the <strong>Nutrition</strong> interface. Log your meals. Fill the rings to hit your macro goals and earn bonus XP.</p>
                         </div>
                     </div>
-                    <div className="tip-item">
-                        <div className="tip-icon">⚡</div>
-                        <div className="tip-content">
-                            <h4>Level Up Mode</h4>
-                            <p>Toggle from Dashboard top-right dropdown → Track XP & Ranks</p>
+                    <div className="orientation-step">
+                        <div className="step-number">04</div>
+                        <div className="step-content">
+                            <h4>Monitor Status</h4>
+                            <p>Check "My Status" in the profile menu. Watch your Rank rise from E to Monarch as you stay consistent.</p>
                         </div>
                     </div>
-                    <div className="tip-item">
-                        <div className="tip-icon">🏋️</div>
-                        <div className="tip-content">
-                            <h4>Log Workouts</h4>
-                            <p>Dashboard → Fitness section → Log Workout button</p>
+                </div>
+            </motion.div>
+
+            {/* Nutrition Intelligence */}
+            <motion.div
+                className="quick-tips nutrition-guide"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+            >
+                <h2>🧪 Nutrition Intelligence</h2>
+                <p className="guide-subtitle" style={{ marginBottom: '1.5rem' }}>Deciphering your daily progress rings</p>
+
+                <div className="ring-legend-grid">
+                    <div className="ring-item">
+                        <div className="ring-color" style={{ backgroundColor: '#ff007a', boxShadow: '0 0 10px #ff007a' }}></div>
+                        <div className="ring-info">
+                            <h4>Calories</h4>
+                            <p>Energy Intake</p>
                         </div>
                     </div>
-                    <div className="tip-item">
-                        <div className="tip-icon">🍎</div>
-                        <div className="tip-content">
-                            <h4>Log Nutrition</h4>
-                            <p>Dashboard → Nutrition section → Enter to access all meal features</p>
+                    <div className="ring-item">
+                        <div className="ring-color" style={{ backgroundColor: '#adff2f', boxShadow: '0 0 10px #adff2f' }}></div>
+                        <div className="ring-info">
+                            <h4>Protein</h4>
+                            <p>Muscle Repair</p>
+                        </div>
+                    </div>
+                    <div className="ring-item">
+                        <div className="ring-color" style={{ backgroundColor: '#8884d8', boxShadow: '0 0 10px #8884d8' }}></div>
+                        <div className="ring-info">
+                            <h4>Fats</h4>
+                            <p>Hormone Health</p>
+                        </div>
+                    </div>
+                    <div className="ring-item">
+                        <div className="ring-color" style={{ backgroundColor: '#ff9f40', boxShadow: '0 0 10px #ff9f40' }}></div>
+                        <div className="ring-info">
+                            <h4>Carbs</h4>
+                            <p>Performance Fuel</p>
+                        </div>
+                    </div>
+                    <div className="ring-item">
+                        <div className="ring-color" style={{ backgroundColor: '#00bfff', boxShadow: '0 0 10px #00bfff' }}></div>
+                        <div className="ring-info">
+                            <h4>Water</h4>
+                            <p>Hydration Level</p>
                         </div>
                     </div>
                 </div>

@@ -24,7 +24,8 @@
 
 .rings-center-text-final h3 {
     margin: 0;
-    font-size: 2.5rem; /* Default size, will be overridden by inline style */
+    font-size: 2.5rem;
+    /* Default size, will be overridden by inline style */
     color: #fff;
     font-weight: 500;
     line-height: 1;

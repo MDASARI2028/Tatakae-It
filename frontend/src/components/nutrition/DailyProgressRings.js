@@ -7,9 +7,9 @@ import './DailyProgressRings.css';
 const RING_CONFIG = {
     calories: { goal: 2200, color: '#ff007a' },
     protein: { goal: 150, color: '#adff2f' },
-    fat: { goal: 70, color: '#ff9f40' },
-    carbs: { goal: 250, color: '#00bfff' },
-    water: { goal: 3000, color: '#8884d8' },
+    fat: { goal: 70, color: '#8884d8' },
+    carbs: { goal: 250, color: '#ff9f40' },
+    water: { goal: 3000, color: '#00bfff' },
 };
 
 const OVER_LIMIT_COLOR = '#ff3b30';

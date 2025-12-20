@@ -33,8 +33,6 @@ const HunterProfile = () => {
         setIsOpen(false);
     };
 
-
-
     return (
         <div className="relative" ref={dropdownRef}>
             {/* Profile Button */}
@@ -124,5 +122,6 @@ const HunterProfile = () => {
         </div>
     );
 };
+
 
 export default HunterProfile;

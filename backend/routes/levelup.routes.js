@@ -34,8 +34,8 @@ const logXPChange = async (userId, amount, reason, category = 'OTHER') => {
         });
 
         if (existingEntry) {
-            console.log(`[XP Log] Skipping duplicate entry for "${reason}" today`);
-            return;
+            console.log(`[XP Log] Warning: Duplicate entry for "${reason}" today found, but proceeding effectively.`);
+            // return; // REMOVED: Allow multiple logs if the caller verified the amount (which calculateDailyXP does)
         }
 
         await XPHistory.create({

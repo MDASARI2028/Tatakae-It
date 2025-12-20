@@ -188,19 +188,27 @@
 }
 
 .guide-section.purple .section-icon {
-    background: linear-gradient(135deg, #8A2BE2, #9932CC);
+    background: rgba(0, 0, 0, 0.4);
+    color: #8A2BE2;
+    border: 1px solid rgba(138, 43, 226, 0.5);
 }
 
 .guide-section.emerald .section-icon {
-    background: linear-gradient(135deg, #10B981, #059669);
+    background: rgba(0, 0, 0, 0.4);
+    color: #10B981;
+    border: 1px solid rgba(16, 185, 129, 0.5);
 }
 
 .guide-section.amber .section-icon {
-    background: linear-gradient(135deg, #F59E0B, #D97706);
+    background: rgba(0, 0, 0, 0.4);
+    color: #F59E0B;
+    border: 1px solid rgba(245, 158, 11, 0.5);
 }
 
 .guide-section.cyan .section-icon {
-    background: linear-gradient(135deg, #06B6D4, #0891B2);
+    background: rgba(0, 0, 0, 0.4);
+    color: #06B6D4;
+    border: 1px solid rgba(6, 182, 212, 0.5);
 }
 
 .section-header {
@@ -339,7 +347,8 @@
     justify-content: center;
     font-weight: 900;
     font-size: 1rem;
-    color: #000;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .rank-info {
@@ -348,9 +357,13 @@
 }
 
 .rank-name {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-family: var(--font-family-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
     color: var(--rank-color);
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
 }
 
 .rank-xp {
@@ -513,4 +526,115 @@
     .rank-item {
         width: 100%;
     }
+}
+
+/* Hunter's Orientation */
+.orientation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.orientation-step {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(138, 43, 226, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.orientation-step:hover {
+    border-color: rgba(138, 43, 226, 0.5);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.step-number {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.05);
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.step-content h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    color: #fff;
+    background: linear-gradient(90deg, #fff, #8A2BE2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.step-content p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.step-content a {
+    color: #8A2BE2;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.step-content a:hover {
+    text-decoration: underline;
+}
+
+/* Nutrition Intelligence */
+.nutrition-guide {
+    background: rgba(15, 23, 42, 0.8) !important;
+    /* Slightly darker */
+    border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+.ring-legend-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.ring-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem 1.25rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.2s;
+}
+
+.ring-item:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.ring-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.ring-info h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #fff;
+}
+
+.ring-info p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }

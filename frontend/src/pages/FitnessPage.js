@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaDumbbell, FaHistory, FaRulerCombined, FaChartLine } from 'react-icons/fa';
 import BackButton from '../components/common/BackButton';
+import FitnessParticles from '../components/FitnessParticles';
 import './FitnessPage.css';
 
 const FitnessPage = () => {
@@ -67,7 +68,8 @@ const FitnessPage = () => {
   };
 
   return (
-    <div className="fitness-page system-ui">
+    <div className="fitness-page system-ui relative">
+      <FitnessParticles />
       {/* Header */}
       <motion.header
         className="fitness-header"

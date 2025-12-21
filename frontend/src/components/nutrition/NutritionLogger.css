@@ -14,6 +14,7 @@
     padding: 1rem;
     font-size: 1.1rem;
     background-color: #111520;
+    /* Solid */
     border: 1px solid #3a3f5a;
     color: #c7d2e7;
     border-radius: 5px;
@@ -181,7 +182,8 @@
 }
 
 .logger-left {
-    background: linear-gradient(180deg, rgba(20, 22, 36, 0.6), rgba(12, 14, 26, 0.6));
+    background: #141624;
+    /* Solid background */
     border-radius: 12px;
     padding: 1rem;
     border: 1px solid rgba(138, 43, 226, 0.08);
@@ -440,7 +442,8 @@
 }
 
 .preview-card {
-    background: linear-gradient(180deg, rgba(12, 14, 20, 0.6), rgba(18, 20, 30, 0.6));
+    background: #0c0e14;
+    /* Solid background */
     border-radius: 12px;
     padding: 1rem;
     border: 1px solid rgba(138, 43, 226, 0.06)

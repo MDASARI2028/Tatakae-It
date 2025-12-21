@@ -14,6 +14,8 @@
     gap: 1rem;
     padding: 1.2rem 0;
     margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 10;
 }
 
 .fitness-header-left h2 {
@@ -54,6 +56,8 @@
     margin: 1.5rem 0 1.8rem 0;
     justify-content: flex-start;
     flex-wrap: wrap;
+    position: relative;
+    z-index: 10;
 }
 
 .fitness-tab-btn {
@@ -90,7 +94,8 @@
 
 /* ===== TAB CONTENT ===== */
 .fitness-tab-content {
-    background: linear-gradient(135deg, rgba(26, 28, 42, 0.65), rgba(44, 47, 72, 0.65));
+    background: #1a1c2a;
+    /* Solid background */
     padding: 1.8rem;
     border-radius: 12px;
     border: 1px solid rgba(138, 43, 226, 0.12);
@@ -110,7 +115,8 @@
 }
 
 .fitness-card {
-    background: linear-gradient(135deg, rgba(30, 27, 75, 0.4), rgba(55, 48, 90, 0.3));
+    background: #1e1b4b;
+    /* Solid background */
     border: 1px solid rgba(138, 43, 226, 0.15);
     border-radius: 12px;
     padding: 1.6rem;

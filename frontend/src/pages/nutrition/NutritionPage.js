@@ -7,6 +7,7 @@ import NutritionHistory from '../../components/nutrition/NutritionHistory';
 import HydrationTracker from '../../components/nutrition/HydrationTracker';
 import NutritionProgress from '../../components/nutrition/NutritionProgress';
 import BackButton from '../../components/common/BackButton';
+import NutritionParticles from '../../components/NutritionParticles';
 import './NutritionPage.css';
 
 const NutritionPage = () => {
@@ -55,7 +56,8 @@ const NutritionPage = () => {
     };
 
     return (
-        <div className="nutrition-page system-ui">
+        <div className="nutrition-page system-ui relative">
+            {activeTab === 'summary' && <NutritionParticles />}
             <motion.header className="nutrition-top" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
                 <div className="nutrition-header-left">
                     <BackButton />

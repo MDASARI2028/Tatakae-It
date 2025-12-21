@@ -14,6 +14,8 @@
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
+    position: relative;
+    z-index: 20;
 }
 
 .back-button-nav:hover {

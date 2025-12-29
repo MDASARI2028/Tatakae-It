@@ -3,27 +3,55 @@ import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { FaHistory, FaDumbbell, FaAppleAlt, FaFire, FaExclamationTriangle } from 'react-icons/fa';
 import BackButton from '../components/common/BackButton';
-import axios from 'axios';
+import api from '../api/axios';
 
 const XPHistoryPage = () => {
     const { token } = useContext(AuthContext);
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
+        let isMounted = true;
         const fetchHistory = async () => {
             const config = { headers: { 'x-auth-token': token } };
             try {
-                const res = await axios.get('/api/levelup/history', config);
-                setHistory(res.data);
+                // Add a timeout to prevent infinite loading
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Request timed out')), 10000)
+                );
+
+                const fetchPromise = api.get('/api/levelup/history', config);
+                const res = await Promise.race([fetchPromise, timeoutPromise]);
+
+                if (isMounted) {
+                    if (Array.isArray(res.data)) {
+                        setHistory(res.data);
+                        setError(null);
+                    } else {
+                        console.error("XP History Error: Received non-array data", res.data);
+                        setError('Invalid data received from server. Please check your connection.');
+                        setHistory([]);
+                    }
+                }
             } catch (err) {
-                console.error("Error fetching XP history", err);
+                if (isMounted) {
+                    console.error("Error fetching XP history", err);
+                    setError(err.message === 'Request timed out' ? 'Loading took too long. Please try again.' : 'Failed to load history.');
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
-        if (token) fetchHistory();
+        if (token) {
+            fetchHistory();
+        } else {
+            // If token is missing (but somehow we are here), wait or stop
+            // Usually handled by auth context, but let's be safe
+        }
+
+        return () => { isMounted = false; };
     }, [token]);
 
     const getIcon = (category) => {
@@ -35,6 +63,17 @@ const XPHistoryPage = () => {
             default: return <FaHistory className="text-purple-400" />;
         }
     };
+
+    // error state already added in previous step's variable block? 
+    // Wait, previous step REPLACED lines 10-11 where history/loading were defined.
+    // So current file currently DOES NOT HAVE history/loading defined!
+    // I must restore them.
+
+    // ... (rest of the file logic uses them) ...
+    // See lines 63 in view_file.
+
+    // UI Update for error:
+    // Insert error message before the content list.
 
     return (
         <div className="min-h-screen bg-slate-950 text-white p-6 pt-24 font-inter relative overflow-hidden">
@@ -58,6 +97,13 @@ const XPHistoryPage = () => {
                         <p className="text-slate-400">Track your gains and losses</p>
                     </div>
                 </div>
+
+                {error && (
+                    <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-200 flex items-center gap-3">
+                        <FaExclamationTriangle />
+                        <span>{error}</span>
+                    </div>
+                )}
 
                 <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
                     {loading ? (

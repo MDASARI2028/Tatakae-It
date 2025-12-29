@@ -16,18 +16,20 @@
     grid-template-columns: 1fr 1fr;
     gap: 1.2rem;
     width: 100%;
-    padding: 0.8rem;
+    padding: 0.4rem;
 }
 
 .nutrition-summary-card {
     background: #171c28;
     border: 1px solid #3a3f5a;
     border-radius: 8px;
-    padding: 1.4rem;
+    padding: 1.2rem;
     text-decoration: none;
     text-align: center;
     width: 100%;
-    height: 250px;
+    height: 210px;
+    /* Increased from 180px */
+    /* Reduced from 250px */
     display: flex;
     flex-direction: column;
     justify-content: center;

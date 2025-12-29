@@ -34,8 +34,8 @@ const logXPChange = async (userId, amount, reason, category = 'OTHER') => {
         });
 
         if (existingEntry) {
-            console.log(`[XP Log] Warning: Duplicate entry for "${reason}" today found, but proceeding effectively.`);
-            // return; // REMOVED: Allow multiple logs if the caller verified the amount (which calculateDailyXP does)
+            console.log(`[XP Log] Warning: Duplicate entry for "${reason}" today found. Skipping log.`);
+            return; // RESTORED: Prevent duplicate logs
         }
 
         await XPHistory.create({
@@ -254,7 +254,10 @@ router.post('/calculate-daily', auth, async (req, res) => {
         // --- Idempotent XP Awarding Logic ---
         // IMPORTANT: Declare these variables BEFORE using them
         const lastCalcDate = user.levelUpMode.lastDailyCalculationDate ? new Date(user.levelUpMode.lastDailyCalculationDate) : null;
-        const isNewDay = !lastCalcDate || lastCalcDate.toDateString() !== today.toDateString();
+
+        // Strict date comparison using ISO date part only (YYYY-MM-DD)
+        const toDateStr = (d) => d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : '';
+        const isNewDay = !lastCalcDate || toDateStr(lastCalcDate) !== toDateStr(today);
 
         // 5. XP Penalties for Missed Logging (Streak Breaking)
         // Check if there was a gap between lastCalcDate and yesterday
@@ -336,16 +339,28 @@ router.post('/calculate-daily', auth, async (req, res) => {
             // Determine primary source for log reason
             let reason = 'Daily Activity';
             let category = 'OTHER';
+            let details = [];
 
-            if (breakdown.fitness && breakdown.nutrition) {
-                reason = 'Workout & Nutrition Logged';
-                category = 'MIXED';
-            } else if (breakdown.fitness) {
-                reason = 'Workout Logged';
+            if (breakdown.fitness) {
                 category = 'FITNESS';
-            } else if (breakdown.nutrition) {
-                reason = 'Nutrition Logged';
+                let fitMsg = 'Workout';
+                if (breakdown.fitness.progressiveXP > 0) fitMsg += ' (PR Bonus)';
+                details.push(fitMsg);
+            }
+            if (breakdown.nutrition) {
                 category = 'NUTRITION';
+                let nutMsg = 'Nutrition';
+                if (breakdown.nutrition.targetsAchieved && breakdown.nutrition.targetsAchieved.length > 0) {
+                    nutMsg += ` (Met: ${breakdown.nutrition.targetsAchieved.join(', ')})`;
+                }
+                details.push(nutMsg);
+            }
+            if (breakdown.fitness && breakdown.nutrition) {
+                category = 'MIXED';
+            }
+
+            if (details.length > 0) {
+                reason = details.join(' & ');
             }
 
             await logXPChange(req.user.id, xpToAdd, reason, category);

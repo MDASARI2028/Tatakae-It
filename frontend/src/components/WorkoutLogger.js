@@ -10,7 +10,7 @@ import './WorkoutLogger.css';
 
 const WorkoutLogger = ({ template }) => {
     const { addWorkout } = useContext(WorkoutContext);
-    const { templates } = useContext(TemplateContext);
+    const { templates, loading, error: templateError, refreshTemplates } = useContext(TemplateContext);
     const { calculateDailyXP } = useLevelUp();
 
     // Helper to get local date string (YYYY-MM-DD) without UTC conversion
@@ -286,13 +286,32 @@ const WorkoutLogger = ({ template }) => {
                             {/* Template Selector */}
                             {workoutData.type === 'Strength Training' && !template && (
                                 <div className="template-selector-section">
-                                    <label className="template-selector-label">
-                                        <FaDownload className="template-label-icon" />
-                                        Load from Template
-                                    </label>
+                                    <div className="template-label-row">
+                                        <label className="template-selector-label">
+                                            <FaDownload className="template-label-icon" />
+                                            Load from Template
+                                        </label>
+                                        <button
+                                            type="button"
+                                            className="refresh-templates-btn"
+                                            onClick={refreshTemplates}
+                                            title="Refresh Templates"
+                                        >
+                                            ↻
+                                        </button>
+                                    </div>
                                     <p className="template-selector-hint">Start with a saved workout template</p>
 
-                                    {templates && templates.length > 0 ? (
+                                    {loading ? (
+                                        <div className="template-loading">
+                                            <span className="api-loader-spinner"></span> Loading templates...
+                                        </div>
+                                    ) : templateError ? (
+                                        <div className="template-error">
+                                            <p>{templateError}</p>
+                                            <button type="button" onClick={refreshTemplates} className="btn-retry">Retry</button>
+                                        </div>
+                                    ) : templates && templates.length > 0 ? (
                                         <select
                                             className="template-selector-dropdown"
                                             onChange={(e) => {

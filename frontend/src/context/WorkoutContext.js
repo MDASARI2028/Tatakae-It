@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { AuthContext } from './AuthContext';
+import api from '../api/axios';
 
 export const WorkoutContext = createContext();
 
@@ -14,15 +15,12 @@ export const WorkoutProvider = ({ children }) => {
     const fetchWorkouts = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await fetch('/api/workouts?limit=50', { headers: { 'x-auth-token': token } });
-            if (response.ok) {
-                const data = await response.json();
-                setWorkouts(data);
-            } else {
-                setWorkouts([]);
-            }
+            // Interceptor handles the token
+            const response = await api.get('/api/workouts?limit=50');
+            setWorkouts(response.data);
         } catch (error) {
             console.error("Error fetching workouts:", error);
+            setWorkouts([]);
         } finally {
             setLoading(false);
         }
@@ -48,20 +46,8 @@ export const WorkoutProvider = ({ children }) => {
         setWorkouts(prev => [optimisticWorkout, ...prev]);
 
         try {
-            const response = await fetch('/api/workouts', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-auth-token': token
-                },
-                body: JSON.stringify(workoutData)
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to add workout.');
-            }
-
-            const savedWorkout = await response.json();
+            const response = await api.post('/api/workouts', workoutData);
+            const savedWorkout = response.data;
 
             // Replace optimistic workout with real one
             setWorkouts(prev => prev.map(w => w._id === tempId ? savedWorkout : w));
@@ -71,7 +57,7 @@ export const WorkoutProvider = ({ children }) => {
             console.error("Error adding workout:", error);
             // ROLLBACK
             setWorkouts(previousWorkouts);
-            return { success: false, error: error.message };
+            return { success: false, error: error.response?.data?.msg || error.message };
         }
     };
     const deleteWorkout = async (id) => {
@@ -80,37 +66,23 @@ export const WorkoutProvider = ({ children }) => {
         setWorkouts(prev => prev.filter(w => w._id !== id));
 
         try {
-            const response = await fetch(`/api/workouts/${id}`, {
-                method: 'DELETE',
-                headers: { 'x-auth-token': token }
-            });
-            if (!response.ok) {
-                throw new Error('Failed to delete workout.');
-            }
+            await api.delete(`/api/workouts/${id}`);
             return { success: true };
         } catch (error) {
             console.error("Error deleting workout:", error);
             // ROLLBACK
             setWorkouts(previousWorkouts);
-            return { success: false, error: error.message };
+            return { success: false, error: error.response?.data?.msg || error.message };
         }
     };
     const updateWorkout = async (workoutId, workoutData) => {
         try {
-            const response = await fetch(`/api/workouts/${workoutId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-auth-token': token,
-                },
-                body: JSON.stringify(workoutData),
-            });
-            if (!response.ok) throw new Error('Failed to update workout.');
+            await api.put(`/api/workouts/${workoutId}`, workoutData);
             await fetchWorkouts(); // Refresh the list
             return { success: true };
         } catch (error) {
             console.error("Error updating workout:", error);
-            return { success: false, error: error.message };
+            return { success: false, error: error.response?.data?.msg || error.message };
         }
     };
 

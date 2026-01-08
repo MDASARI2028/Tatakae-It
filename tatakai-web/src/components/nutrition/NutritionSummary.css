@@ -1,0 +1,264 @@
+.nutrition-summary-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    /* Further reduced gap */
+    width: 100%;
+    margin: 0 auto;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    /* Remove bottom padding */
+    /* Tighter padding */
+    min-height: auto;
+    /* Remove forced full height to shrink background */
+    justify-content: flex-start;
+}
+
+.summary-cards-grid {
+    display: grid;
+    /* Responsive columns: 2 columns on large screens, 1 on small */
+    grid-template-columns: repeat(2, 1fr);
+    /* Gap */
+    gap: 1.5rem;
+    /* Reverted */
+    width: 100%;
+    padding: 0;
+    max-width: 1100px;
+    /* Slightly reduced max width for tighter feel */
+    position: relative;
+    z-index: 5;
+    margin-top: -1rem;
+    /* Less negative margin since container is tighter */
+}
+
+.nutrition-summary-card {
+    background: #171c28;
+    border: 1px solid #3a3f5a;
+    border-radius: 20px;
+    /* Even softer corners */
+    padding: 1.5rem;
+    /* Reduced internal padding 'background' */
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+    height: 260px;
+    /* Reverted */
+    /* Taller / Bigger Card */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* ... existing code ... */
+
+/* Legend Styling */
+.nutrition-rings-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    /* Moved up */
+    flex-wrap: wrap;
+    padding-bottom: 0;
+    /* Removed bottom padding */
+    z-index: 10;
+}
+
+/* Specific alignments not needed with grid gap, but keeping classes for potential specific tweaks */
+.align-top-left {
+    justify-self: end;
+}
+
+.align-top-right {
+    justify-self: start;
+}
+
+.align-bottom-left {
+    justify-self: end;
+}
+
+.align-bottom-right {
+    justify-self: start;
+}
+
+
+/* --- GLOWING WAVE HOVER EFFECT --- */
+.nutrition-summary-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    border-color: #764be0;
+    box-shadow: 0 15px 30px rgba(118, 75, 224, 0.3);
+}
+
+.nutrition-summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(118, 75, 224, 0.15), transparent);
+    transform: skewX(-25deg);
+    transition: left 0.7s ease;
+}
+
+.nutrition-summary-card:hover::before {
+    left: 150%;
+}
+
+.nutrition-summary-icon {
+    font-size: 2.5rem;
+    /* Reverted to reasonable size */
+    color: #764be0;
+    margin-bottom: 0.8rem;
+    filter: drop-shadow(0 0 10px rgba(118, 75, 224, 0.5));
+}
+
+.nutrition-summary-card h3 {
+    font-size: 1.25rem;
+    /* Reverted Title size */
+    font-weight: 700;
+    color: #c7d2e7;
+    margin-bottom: 0.5rem;
+    position: relative;
+    letter-spacing: 0.5px;
+}
+
+.nutrition-summary-card p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    /* Reverted Text size */
+    margin: 0;
+    line-height: 1.5;
+    max-width: 90%;
+}
+
+/* --- TEXT WAVE EFFECT --- */
+.nutrition-summary-card h3::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #a37ff0;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.5s ease;
+}
+
+.nutrition-summary-card:hover h3::after {
+    clip-path: inset(0 0 0 0);
+}
+
+.center-ring-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 15;
+    /* Above background but below interactive modals if any */
+    /* Tweak interactions */
+    pointer-events: none;
+    /* Keep as is to avoid blocking card clicks behind transparent areas */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-ring-container>* {
+    pointer-events: auto;
+    /* Re-enable pointer events for the ring itself */
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+    .nutrition-summary-container {
+        padding-top: 1rem;
+    }
+
+    .summary-cards-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        padding-top: 0;
+        margin-top: 0;
+    }
+
+    /* Use flex order to place ring in the middle */
+    .nutrition-summary-card:nth-child(1),
+    .nutrition-summary-card:nth-child(2) {
+        order: 1;
+    }
+
+    .center-ring-container {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        order: 2;
+        height: 280px;
+        /* Dedicate height for the ring */
+        margin: 1rem 0;
+        pointer-events: auto;
+        /* Ensure interaction works */
+    }
+
+    .nutrition-summary-card:nth-child(3),
+    .nutrition-summary-card:nth-child(4) {
+        order: 3;
+    }
+
+    .nutrition-summary-card {
+        height: auto;
+        min-height: 140px;
+        width: 100%;
+        max-width: 400px;
+        /* Prevent too wide cards on tablets */
+        align-self: center;
+    }
+
+    /* Remove alignment specific logic on mobile */
+    .align-top-left,
+    .align-top-right,
+    .align-bottom-left,
+    .align-bottom-right {
+        justify-self: center;
+    }
+}
+
+/* Legend Styling */
+.nutrition-rings-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    /* Gap between cards and legend */
+    flex-wrap: wrap;
+    padding-bottom: 0.5rem;
+    z-index: 10;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}

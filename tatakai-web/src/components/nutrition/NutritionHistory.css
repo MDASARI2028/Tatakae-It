@@ -1,0 +1,216 @@
+/* Nutrition History Improvements */
+.nutrition-history-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem
+}
+
+.daily-totals-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(45, 55, 72, 0.4));
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.totals-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem
+}
+
+.history-icon {
+    font-size: 1.5rem;
+    color: #a78bfa;
+    background: rgba(139, 92, 246, 0.1);
+    padding: 10px;
+    border-radius: 12px;
+}
+
+.daily-totals-card h3 {
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.totals-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem
+}
+
+.total-item {
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 12px;
+    padding: 1.2rem;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.total-item:hover {
+    border-color: #a78bfa;
+    transform: translateY(-2px);
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.total-item p {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.total-item span {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    display: block;
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.meal-card {
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 14px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.meal-card:hover {
+    border-color: rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.meal-card-header {
+    background: rgba(15, 23, 42, 0.3);
+    padding: 1rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.header-left h4 {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.meal-name {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    display: block;
+    margin-top: 2px;
+    font-style: italic;
+}
+
+.meal-card-controls {
+    display: flex;
+    gap: 0.5rem
+}
+
+.control-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn:hover {
+    color: #fff;
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.3);
+}
+
+.delete-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+.meal-items {
+    padding: 0.5rem 1.2rem 1.2rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem
+}
+
+.meal-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 8px;
+    background: transparent;
+    transition: background 0.2s;
+}
+
+.meal-item-row:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.meal-item-row:last-child {
+    border-bottom: none
+}
+
+.item-name {
+    color: #e2e8f0;
+    font-weight: 500;
+    font-size: 1rem;
+    flex: 1
+}
+
+.item-details {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.serving {
+    color: #cbd5e1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.nutrient {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .totals-grid {
+        grid-template-columns: repeat(2, 1fr)
+    }
+
+    .item-details {
+        flex-wrap: wrap;
+        gap: 0.4rem
+    }
+}

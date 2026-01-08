@@ -83,3 +83,4 @@ frontend/build
 
 Our custom rule for the backend environment file
 backend/.env
+tatakai-app/

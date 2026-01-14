@@ -20,8 +20,8 @@ const Layout = () => {
 
     return (
         <div className="layout-container">
-            {/* Header - Responsive for all devices */}
-            <header className="fixed top-0 left-0 right-0 z-40 flex justify-between items-center px-4 sm:px-8 md:px-12 lg:px-16 py-4 sm:py-5 bg-transparent">
+            {/* Header - Responsive for all devices with Glassmorphism */}
+            <header className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-4 sm:px-8 md:px-12 lg:px-16 py-4 sm:py-5 bg-black/30 backdrop-blur-md border-b border-white/10">
 
                 {/* Mobile Menu Button - Left side on mobile */}
                 <button

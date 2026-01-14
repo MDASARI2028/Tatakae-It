@@ -38,9 +38,14 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
                     headers: { 'x-auth-token': token }
                 });
                 if (response.ok) {
-                    const data = await response.json();
-                    if (data && data.length > 0) {
-                        setLatestMetrics(data[0]);
+                    const text = await response.text();
+                    try {
+                        const data = text ? JSON.parse(text) : null;
+                        if (data && data.length > 0) {
+                            setLatestMetrics(data[0]);
+                        }
+                    } catch (parseError) {
+                        console.error("Error parsing metrics response:", parseError);
                     }
                 }
             } catch (err) {
@@ -77,8 +82,18 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
             });
 
             if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.msg || 'Failed to log metrics.');
+                const text = await response.text();
+                let errorMessage = 'Failed to log metrics.';
+                try {
+                    const data = text ? JSON.parse(text) : {};
+                    if (data.msg) errorMessage = data.msg;
+                    else if (text) errorMessage = text;
+                } catch (e) {
+                    // If parsing fails but we have text, use it as error message
+                    if (text && text.length < 100) errorMessage = text;
+                    else errorMessage = `Server error: ${response.status}`;
+                }
+                throw new Error(errorMessage);
             }
 
             setSuccess('Metrics logged successfully!');

@@ -1,300 +1,646 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react';
+import React, { useState, useMemo, useContext, useEffect } from 'react';
 import { useNutrition } from '../../context/NutritionContext';
-import { useLevelUp } from '../../context/LevelUpContext'; // Import hook
+import { useLevelUp } from '../../context/LevelUpContext';
+import { RecipeContext } from '../../context/RecipeContext'; // Import RecipeContext
 import { AuthContext } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import api from '../../api/axios';
-import { FaUtensils, FaPlus, FaTrash, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaUtensils, FaPlus, FaTimes, FaSearch, FaEgg, FaBreadSlice, FaLeaf, FaAppleAlt, FaHamburger, FaFish, FaCarrot, FaPizzaSlice, FaGem, FaWater, FaDotCircle, FaBookOpen } from 'react-icons/fa';
+import {
+    Chart as ChartJS,
+    RadialLinearScale,
+    PointElement,
+    LineElement,
+    Filler,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+import { Radar } from 'react-chartjs-2';
 import './NutritionLogger.css';
 
+// Register ChartJS components
+ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
+
+// Helper to guess icon
+const getFoodIcon = (name) => {
+    const n = name.toLowerCase();
+    if (n.includes('egg')) return <FaEgg />;
+    if (n.includes('bread') || n.includes('toast')) return <FaBreadSlice />;
+    if (n.includes('avocado') || n.includes('salad') || n.includes('veg')) return <FaLeaf />;
+    if (n.includes('fruit') || n.includes('apple') || n.includes('banana')) return <FaAppleAlt />;
+    if (n.includes('burger') || n.includes('meat') || n.includes('beef')) return <FaHamburger />;
+    if (n.includes('fish') || n.includes('salmon') || n.includes('tuna')) return <FaFish />;
+    if (n.includes('pizza')) return <FaPizzaSlice />;
+    if (n.includes('carrot') || n.includes('root')) return <FaCarrot />;
+    return <FaUtensils />;
+};
+
 const NutritionLogger = ({ selectedDate }) => {
-    const { addMeal, loading } = useNutrition();
+    const { addMeal, loading, getRecentItems, nutritionLogs } = useNutrition();
+    const { recipes, getRecipes } = useContext(RecipeContext); // Destructure RecipeContext
     const { calculateDailyXP } = useLevelUp();
     const { token } = useContext(AuthContext);
 
     const [items, setItems] = useState([]);
+    const [recentItems, setRecentItems] = useState([]);
     const [mealType, setMealType] = useState('Breakfast');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
-    const [isSearching, setIsSearching] = useState(false);
+    const [customForm, setCustomForm] = useState({ foodName: '', calories: '', protein: '', carbohydrates: '', fat: '' });
+    const [showCustomModal, setShowCustomModal] = useState(false);
 
-    // FOOD SEARCH TEMPORARILY DISABLED - Database not working
-    // useEffect(() => {
-    //     if (!token || searchQuery.length < 2) {
-    //         console.log('[NUTRITION LOGGER] Search blocked - Token:', token ? 'present' : 'missing', 'Query length:', searchQuery.length);
-    //         setSearchResults([]);
-    //         return;
-    //     }
-    //     const delayDebounce = setTimeout(async () => {
-    //         setIsSearching(true);
-    //         try {
-    //             console.log('[NUTRITION LOGGER] Searching for:', searchQuery);
-    //             console.log('[NUTRITION LOGGER] Token preview:', token.substring(0, 20) + '...');
-    //             const config = { headers: { 'x-auth-token': token } };
-    //             console.log('[NUTRITION LOGGER] Request config:', config);
-    //             const res = await api.get(`/api/food-search?query=${encodeURIComponent(searchQuery)}`, config);
-    //             console.log('Food search results:', res.data);
-    //             setSearchResults(Array.isArray(res.data) ? res.data : []);
-    //         } catch (error) {
-    //             console.error('[NUTRITION LOGGER] Search error status:', error.response?.status);
-    //             console.error('[NUTRITION LOGGER] Search error data:', error.response?.data);
-    //             console.error('[NUTRITION LOGGER] Search error message:', error.message);
-    //             setSearchResults([]);
-    //         }
-    //         setIsSearching(false);
-    //     }, 380);
-    //     return () => clearTimeout(delayDebounce);
-    // }, [searchQuery, token]);
+    // NEW: State for Modal Tabs
+    const [modalTab, setModalTab] = useState('new'); // 'new' | 'history' | 'recipes'
+    const [historySearch, setHistorySearch] = useState('');
 
-    const handleAddItemFromSearch = (food) => {
-        const newItem = {
-            foodName: food.label,
-            calories: Math.round(food.calories) || 0,
-            protein: Math.round(food.protein) || 0,
-            carbohydrates: Math.round(food.carbs) || 0,
-            fat: Math.round(food.fat) || 0,
-            servingSize: 1,
-            servingUnit: 'serving',
-        };
-        setItems(prevItems => [...prevItems, newItem]);
-        setSearchQuery('');
-        setSearchResults([]);
+    const handleSelectHistoryItem = (item) => {
+        setCustomForm({
+            foodName: item.foodName,
+            calories: item.calories,
+            protein: item.protein,
+            carbohydrates: item.carbohydrates,
+            fat: item.fat,
+        });
+        setModalTab('new'); // Switch back to form to confirm/edit
     };
 
-    const handleAddBlankItem = () => {
-        const blankItem = { foodName: '', calories: '', protein: '', carbohydrates: '', fat: '', servingSize: '', servingUnit: '' };
-        setItems(prevItems => [...prevItems, blankItem]);
+    const handleLoadRecipe = (recipe) => {
+        const recipeItems = recipe.items.map(item => ({
+            tempId: Date.now() + Math.random(),
+            foodName: item.foodName,
+            calories: Number(item.calories) || 0,
+            protein: Number(item.protein) || 0,
+            carbohydrates: Number(item.carbohydrates) || 0,
+            fat: Number(item.fat) || 0,
+            servingSize: Number(item.servingSize) || 1,
+            servingUnit: item.servingUnit || 'serving',
+            icon: getFoodIcon(item.foodName),
+        }));
+        setItems(prev => [...prev, ...recipeItems]);
+        closeCustomModal();
     };
 
-    const handleRemoveItem = (indexToRemove) => {
-        setItems(items.filter((_, index) => index !== indexToRemove));
-    };
+    // Fetch recent items AND recipes on mount
+    useEffect(() => {
+        let isMounted = true;
 
-    const handleItemChange = (e, index) => {
-        const { name, value } = e.target;
-        const list = [...items];
-        list[index][name] = value;
-        setItems(list);
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (items.length === 0) {
-            alert('Please add at least one food item.');
-            return;
+        if (getRecentItems) {
+            getRecentItems().then(data => {
+                if (isMounted && data) setRecentItems(data);
+            });
         }
-        // Use local date components (not UTC) to match the XP calculation
+
+        if (getRecipes) {
+            getRecipes(); // Recipes populate via context state
+        }
+
+        return () => { isMounted = false; };
+    }, [getRecentItems, getRecipes]);
+
+    const handleAddRecent = (item) => {
+        // Prevent duplicates in current list? Optional.
+        // if (items.find(i => i.tempId === item._id)) return; // _id might be food name group id, let's just push new
+
+        const newItem = {
+            tempId: Date.now() + Math.random(), // Unique ID for frontend list
+            foodName: item.foodName,
+            calories: Number(item.calories) || 0,
+            protein: Number(item.protein) || 0,
+            carbohydrates: Number(item.carbohydrates) || 0,
+            fat: Number(item.fat) || 0,
+            servingSize: Number(item.servingSize) || 1,
+            servingUnit: item.servingUnit || 'serving',
+            icon: getFoodIcon(item.foodName),
+        };
+        setItems(prev => [...prev, newItem]);
+    };
+
+    const handleRemoveItem = (index) => {
+        setItems(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const openCustomModal = () => setShowCustomModal(true);
+    const closeCustomModal = () => setShowCustomModal(false);
+
+    const handleCustomSubmit = (e) => {
+        e.preventDefault();
+        const newItem = {
+            tempId: Date.now(),
+            foodName: customForm.foodName,
+            calories: Number(customForm.calories) || 0,
+            protein: Number(customForm.protein) || 0,
+            carbohydrates: Number(customForm.carbohydrates) || 0,
+            fat: Number(customForm.fat) || 0,
+            servingSize: 1,
+            servingUnit: 'portion',
+            icon: <FaUtensils />,
+        };
+        setItems(prev => [...prev, newItem]);
+        setCustomForm({ foodName: '', calories: '', protein: '', carbohydrates: '', fat: '' });
+        closeCustomModal();
+    };
+
+    // Calculate totals: Daily Logged + Current Staged Items
+    const totals = useMemo(() => {
+        // 1. Sum up already logged meals from context
+        const loggedTotals = nutritionLogs.reduce((acc, log) => {
+            // Each log has an array of items
+            if (!log.items) return acc;
+            log.items.forEach(it => {
+                acc.calories += Number(it.calories) || 0;
+                acc.protein += Number(it.protein) || 0;
+                acc.carbohydrates += Number(it.carbohydrates) || 0;
+                acc.fat += Number(it.fat) || 0;
+            });
+            return acc;
+        }, { calories: 0, protein: 0, carbohydrates: 0, fat: 0 });
+
+        // 2. Add current staged items
+        return items.reduce((acc, it) => ({
+            calories: acc.calories + (Number(it.calories) || 0),
+            protein: acc.protein + (Number(it.protein) || 0),
+            carbohydrates: acc.carbohydrates + (Number(it.carbohydrates) || 0),
+            fat: acc.fat + (Number(it.fat) || 0)
+        }), loggedTotals);
+    }, [items, nutritionLogs]);
+
+    const handleSubmit = () => {
+        if (items.length === 0) return;
+
         const year = selectedDate.getFullYear();
         const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
         const day = String(selectedDate.getDate()).padStart(2, '0');
         const formattedDate = `${year}-${month}-${day}`;
 
-        console.log('[NutritionLogger] Logging meal for date:', formattedDate);
-
         const mealData = {
             date: formattedDate,
             mealType,
-            items: items.filter(item => item.foodName && item.calories && item.servingSize),
+            items: items.map(i => ({
+                foodName: i.foodName,
+                calories: i.calories,
+                protein: i.protein,
+                carbohydrates: i.carbohydrates,
+                fat: i.fat,
+                servingSize: i.servingSize,
+                servingUnit: i.servingUnit
+            }))
         };
-
-        if (mealData.items.length === 0) {
-            alert('Please fill out at least one item completely.');
-            return;
-        }
 
         addMeal(mealData).then(() => {
             setItems([]);
-            // Trigger XP Calculation
-            if (calculateDailyXP) {
-                console.log('Triggering XP calculation after meal...');
-                calculateDailyXP(true).catch(err => console.error('XP Trigger Error:', err));
-            }
+            if (calculateDailyXP) calculateDailyXP(true);
         });
     };
 
-    const totals = useMemo(() => {
-        return items.reduce((acc, it) => {
-            const c = Number(it.calories) || 0;
-            acc.calories += c;
-            acc.protein += Number(it.protein) || 0;
-            acc.carbs += Number(it.carbohydrates) || 0;
-            acc.fat += Number(it.fat) || 0;
-            return acc;
-        }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
-    }, [items]);
-
-    // Custom item modal state
-    const [showCustomModal, setShowCustomModal] = useState(false);
-    const [customForm, setCustomForm] = useState({ foodName: '', servingSize: 1, servingUnit: 'serving', calories: '', protein: '', carbohydrates: '', fat: '' });
-
-    const openCustomModal = () => setShowCustomModal(true);
-    const closeCustomModal = () => {
-        setShowCustomModal(false);
-        setCustomForm({ foodName: '', servingSize: 1, servingUnit: 'serving', calories: '', protein: '', carbohydrates: '', fat: '' });
+    // Chart Data
+    const chartData = {
+        labels: ['PROTEIN', 'CARBS', 'FATS'],
+        datasets: [
+            {
+                label: 'Macro Balance',
+                data: [totals.protein, totals.carbohydrates, totals.fat],
+                backgroundColor: 'rgba(139, 92, 246, 0.2)', // Purple transparent
+                borderColor: '#8b5cf6',
+                borderWidth: 2,
+                pointBackgroundColor: '#22d3ee', // Cyan dots
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#22d3ee',
+            },
+        ],
     };
 
-    const handleCustomChange = (e) => {
-        const { name, value } = e.target;
-        setCustomForm(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleCustomSubmit = (e) => {
-        e.preventDefault();
-        if (!customForm.foodName || !customForm.calories) return;
-        const newItem = {
-            foodName: customForm.foodName,
-            servingSize: Number(customForm.servingSize) || 1,
-            servingUnit: customForm.servingUnit || 'serving',
-            calories: Number(customForm.calories) || 0,
-            protein: Number(customForm.protein) || 0,
-            carbohydrates: Number(customForm.carbohydrates) || 0,
-            fat: Number(customForm.fat) || 0,
-        };
-        setItems(prev => [...prev, newItem]);
-        closeCustomModal();
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            r: {
+                angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                pointLabels: {
+                    color: '#94a3b8',
+                    font: { size: 10, weight: '700' }
+                },
+                ticks: { display: false, backdropColor: 'transparent' }
+            }
+        },
+        plugins: {
+            legend: { display: false }
+        }
     };
 
     return (
         <div className="nutrition-logger-shell">
-            <motion.div className="logger-left" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}>
+            {/* LEFT PANEL */}
+            <motion.div className="logger-left" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+                {/* Header */}
                 <div className="logger-header">
-                    <div className="title">
-                        <FaUtensils className="food-ico" />
+                    <div className="title-group">
+                        <div className="food-icon-sq"><FaUtensils /></div>
                         <div>
                             <h3>Log Meal</h3>
-                            <p className="hint">Create custom items to track your nutrition.</p>
+                            <p>Search and add items to your log</p>
                         </div>
                     </div>
 
-                    <div className="mini-controls">
-                        <div className="date-nav">
-                            <button className="icon-btn" onClick={() => { const d = new Date(selectedDate); d.setDate(d.getDate() - 1); /* parent handles date change elsewhere */ }}><FaChevronLeft /></button>
-                            <div className="date-label">{selectedDate.toDateString()}</div>
-                            <button className="icon-btn" onClick={() => { const d = new Date(selectedDate); d.setDate(d.getDate() + 1); }}><FaChevronRight /></button>
-                        </div>
-                        <select className="meal-type-select" value={mealType} onChange={(e) => setMealType(e.target.value)}>
-                            <option>Breakfast</option>
-                            <option>Lunch</option>
-                            <option>Dinner</option>
-                            <option>Snacks</option>
-                        </select>
+                    {/* Meal Type Toggle */}
+                    <div className="meal-type-toggle">
+                        {['Breakfast', 'Lunch', 'Dinner'].map(t => (
+                            <button
+                                key={t}
+                                className={`type-btn ${mealType === t ? 'active' : ''}`}
+                                onClick={() => setMealType(t)}
+                            >
+                                {t}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
-                {/* FOOD SEARCH TEMPORARILY DISABLED */}
-                <div className="search-box" style={{ display: 'none' }}>
+                {/* Search */}
+                <div className="search-container">
+                    <FaSearch className="search-icon" />
                     <input
                         type="text"
-                        className="search-input"
-                        placeholder="Search foods (min 2 chars)..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        autoComplete="off"
-                        disabled
+                        className="search-input-modern"
+                        placeholder="Search foods, brands or scan barcode..."
+                        readOnly // Mock for now
+                        onClick={() => alert("Search is currently disabled. Use 'Add Custom' or suggested items.")}
                     />
-                    {isSearching && <div className="spinner small"></div>}
-                    {searchResults.length > 0 && (
-                        <motion.ul className="search-results" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}>
-                            {searchResults.slice(0, 6).map((food) => (
-                                <motion.li key={food.foodId || food.label} onClick={() => handleAddItemFromSearch(food)} whileHover={{ scale: 1.02 }}>
-                                    <div className="sr-left">
-                                        <div className="sr-title">{food.label}</div>
-                                        <div className="sr-sub">{food.category || ''}</div>
+                </div>
+
+                {/* Items List (Mixed Recent + Added) */}
+                <div className="section-label">Recent Items</div>
+                <div className="items-scroll-area">
+                    {/* Show recent items from backend */}
+                    {recentItems.length === 0 && items.length === 0 && (
+                        <div className="text-sm text-slate-500 text-center py-4 italic">
+                            No recent history found. Add a custom item to get started.
+                        </div>
+                    )}
+
+                    {recentItems.map((item, idx) => {
+                        // Optimization: in a real app, use IDs. Here we use name similarity or index
+                        return (
+                            <div key={`recent-${item._id || idx}`} className="food-item-modern" onClick={() => handleAddRecent(item)}>
+                                <div className="item-icon-circle">{getFoodIcon(item.foodName)}</div>
+                                <div className="item-info">
+                                    <span className="item-name">{item.foodName}</span>
+                                    <span className="item-desc">{item.calories} kcal • {item.servingSize} {item.servingUnit}</span>
+                                </div>
+                                <div className="item-actions">
+                                    <button className="text-xs font-bold text-slate-500 hover:text-white transition-colors">
+                                        <FaPlus />
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    })}
+
+                    {/* SEPARATE 'ADDED' SECTION for clarity if items > 0 */}
+                    {items.length > 0 && (
+                        <>
+                            <div className="section-label mt-4" style={{ color: '#22d3ee' }}>Ready to Commit ({items.length})</div>
+                            {items.map((item, idx) => (
+                                <div key={item.tempId || idx} className="food-item-modern" style={{ borderColor: '#22d3ee' }}>
+                                    <div className="item-icon-circle" style={{ color: '#22d3ee' }}>{item.icon || <FaUtensils />}</div>
+                                    <div className="item-info">
+                                        <span className="item-name">{item.foodName}</span>
+                                        <span className="item-desc" style={{ color: '#22d3ee' }}>{item.calories} kcal • Added</span>
                                     </div>
-                                    <div className="sr-right">{Math.round(food.calories)} kcal</div>
-                                </motion.li>
+                                    <div className="item-actions">
+                                        <button
+                                            className="btn-remove-x"
+                                            onClick={() => handleRemoveItem(idx)}
+                                        >
+                                            <FaTimes />
+                                        </button>
+                                    </div>
+                                </div>
                             ))}
-                        </motion.ul>
+                        </>
                     )}
                 </div>
 
-                <form onSubmit={handleSubmit} className="log-form">
-                    <div className="items-list-container">
-                        <AnimatePresence>
-                            {items.map((item, index) => (
-                                <motion.div key={index} layout initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96 }} className="food-item-card">
-                                    <div className="left-col">
-                                        <input type="text" name="foodName" value={item.foodName} onChange={(e) => handleItemChange(e, index)} className="item-input food-name" placeholder="Food name" />
-                                        <div className="meta-row">
-                                            <input type="number" name="servingSize" value={item.servingSize} onChange={(e) => handleItemChange(e, index)} className="item-input tiny" placeholder="Size" />
-                                            <input type="text" name="servingUnit" value={item.servingUnit} onChange={(e) => handleItemChange(e, index)} className="item-input tiny" placeholder="Unit" />
-                                        </div>
-                                    </div>
-                                    <div className="right-col">
-                                        <input type="number" name="calories" value={item.calories} onChange={(e) => handleItemChange(e, index)} className="item-input" placeholder="kcal" />
-                                        <div className="macro-row">
-                                            <input type="number" name="protein" value={item.protein} onChange={(e) => handleItemChange(e, index)} className="item-input tiny" placeholder="P" />
-                                            <input type="number" name="carbohydrates" value={item.carbohydrates} onChange={(e) => handleItemChange(e, index)} className="item-input tiny" placeholder="C" />
-                                            <input type="number" name="fat" value={item.fat} onChange={(e) => handleItemChange(e, index)} className="item-input tiny" placeholder="F" />
-                                        </div>
-                                    </div>
-                                    <button type="button" className="remove-item-btn" onClick={() => handleRemoveItem(index)}><FaTrash /></button>
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
-                    </div>
+                {/* Footer Actions */}
+                <div className="logger-footer">
+                    <button className="btn-outline" onClick={openCustomModal}>
+                        <FaPlus /> Add Custom
+                    </button>
 
-                    <div className="form-actions">
-                        <button type="button" className="add-custom-btn" onClick={openCustomModal}><FaPlus /> Add Custom</button>
-                        <div className="submit-block">
-                            <div className="totals">
-                                <div><strong>{totals.calories}</strong><span> kcal</span></div>
-                                <div><strong>{totals.protein}</strong><span> g P</span></div>
-                                <div><strong>{totals.carbs}</strong><span> g C</span></div>
-                                <div><strong>{totals.fat}</strong><span> g F</span></div>
-                            </div>
-                            <button type="submit" className="submit-meal-btn" disabled={loading}>{loading ? 'Logging...' : 'Commit Meal'}</button>
+                    <div className="macro-mini-summary">
+                        <div className="macro-item kcal">
+                            <span className="label">KCAL</span>
+                            <span className="val">{totals.calories}</span>
+                        </div>
+                        <div className="macro-item p">
+                            <span className="label">P</span>
+                            <span className="val">{totals.protein}<small>g</small></span>
+                        </div>
+                        <div className="macro-item c">
+                            <span className="label">C</span>
+                            <span className="val">{totals.carbohydrates}<small>g</small></span>
+                        </div>
+                        <div className="macro-item f">
+                            <span className="label">F</span>
+                            <span className="val">{totals.fat}<small>g</small></span>
                         </div>
                     </div>
-                </form>
+
+                    <button
+                        className="btn-commit"
+                        onClick={handleSubmit}
+                        disabled={loading || items.length === 0}
+                        style={{ opacity: items.length === 0 ? 0.5 : 1 }}
+                    >
+                        {loading ? '...' : 'Commit Meal'}
+                    </button>
+                </div>
+
+                {/* Custom Modal with Sci-Fi UI */}
+                <AnimatePresence>
+                    {showCustomModal && (
+                        <motion.div
+                            className="nl-modal-overlay"
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        >
+                            <motion.div
+                                className="nl-modal-window"
+                                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                                animate={{ scale: 1, opacity: 1, y: 0 }}
+                                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            >
+                                {/* Header */}
+                                <div className="nl-modal-header">
+                                    <h3>ADD NUTRITION</h3>
+                                    <div className="nl-tabs-container">
+                                        {['new', 'history', 'recipes'].map(tab => (
+                                            <button
+                                                key={tab}
+                                                className={`nl-tab-btn ${modalTab === tab ? 'active' : ''}`}
+                                                onClick={() => setModalTab(tab)}
+                                            >
+                                                {tab}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="nl-modal-body">
+                                    {modalTab === 'new' ? (
+                                        /* CREATE NEW FORM */
+                                        <div className="nl-form-section">
+                                            <input
+                                                className="nl-input-modern full-width"
+                                                placeholder="Food Name (e.g., Grilled Chicken)"
+                                                value={customForm.foodName}
+                                                onChange={e => setCustomForm({ ...customForm, foodName: e.target.value })}
+                                                autoFocus
+                                            />
+                                            <div className="nl-macro-grid">
+                                                <div className="nl-input-wrapper">
+                                                    <input
+                                                        type="number"
+                                                        className="nl-input-modern"
+                                                        placeholder="0"
+                                                        value={customForm.calories}
+                                                        onChange={e => setCustomForm({ ...customForm, calories: e.target.value })}
+                                                    />
+                                                    <span className="nl-input-label">KCAL</span>
+                                                </div>
+                                                <div className="nl-input-wrapper">
+                                                    <input
+                                                        type="number"
+                                                        className="nl-input-modern"
+                                                        placeholder="0"
+                                                        value={customForm.protein}
+                                                        onChange={e => setCustomForm({ ...customForm, protein: e.target.value })}
+                                                    />
+                                                    <span className="nl-input-label">PRO</span>
+                                                </div>
+                                                <div className="nl-input-wrapper">
+                                                    <input
+                                                        type="number"
+                                                        className="nl-input-modern"
+                                                        placeholder="0"
+                                                        value={customForm.carbohydrates}
+                                                        onChange={e => setCustomForm({ ...customForm, carbohydrates: e.target.value })}
+                                                    />
+                                                    <span className="nl-input-label">CARB</span>
+                                                </div>
+                                                <div className="nl-input-wrapper">
+                                                    <input
+                                                        type="number"
+                                                        className="nl-input-modern"
+                                                        placeholder="0"
+                                                        value={customForm.fat}
+                                                        onChange={e => setCustomForm({ ...customForm, fat: e.target.value })}
+                                                    />
+                                                    <span className="nl-input-label">FAT</span>
+                                                </div>
+                                            </div>
+                                            <div className="nl-modal-actions">
+                                                <button className="nl-btn-cancel" onClick={closeCustomModal}>CANCEL</button>
+                                                <button className="nl-btn-confirm" onClick={handleCustomSubmit}>ADD TO LOG</button>
+                                            </div>
+                                        </div>
+                                    ) : modalTab === 'history' ? (
+                                        /* HISTORY LIST */
+                                        <div className="nl-list-section">
+                                            <div className="nl-search-bar-mini">
+                                                <FaSearch />
+                                                <input
+                                                    placeholder="Search history data..."
+                                                    value={historySearch}
+                                                    onChange={e => setHistorySearch(e.target.value)}
+                                                    autoFocus
+                                                />
+                                            </div>
+                                            <div className="nl-scroll-box">
+                                                {recentItems.length === 0 && <div className="nl-empty-msg">No history data found.</div>}
+                                                {recentItems
+                                                    .filter(item => item.foodName.toLowerCase().includes(historySearch.toLowerCase()))
+                                                    .map((item, idx) => (
+                                                        <div
+                                                            key={`hist-${idx}`}
+                                                            className="nl-list-item"
+                                                            onClick={() => handleSelectHistoryItem(item)}
+                                                        >
+                                                            <div className="nl-item-icon">{getFoodIcon(item.foodName)}</div>
+                                                            <div className="nl-item-details">
+                                                                <div className="nl-item-name">{item.foodName}</div>
+                                                                <div className="nl-item-meta">{item.calories} kcal • {item.protein}p {item.carbohydrates}c {item.fat}f</div>
+                                                            </div>
+                                                            <FaPlus className="nl-item-add" />
+                                                        </div>
+                                                    ))}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        /* RECIPES LIST */
+                                        <div className="nl-list-section">
+                                            <div className="nl-section-title">SAVED RECIPES</div>
+                                            <div className="nl-scroll-box">
+                                                {(!recipes || recipes.length === 0) && <div className="nl-empty-msg">No recipes available.</div>}
+                                                {recipes && recipes.map((recipe) => {
+                                                    const rCals = recipe.items.reduce((s, i) => s + (i.calories || 0), 0);
+                                                    const rPro = recipe.items.reduce((s, i) => s + (i.protein || 0), 0);
+                                                    return (
+                                                        <div
+                                                            key={recipe._id}
+                                                            className="nl-list-item blueprint"
+                                                            onClick={() => handleLoadRecipe(recipe)}
+                                                        >
+                                                            <div className="nl-item-icon blueprint"><FaBookOpen /></div>
+                                                            <div className="nl-item-details">
+                                                                <div className="nl-item-name">{recipe.name}</div>
+                                                                <div className="nl-item-meta">{recipe.items.length} Items • {rCals} kcal</div>
+                                                            </div>
+                                                            <span className="nl-badge-load">LOAD</span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </motion.div>
 
-            <motion.aside className="logger-preview" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}>
-                <div className="preview-card">
-                    <h4>Meal Preview</h4>
-                    <div className="preview-list">
-                        {items.length === 0 && <div className="empty">No items yet — add from search or create one.</div>}
-                        {items.map((it, i) => (
-                            <div className="preview-row" key={i}>
-                                <div className="p-name">{it.foodName || '—'}</div>
-                                <div className="p-meta">{(Number(it.calories) || 0)} kcal</div>
-                            </div>
-                        ))}
+            {/* RIGHT PANEL: DAILY OVERVIEW */}
+            <motion.div className="logger-right" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                <div className="elemental-container">
+                    {/* Header */}
+                    <div className="elemental-header">
+                        <h2>Daily Overview</h2>
+                        <span className="phase-badge">Today's Progress</span>
                     </div>
-                    <div className="preview-footer">
-                        <div className="p-total">Total: <strong>{totals.calories} kcal</strong></div>
-                        <div className="p-action">{items.length > 0 ? <button className="ghost">Ready</button> : null}</div>
+
+                    {/* 3 Macro Cards */}
+                    <div className="elemental-grid">
+                        <div className="elemental-card protein">
+                            <div className="icon-glow-container">
+                                <div className="glow-backdrop blue"></div>
+                                <FaGem className="macro-icon blue" />
+                            </div>
+                            <span className="macro-label">PROTEIN</span>
+                            <span className="macro-val">{totals.protein}g</span>
+                        </div>
+                        <div className="elemental-card carbs">
+                            <div className="icon-glow-container">
+                                <div className="glow-backdrop green"></div>
+                                <FaWater className="macro-icon green" />
+                            </div>
+                            <span className="macro-label">CARBS</span>
+                            <span className="macro-val">{totals.carbohydrates}g</span>
+                        </div>
+                        <div className="elemental-card fats">
+                            <div className="icon-glow-container">
+                                <div className="glow-backdrop orange"></div>
+                                <FaDotCircle className="macro-icon orange" />
+                            </div>
+                            <span className="macro-label">FATS</span>
+                            <span className="macro-val">{totals.fat}g</span>
+                        </div>
+                    </div>
+
+                    {/* Energy Balance (Formerly Synergy Chamber) */}
+                    <div className="synergy-chamber">
+                        <div className="sc-header">ENERGY BALANCE</div>
+
+                        <div className="sc-center">
+                            {/* Circular Progress */}
+                            <div className="circular-gauge">
+                                <svg viewBox="0 0 100 100" className="gauge-svg">
+                                    {/* Track */}
+                                    <circle cx="50" cy="50" r="45" className="gauge-track" />
+                                    {/* Progress - 2500 kcal target approx */}
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        r="45"
+                                        className="gauge-fill"
+                                        strokeDasharray="283"
+                                        strokeDashoffset={283 - (Math.min(totals.calories / 2500, 1) * 283)}
+                                        transform="rotate(-90 50 50)"
+                                    />
+                                </svg>
+                                <div className="gauge-content">
+                                    <span className="gauge-val">{totals.calories}</span>
+                                    <span className="gauge-unit">KCAL</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="sc-bars">
+                            {/* Protein Ratio */}
+                            <div className="sc-bar-group">
+                                <div className="sc-bar-label">PROTEIN RATIO</div>
+                                <div className="sc-bar-track">
+                                    <div
+                                        className="sc-bar-fill blue"
+                                        style={{ width: `${Math.min((totals.protein / (totals.protein + totals.carbohydrates + totals.fat || 1)) * 100 * 2, 100)}%` }} // Arbitrary scaling for visual
+                                    ></div>
+                                </div>
+                            </div>
+                            {/* Calorie Density */}
+                            <div className="sc-bar-group">
+                                <div className="sc-bar-label">CALORIE DENSITY</div>
+                                <div className="sc-bar-track">
+                                    <div
+                                        className="sc-bar-fill orange"
+                                        style={{ width: `${Math.min((totals.calories / 1000) * 100, 100)}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Staged Items List */}
+                    <div className="infusion-list">
+                        {items.length === 0 ? (
+                            <div className="empty-infusion">Select items to build your meal...</div>
+                        ) : (
+                            items.map((item, idx) => (
+                                <motion.div
+                                    className="infusion-item"
+                                    key={item.tempId || idx}
+                                    initial={{ opacity: 0, y: 5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                >
+                                    <div className="ii-left">
+                                        <div className={`ii-dot ${getDotColor(item)}`}></div>
+                                        <span className="ii-name">{item.servingSize > 1 ? `${item.servingSize}x ` : ''}{item.foodName}</span>
+                                    </div>
+                                    <div className="ii-right">{item.calories} kcal</div>
+                                </motion.div>
+                            ))
+                        )}
                     </div>
                 </div>
-            </motion.aside>
-            <AnimatePresence>
-                {showCustomModal && (
-                    <motion.div className="modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                        <motion.form className="custom-modal" initial={{ scale: 0.96, y: -8 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.98 }} onSubmit={handleCustomSubmit}>
-                            <h4>Create Custom Item</h4>
-                            <div className="modal-row">
-                                <input name="foodName" value={customForm.foodName} onChange={handleCustomChange} placeholder="Food name" required />
-                                <input name="calories" value={customForm.calories} onChange={handleCustomChange} placeholder="Calories" required />
-                            </div>
-                            <div className="modal-row">
-                                <input name="servingSize" value={customForm.servingSize} onChange={handleCustomChange} placeholder="Serving size" />
-                                <input name="servingUnit" value={customForm.servingUnit} onChange={handleCustomChange} placeholder="Unit" />
-                            </div>
-                            <div className="modal-row">
-                                <input name="protein" value={customForm.protein} onChange={handleCustomChange} placeholder="Protein (g)" />
-                                <input name="carbohydrates" value={customForm.carbohydrates} onChange={handleCustomChange} placeholder="Carbs (g)" />
-                                <input name="fat" value={customForm.fat} onChange={handleCustomChange} placeholder="Fat (g)" />
-                            </div>
-                            <div className="modal-actions">
-                                <button type="button" className="btn ghost" onClick={closeCustomModal}>Cancel</button>
-                                <button type="submit" className="btn primary">Add Item</button>
-                            </div>
-                        </motion.form>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            </motion.div>
         </div>
     );
 };
+
+// Helper for dot color based on dominant macro
+const getDotColor = (item) => {
+    if (item.protein > item.carbohydrates && item.protein > item.fat) return 'blue';
+    if (item.carbohydrates > item.protein && item.carbohydrates > item.fat) return 'green';
+    return 'orange'; // Fat or balanced
+};
+
+const MeterBox = ({ label, color, percent }) => (
+    <div className="meter-box">
+        <span className="meter-label" style={{ color: color }}>{label}</span>
+        <div className="meter-bar">
+            <div
+                className="meter-fill"
+                style={{ width: `${percent}%`, background: color }}
+            ></div>
+        </div>
+    </div>
+);
 
 export default NutritionLogger;

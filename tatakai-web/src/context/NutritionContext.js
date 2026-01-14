@@ -259,6 +259,18 @@ export const NutritionProvider = ({ children }) => {
         dispatch({ type: 'SET_NUTRITION_GOALS', payload: goals });
     };
 
+    const getRecentItems = useCallback(async () => {
+        if (!token) return [];
+        try {
+            const config = { headers: { 'x-auth-token': token } };
+            const res = await api.get('/api/nutrition/recent-items', config);
+            return res.data;
+        } catch (err) {
+            console.error("Failed to fetch recent items:", err);
+            return [];
+        }
+    }, [token]);
+
     return (
         <NutritionContext.Provider
             value={{
@@ -273,7 +285,8 @@ export const NutritionProvider = ({ children }) => {
                 setHydrationGoal,
                 deleteHydration,
                 updateMeal,
-                setNutritionGoals
+                setNutritionGoals,
+                getRecentItems
             }}
         >
             {children}

@@ -16,7 +16,7 @@ export const WorkoutProvider = ({ children }) => {
         setLoading(true);
         try {
             // Interceptor handles the token
-            const response = await api.get('/api/workouts?limit=50');
+            const response = await api.get('/api/workouts?limit=300');
             setWorkouts(response.data);
         } catch (error) {
             console.error("Error fetching workouts:", error);
@@ -92,6 +92,7 @@ export const WorkoutProvider = ({ children }) => {
         addWorkout,
         deleteWorkout, // <-- Add to context
         updateWorkout, // <-- Add to context
+        fetchWorkouts, // <-- Add to context
     };
 
     return (

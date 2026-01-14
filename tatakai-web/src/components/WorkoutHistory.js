@@ -48,23 +48,35 @@ const WorkoutHistory = ({ filterDate, setFilterDate, onEdit, showToast }) => {
 
         sortedWorkouts.forEach(workout => {
             if (!workout.exercises) return;
+
+            // Aggregate volume per exercise for this workout
+            // This handles cases where user logs multiple sets as separate entries
+            const sessionAggregates = {};
+
             workout.exercises.forEach(ex => {
                 const name = ex.name?.toLowerCase().trim();
                 if (!name) return;
 
-                if (!exerciseHistory[name]) {
-                    exerciseHistory[name] = [];
+                if (!sessionAggregates[name]) {
+                    sessionAggregates[name] = 0;
                 }
 
                 // Calculate volume (sets × reps × weight)
-                const volume = (Number(ex.sets) || 0) * (Number(ex.reps) || 0) * (Number(ex.weight) || 1);
+                // If weight is 0 (bodyweight), treat as 1 for volume calc to count reps
+                const weight = Number(ex.weight) || 1;
+                const volume = (Number(ex.sets) || 0) * (Number(ex.reps) || 0) * weight;
+                sessionAggregates[name] += volume;
+            });
+
+            // Push the aggregated session stats to history
+            Object.keys(sessionAggregates).forEach(name => {
+                if (!exerciseHistory[name]) {
+                    exerciseHistory[name] = [];
+                }
                 exerciseHistory[name].push({
                     workoutId: workout._id,
                     date: workout.date,
-                    sets: Number(ex.sets) || 0,
-                    reps: Number(ex.reps) || 0,
-                    weight: Number(ex.weight) || 0,
-                    volume
+                    volume: sessionAggregates[name]
                 });
             });
         });

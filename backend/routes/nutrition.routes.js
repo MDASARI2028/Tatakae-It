@@ -142,4 +142,45 @@ router.get('/progress', auth, async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+// @route   GET /api/nutrition/recent-items
+// @desc    Get recently logged unique food items
+// @access  Private
+router.get('/recent-items', auth, async (req, res) => {
+    try {
+        const recentItems = await Nutrition.aggregate([
+            // 1. Match user's logs
+            { $match: { user: new mongoose.Types.ObjectId(req.user.id) } },
+            // 2. Sort by date descending (newest first)
+            { $sort: { date: -1, createdAt: -1 } },
+            // 3. Limit to last 50 logs to keep performance high
+            { $limit: 50 },
+            // 4. Unwind items
+            { $unwind: "$items" },
+            // 5. Group by food name to find unique entries, keeping the details of the most recent one
+            {
+                $group: {
+                    _id: { $toLower: "$items.foodName" }, // Case-insensitive grouping
+                    foodName: { $first: "$items.foodName" },
+                    calories: { $first: "$items.calories" },
+                    protein: { $first: "$items.protein" },
+                    carbohydrates: { $first: "$items.carbohydrates" },
+                    fat: { $first: "$items.fat" },
+                    servingSize: { $first: "$items.servingSize" },
+                    servingUnit: { $first: "$items.servingUnit" },
+                    lastLogged: { $first: "$date" }
+                }
+            },
+            // 6. Sort by last logged date again (since group messes up order)
+            { $sort: { lastLogged: -1 } },
+            // 7. Limit to top 20 unique items
+            { $limit: 20 }
+        ]);
+
+        res.json(recentItems);
+    } catch (err) {
+        console.error("Recent Items Error:", err.message);
+        res.status(500).send('Server Error');
+    }
+});
 module.exports = router;

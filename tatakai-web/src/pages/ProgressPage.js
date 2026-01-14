@@ -15,11 +15,16 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 const ProgressPage = () => {
     const { token } = useContext(AuthContext);
-    const { workouts } = useContext(WorkoutContext);
+    const { workouts, fetchWorkouts } = useContext(WorkoutContext);
     const { templates, refreshTemplates } = useContext(TemplateContext);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [bodyMetrics, setBodyMetrics] = useState([]);
     const [timeRange, setTimeRange] = useState('month'); // 'week', 'month', 'year', 'all'
+
+    useEffect(() => {
+        // Force refresh workouts when entering the page to ensure latest data
+        if (token) fetchWorkouts();
+    }, [token, fetchWorkouts]);
 
     useEffect(() => {
         if (templates.length === 0 && token) refreshTemplates();
@@ -71,14 +76,30 @@ const ProgressPage = () => {
 
             // Extract history for this exercise from filtered workouts
             filteredWorkouts.forEach(w => {
-                const matchedEx = w.exercises.find(we => we.name.toLowerCase() === exName);
-                if (matchedEx) {
+                // Find ALL matching exercises in this workout (in case of multiple sets logged separately)
+                const matchedExercises = w.exercises.filter(we => we.name.toLowerCase() === exName);
+
+                if (matchedExercises.length > 0) {
+                    // Aggregate stats for the day
+                    const maxWeight = Math.max(...matchedExercises.map(e => Number(e.weight) || 0));
+
+                    // Volume = Sum of (Weight * Sets * Reps) for each entry
+                    const dayVolume = matchedExercises.reduce((acc, e) => {
+                        const weight = Number(e.weight) || 0;
+                        const sets = Number(e.sets) || 1; // Default to 1 if missing
+                        const reps = Number(e.reps) || 0;
+                        return acc + (weight * sets * reps);
+                    }, 0);
+
+                    const totalSets = matchedExercises.reduce((acc, e) => acc + (Number(e.sets) || 0), 0);
+                    const totalReps = matchedExercises.reduce((acc, e) => acc + ((Number(e.sets) || 1) * (Number(e.reps) || 0)), 0);
+
                     history.push({
                         date: w.date,
-                        weight: Number(matchedEx.weight) || 0,
-                        sets: Number(matchedEx.sets) || 0,
-                        reps: Number(matchedEx.reps) || 0,
-                        volume: (Number(matchedEx.sets) * Number(matchedEx.reps) * Number(matchedEx.weight)) || 0
+                        weight: maxWeight, // Taking the max weight of the day for the chart
+                        sets: totalSets,
+                        reps: totalReps,
+                        volume: dayVolume
                     });
                 }
             });
@@ -86,14 +107,6 @@ const ProgressPage = () => {
             if (history.length === 0) return null;
 
             // Comparison: Current (Latest) vs Previous (Second Latest in TOTAL history, not just filtered)
-            // To get accurate "Previous", we might need to look beyond the filter. 
-            // For simplicity/performance, let's use the last 2 from the current filtered set if available, 
-            // OR we'd need a separate lookup. Let's stick to filtered set for visual consistency, 
-            // or better: Find the absolute latest stats from ALL workouts for the comparison box.
-
-            // Let's use the `filteredWorkouts` for the Chart, but find the "Latest vs Previous" from global workouts for the Stats Card.
-            // ... Actually, users usually compare "Recent Performance".
-
             const latest = history[history.length - 1];
             const previous = history.length > 1 ? history[history.length - 2] : null;
 
@@ -125,7 +138,8 @@ const ProgressPage = () => {
                 latest,
                 previous,
                 comparison,
-                chartData
+                chartData,
+                history // <--- Added this
             };
         }).filter(Boolean);
     }, [filteredWorkouts, selectedTemplate]);
@@ -281,54 +295,119 @@ const ProgressPage = () => {
                                         transition={{ duration: 0.5, delay: idx * 0.1 }}
                                     >
                                         {/* Main Analysis Card */}
-                                        <div className="exercise-analysis-card">
-                                            <div className="card-header">
-                                                <h3>{item.name}</h3>
-                                                <span className="badge">Total Volume: {item.latest.volume}</span>
-                                            </div>
-
-                                            {/* Comparison now in side insight, keeping just current stats or chart here? 
-                                                Actually, user said "beside ... giving some insight". 
-                                                Let's keep the main chart and current stats here, move DIFFs to insight.
-                                            */}
-                                            <div className="current-stats-row">
-                                                <div className="stat-pill">
-                                                    <span className="label">Weight</span>
-                                                    <span className="value">{item.latest.weight}kg</span>
+                                        <div className="exercise-analysis-card glass-panel">
+                                            <div className="card-header-row">
+                                                <div>
+                                                    <h3>{item.name}</h3>
+                                                    <span className="subtitle-date">Last: {new Date(item.latest.date).toLocaleDateString()}</span>
                                                 </div>
-                                                <div className="stat-pill">
-                                                    <span className="label">Sets x Reps</span>
-                                                    <span className="value">{item.latest.sets} x {item.latest.reps}</span>
+                                                <div className="header-badges">
+                                                    <div className="metric-badge volume">
+                                                        <span className="label">Vol</span>
+                                                        <span className="val">{item.latest.volume}</span>
+                                                    </div>
+                                                    <div className="metric-badge weight">
+                                                        <span className="label">Max</span>
+                                                        <span className="val">{item.latest.weight}kg</span>
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            {/* Chart */}
-                                            <div className="mini-chart-container">
+                                            <div className="current-stats-grid">
+                                                <div className="stat-box">
+                                                    <span className="kpi-label">Sets</span>
+                                                    <span className="kpi-value">{item.latest.sets}</span>
+                                                </div>
+                                                <div className="stat-box">
+                                                    <span className="kpi-label">Avg Reps</span>
+                                                    <span className="kpi-value">{Math.round(item.latest.reps / (item.latest.sets || 1))}</span>
+                                                </div>
+                                                <div className="stat-box highlight">
+                                                    <span className="kpi-label">Volume</span>
+                                                    <span className="kpi-value">{item.latest.volume}</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Advanced Dual-Axis Chart */}
+                                            <div className="advanced-chart-container">
                                                 <Line
-                                                    data={item.chartData}
+                                                    data={{
+                                                        labels: item.chartData.labels,
+                                                        datasets: [
+                                                            {
+                                                                label: 'Total Volume',
+                                                                data: item.history.map(h => h.volume),
+                                                                borderColor: '#a855f7', // Purple-500
+                                                                backgroundColor: (context) => {
+                                                                    const ctx = context.chart.ctx;
+                                                                    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                                                                    gradient.addColorStop(0, 'rgba(168, 85, 247, 0.5)');
+                                                                    gradient.addColorStop(1, 'rgba(168, 85, 247, 0.0)');
+                                                                    return gradient;
+                                                                },
+                                                                fill: true,
+                                                                yAxisID: 'y1',
+                                                                tension: 0.4,
+                                                                pointRadius: 4,
+                                                                pointHoverRadius: 8
+                                                            },
+                                                            {
+                                                                label: 'Max Weight',
+                                                                data: item.history.map(h => h.weight),
+                                                                borderColor: '#22d3ee', // Cyan-400
+                                                                backgroundColor: 'rgba(34, 211, 238, 0.1)',
+                                                                borderDash: [5, 5],
+                                                                yAxisID: 'y2', // Right Axis
+                                                                tension: 0.2,
+                                                                pointRadius: 3,
+                                                                pointHoverRadius: 6
+                                                            }
+                                                        ]
+                                                    }}
                                                     options={{
                                                         responsive: true,
                                                         maintainAspectRatio: false,
+                                                        interaction: {
+                                                            mode: 'index',
+                                                            intersect: false,
+                                                        },
                                                         plugins: {
-                                                            legend: { display: false },
+                                                            legend: {
+                                                                display: true,
+                                                                labels: { color: '#e2e8f0', usePointStyle: true }
+                                                            },
                                                             tooltip: {
-                                                                backgroundColor: 'rgba(139, 92, 246, 0.9)',
+                                                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
                                                                 titleColor: '#fff',
-                                                                bodyColor: '#fff',
-                                                                padding: 12,
-                                                                cornerRadius: 8,
-                                                                displayColors: false,
+                                                                bodyColor: '#cbd5e1',
+                                                                borderColor: '#334155',
+                                                                borderWidth: 1,
+                                                                padding: 10,
                                                                 callbacks: {
-                                                                    label: (context) => ` ${context.parsed.y} kg`
+                                                                    label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y}`
                                                                 }
                                                             }
                                                         },
                                                         scales: {
-                                                            x: { display: false },
-                                                            y: {
+                                                            x: {
+                                                                display: false,
+                                                                grid: { display: false }
+                                                            },
+                                                            y1: {
+                                                                type: 'linear',
                                                                 display: true,
-                                                                grid: { color: 'rgba(138, 43, 226, 0.1)' },
-                                                                ticks: { color: 'rgba(148, 163, 184, 0.8)' }
+                                                                position: 'left',
+                                                                grid: { color: 'rgba(148, 163, 184, 0.1)' },
+                                                                ticks: { color: '#a855f7' }, // Purple Text for Volume
+                                                                title: { display: true, text: 'Volume', color: '#a855f7', font: { size: 10 } }
+                                                            },
+                                                            y2: {
+                                                                type: 'linear',
+                                                                display: true,
+                                                                position: 'right',
+                                                                grid: { display: false },
+                                                                ticks: { color: '#22d3ee' }, // Cyan Text for Weight
+                                                                title: { display: true, text: 'Weight (kg)', color: '#22d3ee', font: { size: 10 } }
                                                             }
                                                         }
                                                     }}
@@ -336,31 +415,51 @@ const ProgressPage = () => {
                                             </div>
                                         </div>
 
-                                        {/* Side Insight Card (Fills the gap) */}
-                                        <div className="side-insight-card">
-                                            <h4>Quick Insights</h4>
+                                        {/* Enhanced Side Insight Card */}
+                                        <div className="side-insight-card glow-border">
+                                            <div className="insight-header">
+                                                <FaFireAlt className="insight-icon" />
+                                                <h4>Performance Analysis</h4>
+                                            </div>
+
                                             {item.comparison ? (
-                                                <div className="insight-content">
-                                                    <div className="insight-item">
-                                                        <span>vs Last Session</span>
-                                                        <div className={`diff-tag ${item.comparison.weightDiff >= 0 ? 'pos' : 'neg'}`}>
-                                                            {item.comparison.weightDiff > 0 ? '+' : ''}{item.comparison.weightDiff}kg
+                                                <div className="insight-body">
+                                                    <div className="insight-row primary">
+                                                        <span>VS Last Session (Volume)</span>
+                                                        <div className={`diff-tag large ${item.comparison.volumeChange >= 0 ? 'pos' : 'neg'}`}>
+                                                            {item.comparison.volumeChange > 0 ? '▲' : '▼'} {Math.abs(item.comparison.volumeChange)}%
                                                         </div>
                                                     </div>
-                                                    <div className="insight-item">
-                                                        <span>Volume Change</span>
-                                                        <div className={`diff-tag ${item.comparison.volumeChange >= 0 ? 'pos' : 'neg'}`}>
-                                                            {item.comparison.volumeChange > 0 ? '+' : ''}{item.comparison.volumeChange}%
+
+                                                    <div className="insight-details">
+                                                        <div className="detail-item">
+                                                            <span>Volume Diff</span>
+                                                            <strong className={item.comparison.volumeDiff >= 0 ? 'text-success' : 'text-danger'}>
+                                                                {item.comparison.volumeDiff > 0 ? '+' : ''}{item.comparison.volumeDiff}
+                                                            </strong>
+                                                        </div>
+                                                        <div className="detail-item">
+                                                            <span>Weight Diff</span>
+                                                            <strong className={item.comparison.weightDiff >= 0 ? 'text-cyan' : 'text-danger'}>
+                                                                {item.comparison.weightDiff > 0 ? '+' : ''}{item.comparison.weightDiff}kg
+                                                            </strong>
                                                         </div>
                                                     </div>
-                                                    <p className="insight-tip">
-                                                        {item.comparison.volumeChange > 0
-                                                            ? "Great progress! You're overloading effectively."
-                                                            : "Keep pushing! Consistency is key."}
-                                                    </p>
+
+                                                    <div className="insight-verdict">
+                                                        {item.comparison.volumeChange > 5 ? (
+                                                            <p>🚀 <strong>Significant Overload!</strong> Your total workload increased nicely. Keep this intensity!</p>
+                                                        ) : item.comparison.volumeChange < -5 ? (
+                                                            <p>📉 <strong>Volume Drop.</strong> De-load or just a lighter day? Rest up!</p>
+                                                        ) : (
+                                                            <p>⚖️ <strong>Sustained Effort.</strong> Consistency builds muscle. Good hold.</p>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             ) : (
-                                                <p className="insight-tip">Not enough data for insights yet. Keep logging!</p>
+                                                <div className="insight-body empty">
+                                                    <p>Keep logging to unlock progressive analysis!</p>
+                                                </div>
                                             )}
                                         </div>
                                     </motion.div>

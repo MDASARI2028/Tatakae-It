@@ -1,12 +1,12 @@
 <div align="center">
 
-# ⚔️ TATAKAI IT ⚔️
+# TATAKAI IT
 
-### *"THE SYSTEM USES YOU — YOU USE THE SYSTEM"*
+### "THE SYSTEM USES YOU — YOU USE THE SYSTEM"
 
-**Your personal fitness and nutrition command center. Track workouts, log meals, monitor progress, and level up your health game with style.**
+**A comprehensive fitness and nutrition command center. Track workouts, log meals, monitor progress, and gamify your health journey.**
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-tatakai--it--web.vercel.app-22D3EE?style=for-the-badge)](https://tatakai-it-web.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-tatakai--it--web.vercel.app-22D3EE?style=for-the-badge)](https://tatakai-it-web.vercel.app)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-Express_5-339933?style=flat-square&logo=node.js)](https://nodejs.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
@@ -15,52 +15,53 @@
 
 </div>
 
-## 🎮 What Makes It Special
+## Overview
 
-Built with a **cyberpunk-inspired dark UI** featuring:
-- 🌌 Constellation particle backgrounds
-- ✨ Glassmorphism effects
-- 💧 Animated water-fill progress indicators
-- 🔥 Neon glow effects
-- 📊 Smooth Framer Motion animations
+Tatakai IT is built with a **cyberpunk-inspired dark UI** that prioritizes both aesthetics and functionality. It features:
+- Constellation particle backgrounds
+- Glassmorphism UI elements
+- Animated water-fill hydration tracking
+- Neon glow effects
+- Smooth, GPU-accelerated animations
 
 ---
 
-## 🏋️ Features
+## Key Features
 
-### 💪 Fitness Tracking
+### Fitness Tracking
 
 | Feature | Description |
 |---------|-------------|
 | **Workout Logger** | Log sets, reps, weight, duration, and calories for any exercise |
-| **Workout Templates** | Save favorite workouts and log them in seconds |
-| **Body Metrics** | Track weight, body fat %, waist, chest, and hip measurements |
-| **Progress Charts** | Interactive visualizations of your gains over time |
-| **Progressive Overload** | See volume change indicators (🟢 improved / 🔴 declined) |
+| **Workout Templates** | Save custom workout routines for quick logging |
+| **Body Metrics** | Track weight, body fat %, and body measurements |
+| **Progress Charts** | Interactive visualizations of performance over time |
+| **Progressive Overload** | Visual indicators for volume improvement vs decline |
 
-### 🥗 Nutrition Tracking
+### Nutrition Tracking
 
 | Feature | Description |
 |---------|-------------|
-| **Meal Logger** | Track calories, protein, carbs, and fats for every meal |
-| **Food Search** | Integrated database with thousands of foods |
-| **Recipe Manager** | Save meal combos and log them with one click |
-| **Nutrition History** | Sci-Fi tactical UI with summary cards and meal logs |
-| **Daily Goals** | Visual progress rings for hitting your macros |
+| **Meal Logger** | Track calories, protein, carbohydrates, and fats |
+| **Food Search** | Integrated database for food lookup |
+| **Recipe Manager** | Save frequently eaten meal combinations |
+| **Nutrition History** | Detailed log view with daily summary cards |
+| **Daily Goals** | Visual progress rings for macro targets |
 
-### 💧 Hydration Tracker
+### Hydration Tracker
 
-- **Circular Progress Indicator** with animated water fill
-- **Rising Bubbles Animation** inside the water
-- **Glass Shine Effect** for realistic container look
-- **Digital Display Font** (Orbitron) with cyan glow
-- **Quick Add Buttons** (+250ml, +500ml, +750ml)
-- **Tactical Sidebar** with tips and phase indicator
+A distinct module for tracking water intake featuring:
+- Circular progress indicator with animated water fill
+- Realistic water effects including bubbles and surface waves
+- Glass container aesthetic with dynamic lighting
+- Quick-add presets (+250ml, +500ml, +750ml)
+- Daily hydration goal management
 
-### 🎮 Level Up Mode
+### Level Up Mode
 
-Turn your fitness journey into an RPG! Earn XP and climb the ranks:
+Gamify your fitness consistency with an XP system. Logging workouts and improving performance earns XP to climb ranks.
 
+**Ranking System:**
 ```
 E (Beginner)     →  0 XP
 D (Bronze)       →  8,000 XP
@@ -72,16 +73,16 @@ National (Ruby)  →  115,000 XP
 Monarch (Violet) →  150,000 XP
 ```
 
-**XP System:**
-- ✅ +25 XP for logging workouts
-- ✅ +15 XP for new exercise PRs
-- ✅ +10 XP per 10% volume improvement
-- ✅ Streak bonuses (7/14/30 days)
-- ❌ -50 XP per missed day
+**XP Rules:**
+- +25 XP: Logging a workout
+- +15 XP: New exercise Personal Record (PR)
+- +10 XP: Per 10% volume improvement
+- Streak Bonuses: awarded at 7, 14, and 30 days
+- Penalty: -50 XP per missed day (discourages inconsistency)
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 <div align="center">
 
@@ -96,90 +97,79 @@ Monarch (Violet) →  150,000 XP
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js v18+
-- MongoDB (local or Atlas)
+- MongoDB (local instance or Atlas connection string)
 
 ### Installation
 
-```bash
-# Clone the repo
-git clone https://github.com/MDASARI2028/Tatakai-It-Web-MVP.git
-cd Tatakai-It-Web-MVP
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/MDASARI2028/Tatakai-It-Web-MVP.git
+   cd Tatakai-It-Web-MVP
+   ```
 
-# Backend setup
+2. **Setup Backend**
+   ```bash
+   cd backend
+   npm install
+   ```
+   Create a `.env` file in the `backend` directory:
+   ```env
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_secure_secret_key
+   PORT=5000
+   ```
+
+3. **Setup Frontend**
+   ```bash
+   cd ../tatakai-web
+   npm install
+   ```
+
+### Running the Application
+
+Open two terminal instances:
+
+**Terminal 1 (Backend)**
+```bash
 cd backend
-npm install
-
-# Create .env file
-echo "MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_secret_key
-PORT=5000" > .env
-
-# Frontend setup
-cd ../tatakai-web
-npm install
+npm start
 ```
 
-### Run Development
-
+**Terminal 2 (Frontend)**
 ```bash
-# Terminal 1 - Backend
-cd backend && npm start
-
-# Terminal 2 - Frontend
-cd tatakai-web && npm start
+cd tatakai-web
+npm start
 ```
 
-🌐 **Frontend:** `http://localhost:3000`  
-🔌 **Backend API:** `http://localhost:5000`
+- **Frontend:** `http://localhost:3000`
+- **Backend API:** `http://localhost:5000`
 
 ---
 
-## 📱 Screenshots
+## Design System
 
-<div align="center">
-
-### 🏠 Dashboard
-*Cyberpunk-inspired command center with quick access to all features*
-
-### 💧 Hydration Tracker
-*Animated water fill with bubbles, glass shine effect, and digital display*
-
-### 📊 Nutrition History
-*Tactical UI with summary cards, progress bars, and meal logs*
-
-### 🎮 Level Up System
-*Gamified fitness tracking with ranks and XP progression*
-
-</div>
+The application follows a strict design philosophy:
+- **Color Palette:** Deep blacks for background, Neon Cyan (#22D3EE) for primary accents, Vibrant Purple (#A855F7) for secondary elements.
+- **Typography:** *Orbitron* for digital data displays, *Rajdhani* for UI text and labels.
+- **Responsiveness:** Fully responsive design adapting to mobile, tablet, and desktop viewports.
 
 ---
 
-## 🎨 Design Philosophy
+## Contributing
 
-> **"Premium meets functional"**
-
-- **Color Palette:** Deep blacks, neon cyans (#22D3EE), vibrant purples (#A855F7)
-- **Typography:** Orbitron for digital displays, Rajdhani for tactical text
-- **Effects:** GPU-accelerated animations for smooth performance
-- **Responsive:** Works flawlessly on mobile, tablet, and desktop
-
----
-
-## 🤝 Contributing
-
-1. Fork this repo
-2. Create feature branch: `git checkout -b feature/awesome`
-3. Commit changes: `git commit -m 'Add awesome feature'`
-4. Push: `git push origin feature/awesome`
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/NewFeature`)
+3. Commit your changes (`git commit -m 'Add some NewFeature'`)
+4. Push to the branch (`git push origin feature/NewFeature`)
 5. Open a Pull Request
 
 ---
 
-## 📄 License
+## License
 
 ISC License
 
@@ -187,9 +177,7 @@ ISC License
 
 <div align="center">
 
-**Built for people who take their fitness seriously but want tracking to be painless.**
-
-⚔️ *Train Hard. Track Smart. Level Up.* ⚔️
+**Train Hard. Track Smart.**
 
 [![Website](https://img.shields.io/badge/Visit-tatakai--it--web.vercel.app-22D3EE?style=for-the-badge)](https://tatakai-it-web.vercel.app)
 

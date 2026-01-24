@@ -33,8 +33,10 @@ const MonarchsRoad = ({ data, user, goal }) => {
             let status = 'future';
             if (loggedDataMap.has(dateString)) {
                 const dayData = loggedDataMap.get(dateString);
-                const calorieDiff = Math.abs(dayData.totalCalories - goal);
-                status = (calorieDiff < goal * 0.1) ? 'flawless' : 'standard';
+                // Use goal with fallback to 2200 if undefined
+                const effectiveGoal = goal || 2200;
+                const calorieDiff = Math.abs(dayData.totalCalories - effectiveGoal);
+                status = (calorieDiff < effectiveGoal * 0.1) ? 'flawless' : 'standard';
             } else if (new Date() > date) {
                 status = 'broken';
             }

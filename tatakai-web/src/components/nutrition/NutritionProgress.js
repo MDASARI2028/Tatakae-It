@@ -165,7 +165,7 @@ const NutritionProgress = () => {
 
                         <motion.div className="chart-container" initial={{ scale: 0.98 }} animate={{ scale: 1 }}>
                             <h4><FaFire /> Calorie Trend</h4>
-                            <CalorieTrendChart data={progressData} goal={user.nutritionGoals.calorieGoal} />
+                            <CalorieTrendChart data={progressData} goal={user.nutritionGoals?.calorieGoal || 2200} />
                         </motion.div>
 
                         <motion.div className="chart-container" initial={{ scale: 0.98 }} animate={{ scale: 1 }}>
@@ -181,7 +181,7 @@ const NutritionProgress = () => {
                             <MonarchsRoad
                                 data={progressData}
                                 user={user}
-                                goal={user.nutritionGoals.calorieGoal}
+                                goal={user.nutritionGoals?.calorieGoal || 2200}
                             />
                         </motion.div>
                     </div>

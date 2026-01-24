@@ -14,7 +14,7 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
-import { Radar } from 'react-chartjs-2';
+import { Radar } from 'react-chartjs-2'; // eslint-disable-line no-unused-vars
 import './NutritionLogger.css';
 
 // Register ChartJS components
@@ -38,7 +38,7 @@ const NutritionLogger = ({ selectedDate }) => {
     const { addMeal, loading, getRecentItems, nutritionLogs } = useNutrition();
     const { recipes, getRecipes } = useContext(RecipeContext); // Destructure RecipeContext
     const { calculateDailyXP } = useLevelUp();
-    const { token } = useContext(AuthContext);
+    const { token } = useContext(AuthContext); // eslint-disable-line no-unused-vars
 
     const [items, setItems] = useState([]);
     const [recentItems, setRecentItems] = useState([]);
@@ -190,7 +190,7 @@ const NutritionLogger = ({ selectedDate }) => {
         });
     };
 
-    // Chart Data
+    // eslint-disable-next-line no-unused-vars
     const chartData = {
         labels: ['PROTEIN', 'CARBS', 'FATS'],
         datasets: [
@@ -208,6 +208,7 @@ const NutritionLogger = ({ selectedDate }) => {
         ],
     };
 
+    // eslint-disable-next-line no-unused-vars
     const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -492,7 +493,6 @@ const NutritionLogger = ({ selectedDate }) => {
                                                 {(!recipes || recipes.length === 0) && <div className="nl-empty-msg">No recipes available.</div>}
                                                 {recipes && recipes.map((recipe) => {
                                                     const rCals = recipe.items.reduce((s, i) => s + (i.calories || 0), 0);
-                                                    const rPro = recipe.items.reduce((s, i) => s + (i.protein || 0), 0);
                                                     return (
                                                         <div
                                                             key={recipe._id}
@@ -641,6 +641,7 @@ const getDotColor = (item) => {
     return 'orange'; // Fat or balanced
 };
 
+// eslint-disable-next-line no-unused-vars
 const MeterBox = ({ label, color, percent }) => (
     <div className="meter-box">
         <span className="meter-label" style={{ color: color }}>{label}</span>

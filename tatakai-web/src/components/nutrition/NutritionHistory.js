@@ -2,7 +2,7 @@ import React, { useMemo, useState, useContext } from 'react';
 import { useNutrition } from '../../context/NutritionContext';
 import { RecipeContext } from '../../context/RecipeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaSave, FaEdit, FaTrash, FaUtensils, FaPlusCircle, FaFire, FaGem, FaTint, FaBullseye } from 'react-icons/fa';
+import { FaSave, FaEdit, FaTrash, FaUtensils, FaFire, FaGem, FaTint, FaBullseye } from 'react-icons/fa';
 import { HiViewGrid } from 'react-icons/hi';
 import './NutritionHistory.css';
 import EditMealModal from './EditMealModal';
@@ -47,7 +47,7 @@ const NutritionHistory = () => {
     }
 
     const goals = { calories: 2500, protein: 180, carbohydrates: 300, fat: 80 };
-    const remaining = goals.calories - dailyTotals.calories;
+
 
     return (
         <div className="nh-container">

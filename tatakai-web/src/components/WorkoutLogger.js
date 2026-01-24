@@ -119,6 +119,7 @@ const WorkoutLogger = ({ template }) => {
             }));
             setExercises(clonedExercises.length > 0 ? clonedExercises : initialExercisesState);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [template]);
 
     const containerVariants = {

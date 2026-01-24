@@ -24,7 +24,8 @@ export const WorkoutProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    }, [token]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         if (token) {

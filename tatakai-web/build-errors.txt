@@ -1,0 +1,34 @@
+﻿
+> frontend@0.1.0 build
+> react-scripts build
+
+Creating an optimized production build...
+
+Treating warnings as errors because process.env.CI = true.
+Most CI servers set it automatically.
+
+Failed to compile.
+
+[eslint] 
+src\components\WorkoutLogger.js
+  Line 122:8:  React Hook useEffect has a missing dependency: 'initialExercisesState'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\components\nutrition\MonarchsRoad\MonarchsRoad.js
+  Line 44:8:  React Hook useMemo has a missing dependency: 'user'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\components\nutrition\NutritionHistory.js
+  Line 5:47:   'FaPlusCircle' is defined but never used        no-unused-vars
+  Line 50:11:  'remaining' is assigned a value but never used  no-unused-vars
+
+src\components\nutrition\NutritionLogger.js
+  Line 17:10:   'Radar' is defined but never used                  no-unused-vars
+  Line 41:13:   'token' is assigned a value but never used         no-unused-vars
+  Line 194:11:  'chartData' is assigned a value but never used     no-unused-vars
+  Line 211:11:  'chartOptions' is assigned a value but never used  no-unused-vars
+  Line 495:59:  'rPro' is assigned a value but never used          no-unused-vars
+  Line 644:7:   'MeterBox' is assigned a value but never used      no-unused-vars
+
+src\context\WorkoutContext.js
+  Line 27:8:  React Hook useCallback has an unnecessary dependency: 'token'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+
+

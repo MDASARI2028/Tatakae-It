@@ -41,7 +41,7 @@ const MonarchsRoad = ({ data, period, user, goal }) => {
             road.push({ day: dayNumber, status, x, y });
         }
         return road;
-    }, [data, period, goal]);
+    }, [data, goal, user]);
 
     // Calculate the total width needed for the path
     const roadWidth = (period * 80) + 100;

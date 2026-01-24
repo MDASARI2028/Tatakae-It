@@ -1,0 +1,16 @@
+﻿
+> frontend@0.1.0 build
+> react-scripts build
+
+Creating an optimized production build...
+
+Treating warnings as errors because process.env.CI = true.
+Most CI servers set it automatically.
+
+Failed to compile.
+
+[eslint] 
+src\components\nutrition\MonarchsRoad\MonarchsRoad.js
+  Line 44:8:  React Hook useMemo has an unnecessary dependency: 'period'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+
+

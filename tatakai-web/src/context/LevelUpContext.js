@@ -7,7 +7,7 @@ import api from '../api/axios';
 const LevelUpContext = createContext();
 
 // Module-level flag to prevent duplicate API calls (persists across React Strict Mode remounts)
-let hasCalculatedThisSession = false;
+// Module-level flag removed (unused)
 
 export const useLevelUp = () => {
     const context = useContext(LevelUpContext);
@@ -108,7 +108,6 @@ export const LevelUpProvider = ({ children }) => {
             isCalculatingRef.current = true;
             if (!force) {
                 // Only set session flags if it's the natural "on-load" check
-                hasCalculatedThisSession = true;
                 setHasCalculatedToday(true);
             }
 
@@ -148,7 +147,7 @@ export const LevelUpProvider = ({ children }) => {
             setLoading(false);
             isCalculatingRef.current = false;
             // Reset flags on error to allow retry
-            hasCalculatedThisSession = false;
+            // Reset flags on error to allow retry
             setHasCalculatedToday(false);
             throw err;
         }
@@ -166,7 +165,7 @@ export const LevelUpProvider = ({ children }) => {
 
             if (res.data.success) {
                 // Reset all guards to allow recalculation
-                hasCalculatedThisSession = false;
+                // Reset all guards to allow recalculation
                 setHasCalculatedToday(false);
                 await fetchLevelUpStats();
             }

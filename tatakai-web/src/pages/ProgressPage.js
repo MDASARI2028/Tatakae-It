@@ -4,8 +4,8 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 import { AuthContext } from '../context/AuthContext';
 import { WorkoutContext } from '../context/WorkoutContext';
 import { TemplateContext } from '../context/TemplateContext';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaTrophy, FaFireAlt, FaChartLine, FaBullseye, FaCalendarAlt, FaArrowUp, FaArrowDown, FaDumbbell } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import { FaFireAlt, FaChartLine, FaBullseye, FaCalendarAlt } from 'react-icons/fa';
 import BackButton from '../components/common/BackButton';
 import api from '../api/axios';
 import './ProgressPage.css';

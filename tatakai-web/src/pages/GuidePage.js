@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-    FaDumbbell, FaAppleAlt, FaBolt, FaChartLine, FaHistory,
+    FaDumbbell, FaAppleAlt, FaBolt, FaChartLine,
     FaFire, FaTrophy, FaBed, FaArrowUp, FaArrowDown, FaHome,
     FaChevronDown, FaChevronUp
 } from 'react-icons/fa';

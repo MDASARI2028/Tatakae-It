@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 import { WorkoutContext } from '../../context/WorkoutContext';
 import { motion } from 'framer-motion';
-import { FaFire, FaDumbbell, FaCalendarCheck, FaChartBar } from 'react-icons/fa';
+import { FaFire, FaDumbbell, FaCalendarCheck } from 'react-icons/fa';
 import './FitnessSummary.css';
 
 const FitnessSummary = () => {

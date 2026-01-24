@@ -32,9 +32,9 @@
 .nh-glow-dot {
     width: 8px;
     height: 8px;
-    background: #A855F7;
+    background: #7B3FE4;
     border-radius: 50%;
-    box-shadow: 0 0 10px #A855F7, 0 0 20px #A855F7;
+    box-shadow: 0 0 10px #7B3FE4, 0 0 20px #7B3FE4;
 }
 
 .nh-section-header h2 {
@@ -73,7 +73,7 @@
 }
 
 .nh-card:hover .nh-icon-box.purple {
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+    box-shadow: 0 0 15px rgba(123, 63, 228, 0.3);
 }
 
 .nh-card:hover .nh-icon-box.blue {
@@ -100,8 +100,8 @@
 }
 
 .nh-icon-box.purple {
-    background: rgba(168, 85, 247, 0.15);
-    color: #A855F7;
+    background: rgba(123, 63, 228, 0.15);
+    color: #7B3FE4;
 }
 
 .nh-icon-box.blue {
@@ -184,8 +184,8 @@
 }
 
 .nh-progress-fill.purple {
-    background: #A855F7;
-    box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
+    background: #7B3FE4;
+    box-shadow: 0 0 12px rgba(123, 63, 228, 0.6);
 }
 
 .nh-progress-fill.blue {
@@ -239,7 +239,7 @@
 }
 
 .nh-meal-icon {
-    color: #A78BFA;
+    color: #7B3FE4;
     font-size: 1.1rem;
 }
 
@@ -278,8 +278,8 @@
 }
 
 .nh-meal-actions button[title="Save Recipe"]:hover {
-    color: #A855F7;
-    text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+    color: #7B3FE4;
+    text-shadow: 0 0 10px rgba(123, 63, 228, 0.5);
 }
 
 .nh-meal-actions button[title="Edit"]:hover {
@@ -525,7 +525,7 @@
 }
 
 .nh-btn-filled {
-    background: linear-gradient(135deg, #7C3AED, #9333EA);
+    background: linear-gradient(135deg, #6423C2, #7B3FE4);
     border: none;
     color: #FFFFFF;
     padding: 0.6rem 1.5rem;
@@ -537,12 +537,12 @@
     cursor: pointer;
     font-family: 'Rajdhani', sans-serif;
     transition: all 0.2s;
-    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+    box-shadow: 0 4px 15px rgba(123, 63, 228, 0.3);
 }
 
 .nh-btn-filled:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+    box-shadow: 0 6px 20px rgba(123, 63, 228, 0.4);
 }
 
 /* ===== FOOTER ===== */

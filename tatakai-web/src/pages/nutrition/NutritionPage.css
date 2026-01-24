@@ -1,25 +1,28 @@
 /* Nutrition Page - Single Screen Layout */
+/* Nutrition Page - Single Screen Layout */
 .nutrition-page {
     min-height: calc(100vh - 80px);
-    /* 80px for header */
     display: flex;
     flex-direction: column;
     padding: 0 1rem 1rem 1rem;
-    /* Reduced padding */
+    /* Zero top padding */
     justify-content: flex-start;
-    /* Ensure top alignment */
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .nutrition-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
-    padding-top: 1rem;
+    margin-bottom: 1.5rem;
+    /* Increased to push tabs down */
+    padding-top: 0;
+    /* Removed padding */
+    margin-top: -0.5rem;
+    /* Pull up */
     flex-wrap: wrap;
-    /* Allow wrapping */
     gap: 1rem;
-    /* Gap between wrapped items */
 }
 
 @media (max-width: 600px) {

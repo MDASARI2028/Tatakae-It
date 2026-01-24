@@ -40,10 +40,10 @@ const HunterProfile = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 transition-all duration-300 shadow-lg hover:shadow-purple-500/50 group"
+                className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-primary to-secondary hover:from-primary hover:to-secondary transition-all duration-300 shadow-lg hover:shadow-primary/50 group"
             >
                 <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full blur opacity-0 group-hover:opacity-100 transition duration-300"></div>
                     <FaUserCircle className="relative text-2xl text-white" />
                 </div>
                 <div className="hidden md:flex flex-col items-start">
@@ -64,30 +64,30 @@ const HunterProfile = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute left-0 mt-2 w-56 max-w-[90vw] rounded-xl bg-slate-900/95 backdrop-blur border border-purple-500/30 shadow-2xl shadow-purple-900/50 overflow-hidden z-50"
+                        className="absolute left-0 mt-2 w-56 max-w-[90vw] rounded-xl bg-slate-900/95 backdrop-blur border border-primary/30 shadow-2xl shadow-primary/50 overflow-hidden z-50"
                     >
                         {/* Profile Info */}
-                        <div className="p-4 border-b border-purple-500/20 bg-gradient-to-r from-purple-900/30 to-indigo-900/30">
+                        <div className="p-4 border-b border-primary/20 bg-gradient-to-r from-primary/30 to-secondary/30">
                             <div className="flex items-center gap-3">
                                 <div className="relative">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur opacity-50"></div>
-                                    <FaUserCircle className="relative text-3xl text-purple-300" />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full blur opacity-50"></div>
+                                    <FaUserCircle className="relative text-3xl text-secondary" />
                                 </div>
                                 <div>
                                     <p className="font-bold text-white text-lg">
                                         {user?.username?.charAt(0).toUpperCase() + user?.username?.slice(1) || 'Hunter'}
                                     </p>
-                                    <p className="text-xs text-purple-300">{user?.email}</p>
+                                    <p className="text-xs text-secondary">{user?.email}</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Stats */}
-                        <div className="p-4 border-b border-purple-500/20">
+                        <div className="p-4 border-b border-primary/20">
                             <div className="grid grid-cols-2 gap-2">
-                                <div className="bg-purple-500/10 rounded-lg p-2 text-center">
-                                    <p className="text-xs text-purple-300">Status</p>
-                                    <p className="text-sm font-bold text-purple-400">Active</p>
+                                <div className="bg-primary/10 rounded-lg p-2 text-center">
+                                    <p className="text-xs text-secondary">Status</p>
+                                    <p className="text-sm font-bold text-secondary">Active</p>
                                 </div>
                                 <div className="bg-indigo-500/10 rounded-lg p-2 text-center">
                                     <p className="text-xs text-indigo-300">Streak</p>
@@ -100,7 +100,7 @@ const HunterProfile = () => {
                         <motion.button
                             whileHover={{ backgroundColor: 'rgba(147, 51, 234, 0.3)' }}
                             onClick={handleDashboardClick}
-                            className="w-full px-4 py-3 bg-purple-600/50 hover:bg-purple-600/70 text-white font-semibold flex items-center justify-center gap-2 transition-all duration-300 border-b border-purple-500/20"
+                            className="w-full px-4 py-3 bg-primary/50 hover:bg-primary/70 text-white font-semibold flex items-center justify-center gap-2 transition-all duration-300 border-b border-primary/20"
                         >
                             <FaHome className="text-lg" /> Dashboard
                         </motion.button>

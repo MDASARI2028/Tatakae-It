@@ -1,14 +1,24 @@
-// frontend/src/components/Layout.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import HunterProfile from './HunterProfile';
 import './Layout.css';
+import { AuthContext } from '../context/AuthContext';
+import useIdleTimer from '../hooks/useIdleTimer';
 
 const Layout = () => {
     const [isJapanese, setIsJapanese] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
+    const { logout, isAuthenticated } = useContext(AuthContext);
+
+    // Auto-logout after 15 minutes (900000ms) of inactivity
+    useIdleTimer(() => {
+        if (isAuthenticated) {
+            console.log("User inactive. Logging out...");
+            logout();
+        }
+    }, 900000);
 
     const handleTitleClick = (e) => {
         // If already on dashboard, toggle font; otherwise navigate to dashboard
@@ -68,7 +78,7 @@ const Layout = () => {
             )}
 
             {/* Main content with responsive top padding */}
-            <main className="pt-16 sm:pt-20 md:pt-24 px-4 sm:px-6 md:px-8">
+            <main className="pt-14 sm:pt-16 md:pt-20 px-4 sm:px-6 md:px-8">
                 <Outlet />
             </main>
         </div>

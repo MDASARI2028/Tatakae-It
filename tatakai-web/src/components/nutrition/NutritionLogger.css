@@ -4,7 +4,7 @@
     --nl-bg-dark: #0B0C15;
     --nl-panel-bg: #151621;
     --nl-panel-border: rgba(255, 255, 255, 0.05);
-    --nl-primary: #8b5cf6;
+    --nl-primary: #1535D4;
     /* Purple */
     --nl-accent: #22d3ee;
     /* Cyan */
@@ -54,7 +54,7 @@
 .food-icon-sq {
     width: 40px;
     height: 40px;
-    background: rgba(139, 92, 246, 0.1);
+    background: rgba(21, 53, 212, 0.1);
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -101,7 +101,7 @@
 .type-btn.active {
     background: var(--nl-primary);
     color: white;
-    box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 10px rgba(21, 53, 212, 0.4);
 }
 
 /* Search Bar */
@@ -327,20 +327,20 @@
 /* Orange */
 
 .btn-commit {
-    background: linear-gradient(135deg, #8b5cf6, #d946ef);
+    background: linear-gradient(135deg, #1535D4, #1535D4);
     color: white;
     border: none;
     padding: 0.75rem 2rem;
     border-radius: 10px;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 4px 15px rgba(21, 53, 212, 0.4);
     transition: all 0.3s;
 }
 
 .btn-commit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+    box-shadow: 0 6px 20px rgba(21, 53, 212, 0.6);
 }
 
 /* --- Right Panel: Spectrum Analyzer --- */
@@ -399,7 +399,7 @@
 }
 
 .status-ok {
-    color: #d946ef;
+    color: #1535D4;
     /* Neon Pink/Purple status */
 }
 
@@ -460,7 +460,7 @@
 .energy-label {
     font-size: 0.7rem;
     letter-spacing: 2px;
-    color: #d946ef;
+    color: #1535D4;
     text-transform: uppercase;
     font-weight: 700;
     display: block;
@@ -491,7 +491,7 @@
 
 .bar {
     width: 4px;
-    background: #a855f7;
+    background: #0E21A0;
     border-radius: 2px;
     animation: bounce 1s infinite ease-in-out;
 }
@@ -538,7 +538,7 @@
     50% {
         transform: scaleY(1.5);
         opacity: 1;
-        background: #d946ef;
+        background: #1535D4;
     }
 }
 
@@ -629,7 +629,8 @@
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
-    padding: 1.25rem 0.5rem;
+    padding: 0.75rem 0.5rem;
+    /* Reduced vertical padding from 1.25rem */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -668,7 +669,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
+    /* Reduced from 0.5rem */
 }
 
 .glow-backdrop {
@@ -727,7 +729,7 @@
 /* Synergy Chamber */
 .synergy-chamber {
     background: rgba(21, 22, 33, 0.6);
-    border: 1px solid rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(21, 53, 212, 0.1);
     /* Subtle purple tint border */
     border-radius: 24px;
     padding: 1.5rem;
@@ -748,14 +750,14 @@
     right: -50px;
     width: 200px;
     height: 200px;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(21, 53, 212, 0.15) 0%, transparent 70%);
     filter: blur(40px);
 }
 
 .sc-header {
     font-size: 0.7rem;
     letter-spacing: 2px;
-    color: #a78bfa;
+    color: #1535D4;
     /* Light purple */
     margin-bottom: 1.5rem;
     font-weight: 700;
@@ -794,12 +796,12 @@
 
 .gauge-fill {
     fill: none;
-    stroke: #d946ef;
+    stroke: #1535D4;
     /* Magenta/Purple */
     stroke-width: 6;
     stroke-linecap: round;
     transition: stroke-dashoffset 1s ease-out;
-    filter: drop-shadow(0 0 4px #d946ef);
+    filter: drop-shadow(0 0 4px #1535D4);
 }
 
 .gauge-content {
@@ -959,11 +961,11 @@
 
 .nl-modal-window {
     background: rgba(15, 23, 42, 0.95);
-    border: 1px solid rgba(139, 92, 246, 0.3);
+    border: 1px solid rgba(21, 53, 212, 0.3);
     border-radius: 20px;
     width: 100%;
     max-width: 480px;
-    box-shadow: 0 0 40px rgba(139, 92, 246, 0.15), inset 0 0 20px rgba(139, 92, 246, 0.05);
+    box-shadow: 0 0 40px rgba(21, 53, 212, 0.15), inset 0 0 20px rgba(21, 53, 212, 0.05);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -1017,9 +1019,9 @@
 }
 
 .nl-tab-btn.active {
-    background: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%);
+    background: linear-gradient(135deg, #4F46E5 0%, #1535D4 100%);
     color: #fff;
-    box-shadow: 0 0 10px rgba(124, 58, 237, 0.4);
+    box-shadow: 0 0 10px rgba(79, 70, 229, 0.4);
 }
 
 .nl-modal-body {
@@ -1046,8 +1048,8 @@
 }
 
 .nl-input-modern:focus {
-    border-color: #8b5cf6;
-    box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
+    border-color: #1535D4;
+    box-shadow: 0 0 10px rgba(21, 53, 212, 0.2);
     background: rgba(30, 41, 59, 0.8);
 }
 
@@ -1055,7 +1057,7 @@
     font-size: 1rem;
     padding: 1rem;
     background: rgba(0, 0, 0, 0.2);
-    border-color: rgba(139, 92, 246, 0.2);
+    border-color: rgba(21, 53, 212, 0.2);
 }
 
 .nl-macro-grid {
@@ -1108,7 +1110,7 @@
 }
 
 .nl-btn-confirm {
-    background: linear-gradient(90deg, #8b5cf6 0%, #db2777 100%);
+    background: linear-gradient(90deg, #1535D4 0%, #3B82F6 100%);
     border: none;
     color: #fff;
     padding: 0.6rem 1.5rem;
@@ -1159,7 +1161,7 @@
 }
 
 .nl-search-bar-mini input:focus {
-    border-color: #8b5cf6;
+    border-color: #1535D4;
 }
 
 .nl-section-title {

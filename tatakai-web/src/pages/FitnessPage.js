@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { FaDumbbell, FaHistory, FaRulerCombined, FaChartLine } from 'react-icons/fa';
 import BackButton from '../components/common/BackButton';
 import FitnessParticles from '../components/FitnessParticles';
+import FitnessSummary from '../components/fitness/FitnessSummary';
 import './FitnessPage.css';
 
 const FitnessPage = () => {
@@ -25,7 +26,7 @@ const FitnessPage = () => {
       icon: FaDumbbell,
       title: "Log Workout",
       desc: "Record your daily training sessions and track performance.",
-      color: "from-purple-600 to-indigo-600"
+      color: "from-primary to-secondary"
     },
     {
       to: "/fitness/history",
@@ -126,6 +127,9 @@ const OverviewTab = ({ cards }) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
+      <div style={{ gridColumn: '1 / -1', width: '100%' }}>
+        <FitnessSummary />
+      </div>
       {cards.map((card, idx) => {
         const Icon = card.icon;
         return (

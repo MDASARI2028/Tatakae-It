@@ -1,0 +1,228 @@
+/* frontend/src/components/fitness/FitnessSummary.css */
+
+.fitness-summary-container {
+    background: rgba(26, 28, 42, 0.6);
+    border: 1px solid rgba(100, 35, 194, 0.2);
+    border-radius: 16px;
+    padding: 0.75rem 1.5rem;
+    /* Reduced vertical padding */
+    margin-bottom: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.fs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    /* Reduced from 1.5rem */
+}
+
+.fs-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.fs-badge {
+    background: rgba(100, 35, 194, 0.1);
+    color: #7B3FE4;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid rgba(100, 35, 194, 0.3);
+}
+
+.fs-content {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+/* Ring Section */
+.fs-ring-section {
+    flex-shrink: 0;
+}
+
+.fs-ring-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fs-progress-ring {
+    transform: rotate(-90deg);
+}
+
+.fs-ring-text {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fs-count {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    font-family: 'Rajdhani', sans-serif;
+    text-shadow: 0 0 10px rgba(100, 35, 194, 0.8);
+    /* Glow text */
+}
+
+.fs-total {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 600;
+    text-shadow: none;
+}
+
+.fs-label {
+    font-size: 0.7rem;
+    color: #7B3FE4;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-top: 0px;
+}
+
+/* Stats Grid */
+.fs-stats-grid {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+}
+
+.fs-stat-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 0 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.2s, background 0.2s, border-color 0.2s;
+    height: 100px;
+    /* Match ring height */
+}
+
+.fs-stat-card:hover {
+    transform: translateY(-2px);
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(100, 35, 194, 0.3);
+    box-shadow: 0 0 10px rgba(100, 35, 194, 0.1);
+    /* Subtle glow on hover */
+}
+
+.fs-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.fs-icon-box.purple {
+    background: rgba(100, 35, 194, 0.15);
+    color: #7B3FE4;
+}
+
+.fs-icon-box.cyan {
+    background: rgba(6, 182, 212, 0.15);
+    color: #22d3ee;
+}
+
+.fs-icon-box.orange {
+    background: rgba(249, 115, 22, 0.15);
+    color: #fb923c;
+}
+
+.fs-stat-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.fs-stat-val {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+    font-family: 'Rajdhani', sans-serif;
+    margin-bottom: 2px;
+}
+
+.fs-stat-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    /* Space for micro bar */
+    text-transform: uppercase;
+}
+
+/* Micro Bar */
+.fs-micro-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.fs-micro-fill {
+    height: 100%;
+    border-radius: 2px;
+}
+
+.fs-micro-fill.purple {
+    background: #7B3FE4;
+    box-shadow: 0 0 5px #7B3FE4;
+}
+
+.fs-micro-fill.cyan {
+    background: #22d3ee;
+    box-shadow: 0 0 5px #22d3ee;
+}
+
+/* Day Dots */
+.fs-day-dots {
+    display: flex;
+    gap: 3px;
+    margin-top: 2px;
+}
+
+.fs-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.fs-dot.active {
+    background: #fb923c;
+    box-shadow: 0 0 4px #fb923c;
+}
+
+@media (max-width: 640px) {
+    .fs-content {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .fs-stats-grid {
+        width: 100%;
+    }
+}

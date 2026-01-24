@@ -49,7 +49,7 @@ router.post('/login', async (req, res) => {
 
         const payload = { id: user.id, username: user.username };
 
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '5h' });
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '365d' });
 
         // ✅ THE FIX: Send the token AND the full user object
         res.json({

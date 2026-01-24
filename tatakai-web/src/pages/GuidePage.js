@@ -22,7 +22,7 @@ const GuidePage = () => {
             icon: FaDumbbell,
             title: 'Dominate Your Workouts',
             tagline: 'Track. Improve. Repeat.',
-            color: 'purple',
+            color: 'blue',
             content: [
                 { title: 'Log Workout', desc: 'Record every set, rep, and weight. Build your legacy one lift at a time.' },
                 { title: 'Templates', desc: 'Save your go-to routines. One tap to load your favorite workout.' },
@@ -35,7 +35,7 @@ const GuidePage = () => {
             icon: FaAppleAlt,
             title: 'Fuel Your Performance',
             tagline: 'Every calorie counts.',
-            color: 'emerald',
+            color: 'cyan',
             content: [
                 { title: 'Log Meals', desc: 'Track breakfast, lunch, dinner, and snacks with full macro breakdown.' },
                 { title: 'Food Search', desc: 'Integrated database with thousands of foods. No more guessing.' },
@@ -48,7 +48,7 @@ const GuidePage = () => {
             icon: FaBolt,
             title: 'Level Up Mode',
             tagline: 'Turn fitness into a game.',
-            color: 'amber',
+            color: 'blue',
             content: [
                 { title: 'Earn XP', desc: 'Every workout earns experience points. Push harder, earn more.' },
                 { title: 'Climb Ranks', desc: 'From E-Rank to Monarch. Prove you\'re built different.' },
@@ -79,7 +79,7 @@ const GuidePage = () => {
         { rank: 'A', name: 'The Titan', xp: '60K', color: '#50C878' },
         { rank: 'S', name: 'The Legend', xp: '85K', color: '#0F52BA' },
         { rank: 'N', name: 'National Level', xp: '115K', color: '#E0115F' },
-        { rank: 'M', name: 'Monarch', xp: '150K', color: '#8A2BE2' }
+        { rank: 'M', name: 'Monarch', xp: '150K', color: '#1535D4' }
     ];
 
     return (

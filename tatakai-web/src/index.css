@@ -12,11 +12,11 @@
   --color-surface-secondary: #2C2F48;
   --color-border: #4A4E88;
 
-  /* --- CHANGE FROM BLUE TO PURPLE --- */
-  --color-primary-accent: #8A2BE2;
-  /* Vibrant Violet/Purple */
-  --color-primary-accent-hover: #9932CC;
-  /* Lighter Violet */
+  /* --- CHANGE TO USER REQUESTED PURPLE --- */
+  --color-primary-accent: #6423C2;
+  /* Deep Purple */
+  --color-primary-accent-hover: #7B3FE4;
+  /* Lighter Purple */
   --color-gold-accent: #FFD700;
 
   --color-text-primary: #F0F2F5;

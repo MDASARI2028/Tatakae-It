@@ -62,13 +62,13 @@ const NutritionHistory = () => {
                 {/* Calories Card */}
                 <motion.div className="nh-card" whileHover={{ y: -4 }}>
                     <div className="nh-card-top">
-                        <div className="nh-icon-box purple"><FaFire /></div>
+                        <div className="nh-icon-box blue"><FaFire /></div>
                         <span className="nh-goal">GOAL: {goals.calories}</span>
                     </div>
                     <div className="nh-card-value">{dailyTotals.calories.toFixed(0)}</div>
                     <div className="nh-card-label">CALORIES</div>
                     <div className="nh-progress-track">
-                        <div className="nh-progress-fill purple" style={{ width: `${Math.min((dailyTotals.calories / goals.calories) * 100, 100)}%` }}></div>
+                        <div className="nh-progress-fill blue" style={{ width: `${Math.min((dailyTotals.calories / goals.calories) * 100, 100)}%` }}></div>
                     </div>
                 </motion.div>
 

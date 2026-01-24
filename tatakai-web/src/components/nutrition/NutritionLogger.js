@@ -45,6 +45,7 @@ const NutritionLogger = ({ selectedDate }) => {
     const [mealType, setMealType] = useState('Breakfast');
     const [customForm, setCustomForm] = useState({ foodName: '', calories: '', protein: '', carbohydrates: '', fat: '' });
     const [showCustomModal, setShowCustomModal] = useState(false);
+    const [visibleRecentCount, setVisibleRecentCount] = useState(5); // Pagination for recent items
 
     // NEW: State for Modal Tabs
     const [modalTab, setModalTab] = useState('new'); // 'new' | 'history' | 'recipes'
@@ -196,13 +197,13 @@ const NutritionLogger = ({ selectedDate }) => {
             {
                 label: 'Macro Balance',
                 data: [totals.protein, totals.carbohydrates, totals.fat],
-                backgroundColor: 'rgba(139, 92, 246, 0.2)', // Purple transparent
-                borderColor: '#8b5cf6',
+                backgroundColor: 'rgba(21, 53, 212, 0.2)', // Deep Blue transparent
+                borderColor: '#1535D4',
                 borderWidth: 2,
-                pointBackgroundColor: '#22d3ee', // Cyan dots
+                pointBackgroundColor: '#06b6d4', // Cyan dots
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#22d3ee',
+                pointHoverBorderColor: '#06b6d4',
             },
         ],
     };
@@ -276,7 +277,7 @@ const NutritionLogger = ({ selectedDate }) => {
                         </div>
                     )}
 
-                    {recentItems.map((item, idx) => {
+                    {recentItems.slice(0, visibleRecentCount).map((item, idx) => {
                         // Optimization: in a real app, use IDs. Here we use name similarity or index
                         return (
                             <div key={`recent-${item._id || idx}`} className="food-item-modern" onClick={() => handleAddRecent(item)}>
@@ -294,16 +295,25 @@ const NutritionLogger = ({ selectedDate }) => {
                         );
                     })}
 
+                    {recentItems.length > visibleRecentCount && (
+                        <button
+                            onClick={() => setVisibleRecentCount(prev => prev + 5)}
+                            className="w-full py-2 text-xs font-bold text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors border border-white/10 mb-4"
+                        >
+                            SHOW {Math.min(5, recentItems.length - visibleRecentCount)} MORE
+                        </button>
+                    )}
+
                     {/* SEPARATE 'ADDED' SECTION for clarity if items > 0 */}
                     {items.length > 0 && (
                         <>
-                            <div className="section-label mt-4" style={{ color: '#22d3ee' }}>Ready to Commit ({items.length})</div>
+                            <div className="section-label mt-4" style={{ color: '#06b6d4' }}>Ready to Commit ({items.length})</div>
                             {items.map((item, idx) => (
-                                <div key={item.tempId || idx} className="food-item-modern" style={{ borderColor: '#22d3ee' }}>
-                                    <div className="item-icon-circle" style={{ color: '#22d3ee' }}>{item.icon || <FaUtensils />}</div>
+                                <div key={item.tempId || idx} className="food-item-modern" style={{ borderColor: '#06b6d4' }}>
+                                    <div className="item-icon-circle" style={{ color: '#06b6d4' }}>{item.icon || <FaUtensils />}</div>
                                     <div className="item-info">
                                         <span className="item-name">{item.foodName}</span>
-                                        <span className="item-desc" style={{ color: '#22d3ee' }}>{item.calories} kcal • Added</span>
+                                        <span className="item-desc" style={{ color: '#06b6d4' }}>{item.calories} kcal • Added</span>
                                     </div>
                                     <div className="item-actions">
                                         <button

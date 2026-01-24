@@ -23,7 +23,7 @@
 }
 
 .gradient-text {
-    background: linear-gradient(135deg, #8A2BE2, #9932CC, #DA70D6, #8A2BE2);
+    background: linear-gradient(135deg, #6423C2, #7B3FE4, #4C6EF5, #6423C2);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -55,20 +55,20 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: rgba(138, 43, 226, 0.1);
-    border: 1px solid rgba(138, 43, 226, 0.3);
+    background: rgba(100, 35, 194, 0.1);
+    border: 1px solid rgba(100, 35, 194, 0.3);
     border-radius: 8px;
-    color: #8A2BE2;
+    color: #6423C2;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
 }
 
 .back-button:hover {
-    background: rgba(138, 43, 226, 0.2);
-    border-color: #8A2BE2;
+    background: rgba(100, 35, 194, 0.2);
+    border-color: #6423C2;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+    box-shadow: 0 5px 15px rgba(100, 35, 194, 0.3);
 }
 
 /* Hero Quote */
@@ -76,15 +76,15 @@
     text-align: center;
     padding: 2rem;
     margin-bottom: 3rem;
-    background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(75, 0, 130, 0.1));
-    border: 1px solid rgba(138, 43, 226, 0.2);
+    background: linear-gradient(135deg, rgba(100, 35, 194, 0.1), rgba(75, 0, 130, 0.1));
+    border: 1px solid rgba(100, 35, 194, 0.2);
     border-radius: 16px;
     position: relative;
 }
 
 .hero-quote .quote-mark {
     font-size: 3rem;
-    color: rgba(138, 43, 226, 0.3);
+    color: rgba(100, 35, 194, 0.3);
     font-family: Georgia, serif;
     line-height: 0;
     vertical-align: text-bottom;
@@ -95,7 +95,7 @@
     font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: 0.1em;
-    background: linear-gradient(90deg, #fff, #8A2BE2, #fff);
+    background: linear-gradient(90deg, #fff, #6423C2, #fff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -189,8 +189,8 @@
 
 .guide-section.purple .section-icon {
     background: rgba(0, 0, 0, 0.4);
-    color: #8A2BE2;
-    border: 1px solid rgba(138, 43, 226, 0.5);
+    color: #6423C2;
+    border: 1px solid rgba(100, 35, 194, 0.5);
 }
 
 .guide-section.emerald .section-icon {
@@ -385,7 +385,7 @@
 }
 
 .xp-reference .inline-icon {
-    color: #8A2BE2;
+    color: #6423C2;
 }
 
 .xp-grid {
@@ -456,9 +456,9 @@
 .guide-footer {
     text-align: center;
     padding: 3rem 2rem;
-    background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(75, 0, 130, 0.15));
+    background: linear-gradient(135deg, rgba(100, 35, 194, 0.15), rgba(75, 0, 130, 0.15));
     border-radius: 16px;
-    border: 1px solid rgba(138, 43, 226, 0.2);
+    border: 1px solid rgba(100, 35, 194, 0.2);
 }
 
 .guide-footer p {
@@ -470,7 +470,7 @@
 .guide-footer h3 {
     margin: 0.5rem 0 1.5rem 0;
     font-size: 1.75rem;
-    background: linear-gradient(90deg, #fff, #8A2BE2);
+    background: linear-gradient(90deg, #fff, #6423C2);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -480,7 +480,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 1rem 2.5rem;
-    background: linear-gradient(135deg, #8A2BE2, #9932CC);
+    background: linear-gradient(135deg, #6423C2, #7B3FE4);
     border: none;
     border-radius: 12px;
     color: #fff;
@@ -493,7 +493,7 @@
 
 .start-button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.5);
+    box-shadow: 0 10px 30px rgba(100, 35, 194, 0.5);
 }
 
 /* Responsive */
@@ -537,7 +537,7 @@
 
 .orientation-step {
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(138, 43, 226, 0.2);
+    border: 1px solid rgba(100, 35, 194, 0.2);
     border-radius: 12px;
     padding: 1.5rem;
     position: relative;
@@ -546,7 +546,7 @@
 }
 
 .orientation-step:hover {
-    border-color: rgba(138, 43, 226, 0.5);
+    border-color: rgba(100, 35, 194, 0.5);
     transform: translateY(-4px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
@@ -566,7 +566,7 @@
     margin: 0 0 0.5rem 0;
     font-size: 1.1rem;
     color: #fff;
-    background: linear-gradient(90deg, #fff, #8A2BE2);
+    background: linear-gradient(90deg, #fff, #6423C2);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -579,7 +579,7 @@
 }
 
 .step-content a {
-    color: #8A2BE2;
+    color: #6423C2;
     text-decoration: none;
     font-weight: bold;
 }

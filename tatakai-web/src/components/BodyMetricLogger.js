@@ -4,10 +4,13 @@ import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { FaCheck, FaWeight, FaChartBar, FaRuler } from 'react-icons/fa';
+import api from '../api/axios'; // Import the configured axios instance
 import './BodyMetricLogger.css';
 
 const BodyMetricLogger = ({ onMetricLogged }) => {
-    const { token } = useContext(AuthContext);
+    // We don't need token from context anymore since axios interceptor handles it
+    // But we might need it for checking if user is logged in if we wanted to conditional render
+    const { isAuthenticated } = useContext(AuthContext);
 
     // Helper to get local date string (YYYY-MM-DD) without UTC conversion
     const getLocalDateString = () => {
@@ -32,28 +35,19 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
 
     useEffect(() => {
         const fetchLatestMetrics = async () => {
-            if (!token) return;
+            if (!isAuthenticated) return;
             try {
-                const response = await fetch('/api/metrics?limit=1', {
-                    headers: { 'x-auth-token': token }
-                });
-                if (response.ok) {
-                    const text = await response.text();
-                    try {
-                        const data = text ? JSON.parse(text) : null;
-                        if (data && data.length > 0) {
-                            setLatestMetrics(data[0]);
-                        }
-                    } catch (parseError) {
-                        console.error("Error parsing metrics response:", parseError);
-                    }
+                // Use api.get instead of fetch
+                const response = await api.get('/api/metrics?limit=1');
+                if (response.data && response.data.length > 0) {
+                    setLatestMetrics(response.data[0]);
                 }
             } catch (err) {
                 console.error("Failed to fetch latest metrics", err);
             }
         };
         fetchLatestMetrics();
-    }, [token]);
+    }, [isAuthenticated]);
 
 
 
@@ -72,37 +66,21 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
         }
 
         try {
-            const response = await fetch('/api/metrics', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-auth-token': token,
-                },
-                body: JSON.stringify(metrics),
-            });
-
-            if (!response.ok) {
-                const text = await response.text();
-                let errorMessage = 'Failed to log metrics.';
-                try {
-                    const data = text ? JSON.parse(text) : {};
-                    if (data.msg) errorMessage = data.msg;
-                    else if (text) errorMessage = text;
-                } catch (e) {
-                    // If parsing fails but we have text, use it as error message
-                    if (text && text.length < 100) errorMessage = text;
-                    else errorMessage = `Server error: ${response.status}`;
-                }
-                throw new Error(errorMessage);
-            }
+            // Use api.post instead of fetch
+            await api.post('/api/metrics', metrics);
 
             setSuccess('Metrics logged successfully!');
             setMetrics(initialState);
-            onMetricLogged?.(); // Optional chaining - only calls if function exists
+            onMetricLogged?.();
             setTimeout(() => setSuccess(''), 3000);
 
+            // Refresh latest metrics immediately for better UX
+            setLatestMetrics(prev => ({ ...prev, ...metrics }));
+
         } catch (err) {
-            setError(err.message);
+            // Axios error handling
+            const msg = err.response?.data?.msg || err.message || 'Failed to log metrics.';
+            setError(msg);
         }
     };
 
@@ -232,7 +210,7 @@ const BodyMetricLogger = ({ onMetricLogged }) => {
                 <motion.button
                     type="submit"
                     className="btn-save-metrics"
-                    whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(138, 43, 226, 0.5)" }}
+                    whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(21, 53, 212, 0.5)" }}
                     whileTap={{ scale: 0.95 }}
                 >
                     <FaCheck /> Save Metrics

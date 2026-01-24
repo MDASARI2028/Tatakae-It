@@ -56,11 +56,11 @@ const XPHistoryPage = () => {
 
     const getIcon = (category) => {
         switch (category) {
-            case 'FITNESS': return <FaDumbbell className="text-blue-400" />;
+            case 'FITNESS': return <FaDumbbell className="text-secondary" />;
             case 'NUTRITION': return <FaAppleAlt className="text-green-400" />;
             case 'STREAK': return <FaFire className="text-orange-400" />;
             case 'PENALTY': return <FaExclamationTriangle className="text-red-500" />;
-            default: return <FaHistory className="text-purple-400" />;
+            default: return <FaHistory className="text-secondary" />;
         }
     };
 
@@ -79,8 +79,8 @@ const XPHistoryPage = () => {
         <div className="min-h-screen bg-slate-950 text-white p-6 pt-24 font-inter relative overflow-hidden">
             {/* Background Effects */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/20 rounded-full blur-[100px]"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-900/20 rounded-full blur-[100px]"></div>
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[100px]"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/20 rounded-full blur-[100px]"></div>
             </div>
 
             <div className="max-w-4xl mx-auto relative z-10">
@@ -89,8 +89,8 @@ const XPHistoryPage = () => {
                 </div>
 
                 <div className="flex items-center gap-4 mb-8">
-                    <div className="p-3 bg-purple-500/10 rounded-xl border border-purple-500/20">
-                        <FaHistory className="text-3xl text-purple-400" />
+                    <div className="p-3 bg-primary/10 rounded-xl border border-primary/20">
+                        <FaHistory className="text-3xl text-secondary" />
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">XP History</h1>

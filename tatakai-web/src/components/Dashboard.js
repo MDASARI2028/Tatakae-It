@@ -74,13 +74,13 @@ const Dashboard = () => {
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className={`flex items-center gap-3 px-4 py-2 rounded-full transition-all duration-300 shadow-lg group ${isEnabled
-                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 hover:shadow-purple-500/50'
+                        ? 'bg-gradient-to-r from-primary to-secondary hover:from-primary hover:to-secondary hover:shadow-primary/50'
                         : 'bg-slate-800/80 hover:bg-slate-800 border border-slate-700'
                         }`}
                 >
                     <div className="relative">
                         {isEnabled && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur opacity-50 group-hover:opacity-100 transition duration-300"></div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-secondary to-accent rounded-full blur opacity-50 group-hover:opacity-100 transition duration-300"></div>
                         )}
                         <FaBolt className={`relative text-lg ${isEnabled ? 'text-yellow-300' : 'text-slate-400'}`} />
                     </div>
@@ -102,10 +102,10 @@ const Dashboard = () => {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -10, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute top-14 right-0 w-64 bg-slate-900/95 backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-2xl shadow-purple-900/50 overflow-hidden flex flex-col gap-1"
+                            className="absolute top-14 right-0 w-64 bg-slate-900/95 backdrop-blur-xl border border-primary/30 rounded-xl shadow-2xl shadow-primary/50 overflow-hidden flex flex-col gap-1"
                         >
                             {/* Header / Toggle Row */}
-                            <div className="p-4 border-b border-purple-500/20 bg-gradient-to-r from-purple-900/20 to-indigo-900/20 flex justify-between items-center">
+                            <div className="p-4 border-b border-primary/20 bg-gradient-to-r from-primary/20 to-secondary/20 flex justify-between items-center">
                                 <span className="text-sm font-bold text-white">System Status</span>
 
                                 <motion.button
@@ -138,11 +138,11 @@ const Dashboard = () => {
                                         <div className="text-center">
                                             <div className="text-lg font-black text-white uppercase tracking-wider glow-text" style={{
                                                 color: levelUpData.rank === 'E' ? '#9CA3AF' : 'var(--rank-color)',
-                                                textShadow: '0 0 10px rgba(138, 43, 226, 0.5)'
+                                                textShadow: '0 0 10px rgba(100, 35, 194, 0.5)'
                                             }}>
                                                 {levelUpData.rank} Rank
                                             </div>
-                                            <div className="text-[10px] text-purple-300/70 italic">
+                                            <div className="text-[10px] text-secondary/70 italic">
                                                 {levelUpData.rank === 'E' && 'The Awakening'}
                                                 {/* Add other titles dynamically later if needed */}
                                             </div>
@@ -150,9 +150,9 @@ const Dashboard = () => {
                                     </div>
 
                                     {/* XP Display */}
-                                    <div className="bg-slate-800/50 rounded-lg p-3 border border-purple-500/10">
+                                    <div className="bg-slate-800/50 rounded-lg p-3 border border-primary/10">
                                         <div className="flex justify-between items-end mb-1">
-                                            <span className="text-xs text-purple-300 font-bold">Experience</span>
+                                            <span className="text-xs text-secondary font-bold">Experience</span>
                                             <span className="text-lg font-black text-white font-orbitron leading-none">
                                                 {levelUpData.xp.toLocaleString()} <span className="text-[10px] text-slate-500 font-normal">XP</span>
                                             </span>
@@ -160,7 +160,7 @@ const Dashboard = () => {
                                         {/* Progress Bar Placeholder */}
                                         <div className="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden">
                                             <motion.div
-                                                className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                                                className="h-full bg-gradient-to-r from-primary to-secondary"
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${(levelUpData.xp % 1000) / 10}%` }} // Simplified fake progress for now
                                             />
@@ -176,7 +176,7 @@ const Dashboard = () => {
                                     >
                                         {/* XP History Link */}
                                         <motion.div
-                                            whileHover={{ scale: 1.02, boxShadow: '0 0 20px rgba(147, 51, 234, 0.3)' }}
+                                            whileHover={{ scale: 1.02, boxShadow: '0 0 20px rgba(100, 35, 194, 0.3)' }}
                                             whileTap={{ scale: 0.98 }}
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
@@ -184,7 +184,7 @@ const Dashboard = () => {
                                         >
                                             <Link
                                                 to="/xp-history"
-                                                className="flex items-center justify-center gap-2 w-full py-2.5 px-3 text-xs font-medium text-purple-300 bg-gradient-to-r from-purple-500/10 to-purple-600/10 hover:from-purple-500/20 hover:to-purple-600/20 rounded-lg transition-all duration-200 border border-purple-500/20 hover:border-purple-400/50"
+                                                className="flex items-center justify-center gap-2 w-full py-2.5 px-3 text-xs font-medium text-secondary bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 rounded-lg transition-all duration-200 border border-primary/20 hover:border-secondary/50"
                                             >
                                                 <FaHistory className="text-sm" />
                                                 <span>XP History</span>
@@ -269,8 +269,8 @@ const Dashboard = () => {
                         <div className="text-left mb-1">
                             <h1 className="quote-line line-1 text-3xl md:text-4xl lg:text-5xl font-black text-white"
                                 style={{
-                                    textShadow: '0 0 10px rgba(168, 85, 247, 0.8), 0 0 20px rgba(168, 85, 247, 0.4)',
-                                    filter: 'drop-shadow(0 0 8px rgb(168, 85, 247))',
+                                    textShadow: '0 0 10px rgba(100, 35, 194, 0.8), 0 0 20px rgba(100, 35, 194, 0.4)',
+                                    filter: 'drop-shadow(0 0 8px rgb(100, 35, 194))',
                                     letterSpacing: '0.05em'
                                 }}>
                                 "THE SYSTEM USES
@@ -300,8 +300,8 @@ const Dashboard = () => {
                         <div className="text-right">
                             <h3 className="quote-line line-3 text-3xl md:text-4xl lg:text-5xl font-black text-white"
                                 style={{
-                                    textShadow: '0 0 10px rgba(168, 85, 247, 0.8), 0 0 20px rgba(168, 85, 247, 0.4)',
-                                    filter: 'drop-shadow(0 0 8px rgb(168, 85, 247))',
+                                    textShadow: '0 0 10px rgba(100, 35, 194, 0.8), 0 0 20px rgba(100, 35, 194, 0.4)',
+                                    filter: 'drop-shadow(0 0 8px rgb(100, 35, 194))',
                                     letterSpacing: '0.05em'
                                 }}>
                                 USE THE SYSTEM"
@@ -320,27 +320,27 @@ const Dashboard = () => {
                             whileHover={{ y: -5 }}
                             transition={{ type: "spring", stiffness: 300 }}
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg opacity-0 group-hover:opacity-12 blur-lg transition-opacity duration-500"></div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-lg opacity-0 group-hover:opacity-12 blur-lg transition-opacity duration-500"></div>
 
-                            <div className="relative h-full p-5 rounded-lg bg-slate-900/35 backdrop-blur border border-purple-500/25 group-hover:border-purple-500/60 transition-all duration-500 overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="relative h-full p-5 rounded-lg bg-slate-900/35 backdrop-blur border border-primary/25 group-hover:border-primary/60 transition-all duration-500 overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
                                 <div className="relative z-10 h-full flex flex-col">
                                     <motion.div
-                                        className="text-5xl text-purple-400 mb-3"
+                                        className="text-5xl text-secondary mb-3"
                                         whileHover={{ scale: 1.15, rotate: 15 }}
                                         transition={{ type: "spring" }}
                                     >
                                         <FaFire />
                                     </motion.div>
-                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-secondary transition-colors">
                                         Fitness System
                                     </h3>
                                     <p className="text-slate-400 group-hover:text-slate-300 transition-colors flex-grow mb-2 text-sm">
                                         Track workouts, view history, and monitor progress.
                                     </p>
                                     <motion.div
-                                        className="flex items-center gap-2 text-purple-400 font-semibold text-sm"
+                                        className="flex items-center gap-2 text-secondary font-semibold text-sm"
                                         whileHover={{ gap: "8px" }}
                                     >
                                         <span>Enter</span>
@@ -358,7 +358,7 @@ const Dashboard = () => {
                             whileHover={{ y: -5 }}
                             transition={{ type: "spring", stiffness: 300 }}
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-green-600 rounded-lg opacity-0 group-hover:opacity-12 blur-lg transition-opacity duration-500"></div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-teal-600 rounded-lg opacity-0 group-hover:opacity-12 blur-lg transition-opacity duration-500"></div>
 
                             {/* Card */}
                             <div className="relative h-full p-5 rounded-lg bg-slate-900/35 backdrop-blur border border-cyan-500/25 group-hover:border-cyan-500/60 transition-all duration-500 overflow-hidden">
@@ -396,8 +396,8 @@ const Dashboard = () => {
             {/* Floating Guide Button - Bottom Right */}
             <Link to="/guide">
                 <motion.div
-                    className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-600/90 to-indigo-600/90 backdrop-blur-md rounded-full border border-white/20 shadow-lg cursor-pointer group"
-                    whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(138, 43, 226, 0.5)' }}
+                    className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-primary/90 to-secondary/90 backdrop-blur-md rounded-full border border-white/20 shadow-lg cursor-pointer group"
+                    whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(100, 35, 194, 0.5)' }}
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

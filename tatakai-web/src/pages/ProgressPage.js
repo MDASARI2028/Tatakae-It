@@ -1,5 +1,3 @@
-// frontend/src/pages/ProgressPage.js
-
 import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
@@ -9,12 +7,13 @@ import { TemplateContext } from '../context/TemplateContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTrophy, FaFireAlt, FaChartLine, FaBullseye, FaCalendarAlt, FaArrowUp, FaArrowDown, FaDumbbell } from 'react-icons/fa';
 import BackButton from '../components/common/BackButton';
+import api from '../api/axios';
 import './ProgressPage.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 const ProgressPage = () => {
-    const { token } = useContext(AuthContext);
+    const { token } = useContext(AuthContext); // Can potentially remove token dependency if relying purely on axios interceptor, but keep for effect dependency
     const { workouts, fetchWorkouts } = useContext(WorkoutContext);
     const { templates, refreshTemplates } = useContext(TemplateContext);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -34,9 +33,12 @@ const ProgressPage = () => {
         const fetchMetrics = async () => {
             if (!token) return;
             try {
-                const res = await fetch('/api/metrics', { headers: { 'x-auth-token': token } });
-                if (res.ok) setBodyMetrics(await res.json());
-            } catch (error) { console.error('Failed to fetch metrics:', error); }
+                // Use api.get instead of fetch
+                const res = await api.get('/api/metrics');
+                setBodyMetrics(res.data);
+            } catch (error) {
+                console.error('Failed to fetch metrics:', error);
+            }
         };
         fetchMetrics();
     }, [token]);
@@ -124,8 +126,8 @@ const ProgressPage = () => {
                 datasets: [{
                     label: 'Weight',
                     data: history.map(h => h.weight),
-                    borderColor: '#8b5cf6', // Violet
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    borderColor: '#6423C2', // Deep Blue Light
+                    backgroundColor: 'rgba(100, 35, 194, 0.1)',
                     fill: true,
                     tension: 0.4,
                     pointRadius: 4,
@@ -158,17 +160,17 @@ const ProgressPage = () => {
             datasets: [{
                 label: 'Weight (kg)',
                 data: sortedMetrics.map(m => m.weight),
-                borderColor: '#a78bfa',
-                backgroundColor: 'rgba(167, 139, 250, 0.15)',
+                borderColor: '#6423C2',
+                backgroundColor: 'rgba(100, 35, 194, 0.15)',
                 fill: true,
                 tension: 0.4,
                 borderWidth: 3,
                 pointRadius: 6,
                 pointBackgroundColor: '#1e293b',
-                pointBorderColor: '#a78bfa',
+                pointBorderColor: '#6423C2',
                 pointBorderWidth: 3,
                 pointHoverRadius: 8,
-                pointHoverBackgroundColor: '#a78bfa',
+                pointHoverBackgroundColor: '#6423C2',
                 pointHoverBorderColor: '#fff'
             }]
         };
@@ -207,17 +209,17 @@ const ProgressPage = () => {
                 datasets: [{
                     label: 'Waist (cm)',
                     data: waistMetrics.map(m => m.waist),
-                    borderColor: '#c084fc',
-                    backgroundColor: 'rgba(192, 132, 252, 0.15)',
+                    borderColor: '#6423C2',
+                    backgroundColor: 'rgba(100, 35, 194, 0.15)',
                     fill: true,
                     tension: 0.4,
                     borderWidth: 3,
                     pointRadius: 6,
                     pointBackgroundColor: '#1e293b',
-                    pointBorderColor: '#c084fc',
+                    pointBorderColor: '#6423C2',
                     pointBorderWidth: 3,
                     pointHoverRadius: 8,
-                    pointHoverBackgroundColor: '#c084fc',
+                    pointHoverBackgroundColor: '#6423C2',
                     pointHoverBorderColor: '#fff'
                 }]
             };
@@ -337,12 +339,12 @@ const ProgressPage = () => {
                                                             {
                                                                 label: 'Total Volume',
                                                                 data: item.history.map(h => h.volume),
-                                                                borderColor: '#a855f7', // Purple-500
+                                                                borderColor: '#6423C2', // Deep Blue Light
                                                                 backgroundColor: (context) => {
                                                                     const ctx = context.chart.ctx;
                                                                     const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                                                                    gradient.addColorStop(0, 'rgba(168, 85, 247, 0.5)');
-                                                                    gradient.addColorStop(1, 'rgba(168, 85, 247, 0.0)');
+                                                                    gradient.addColorStop(0, 'rgba(100, 35, 194, 0.5)');
+                                                                    gradient.addColorStop(1, 'rgba(100, 35, 194, 0.0)');
                                                                     return gradient;
                                                                 },
                                                                 fill: true,
@@ -398,8 +400,8 @@ const ProgressPage = () => {
                                                                 display: true,
                                                                 position: 'left',
                                                                 grid: { color: 'rgba(148, 163, 184, 0.1)' },
-                                                                ticks: { color: '#a855f7' }, // Purple Text for Volume
-                                                                title: { display: true, text: 'Volume', color: '#a855f7', font: { size: 10 } }
+                                                                ticks: { color: '#6423C2' }, // Blue Text for Volume
+                                                                title: { display: true, text: 'Volume', color: '#6423C2', font: { size: 10 } }
                                                             },
                                                             y2: {
                                                                 type: 'linear',
@@ -514,7 +516,7 @@ const ProgressPage = () => {
                                                 plugins: {
                                                     legend: { display: false },
                                                     tooltip: {
-                                                        backgroundColor: 'rgba(138, 43, 226, 0.8)',
+                                                        backgroundColor: 'rgba(100, 35, 194, 0.8)',
                                                         padding: 12,
                                                         borderRadius: 8,
                                                         titleFont: { size: 12, weight: 'bold' },
@@ -527,7 +529,7 @@ const ProgressPage = () => {
                                                 scales: {
                                                     y: {
                                                         beginAtZero: false,
-                                                        grid: { color: 'rgba(138, 43, 226, 0.1)' },
+                                                        grid: { color: 'rgba(100, 35, 194, 0.1)' },
                                                         ticks: { color: 'rgba(240, 242, 245, 0.7)' }
                                                     },
                                                     x: {

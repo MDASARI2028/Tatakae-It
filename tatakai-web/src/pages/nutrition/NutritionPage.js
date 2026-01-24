@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FaChevronLeft, FaChevronRight, FaCalendarAlt } from 'react-icons/fa';
 import { useNutrition } from '../../context/NutritionContext';
 import NutritionSummary from '../../components/nutrition/NutritionSummary';
@@ -13,11 +13,18 @@ import './NutritionPage.css';
 
 const NutritionPage = () => {
     const [activeTab, setActiveTab] = useState('summary');
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
     const { selectedDate, setDate, getMealsForDate, getHydrationForDate } = useNutrition();
 
     useEffect(() => {
-        getMealsForDate(selectedDate);
-        getHydrationForDate(selectedDate);
+        const fetchData = async () => {
+            await Promise.all([
+                getMealsForDate(selectedDate),
+                getHydrationForDate(selectedDate)
+            ]);
+            setIsInitialLoad(false);
+        };
+        fetchData();
     }, [selectedDate, getMealsForDate, getHydrationForDate]);
 
     const handleDateChange = (daysToAdd) => {
@@ -59,6 +66,22 @@ const NutritionPage = () => {
     return (
         <div className="nutrition-page system-ui relative">
             {activeTab === 'summary' && <NutritionParticles />}
+
+            {/* Loading overlay for cold start / initial fetch */}
+            <AnimatePresence>
+                {isInitialLoad && (
+                    <motion.div
+                        className="nutrition-loading-overlay"
+                        initial={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <div className="loading-spinner"></div>
+                        <p>Loading Nutrition Data...</p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <motion.header className="nutrition-top" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
                 <div className="nutrition-header-left">
                     <div>

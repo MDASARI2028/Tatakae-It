@@ -81,10 +81,33 @@ async function calculateFitnessXP(workout, previousWorkouts) {
         // Find last performance of this exercise (within 14 days)
         const lastPerformance = findLastPerformance(exercise.name, previousWorkouts, 14);
 
-        // Calculate current volume (sets × reps × weight)
-        const currentVolume = (Number(exercise.sets) || 0) *
-            (Number(exercise.reps) || 0) *
-            (Number(exercise.weight) || 1);
+        // Calculate current volume
+        let currentVolume = 0;
+        if (exercise.setsData && exercise.setsData.length > 0) {
+            currentVolume = exercise.setsData.reduce((acc, set) => {
+                return acc + ((Number(set.reps) || 0) * (Number(set.weight) || 0)); // Weight 0 is valid for bodyweight, but usually we want at least 1 for multiplication? 
+                // Actually if weight is 0 (bodyweight), volume is 0? 
+                // Usually bodyweight exercises are treated as weight 1 or bodyweight. 
+                // The original code used `(Number(exercise.weight) || 1)`.
+            }, 0);
+            // If calculated volume is 0 (e.g. all weights 0), maybe apply logic?
+            // But let's stick to the logic: if we use setsData, we sum reps*weight.
+            // If weight is 0, volume is 0. This might be an issue for bodyweight squats.
+            // The old code: `(Number(exercise.weight) || 1)` implies fallback to 1.
+            // So: `(Number(set.weight) || 1)`
+        } else {
+            currentVolume = (Number(exercise.sets) || 0) *
+                (Number(exercise.reps) || 0) *
+                (Number(exercise.weight) || 1);
+        }
+
+        // Fix for bodyweight/empty setsData summing to 0 if logic relies on weight
+        if (exercise.setsData && exercise.setsData.length > 0 && currentVolume === 0) {
+            // Try assuming weight 1
+            currentVolume = exercise.setsData.reduce((acc, set) => {
+                return acc + ((Number(set.reps) || 0) * (Number(set.weight) || 1));
+            }, 0);
+        }
 
         if (!lastPerformance) {
             // First time doing this exercise - award 15 XP bonus (new PR)
@@ -100,9 +123,23 @@ async function calculateFitnessXP(workout, previousWorkouts) {
         }
 
         // Calculate previous volume
-        const previousVolume = (Number(lastPerformance.sets) || 0) *
-            (Number(lastPerformance.reps) || 0) *
-            (Number(lastPerformance.weight) || 1);
+        // Calculate previous volume
+        let previousVolume = 0;
+        if (lastPerformance.setsData && lastPerformance.setsData.length > 0) {
+            previousVolume = lastPerformance.setsData.reduce((acc, set) => {
+                return acc + ((Number(set.reps) || 0) * (Number(set.weight) || 0));
+            }, 0);
+            // Fallback for bodyweight
+            if (previousVolume === 0) {
+                previousVolume = lastPerformance.setsData.reduce((acc, set) => {
+                    return acc + ((Number(set.reps) || 0) * (Number(set.weight) || 1));
+                }, 0);
+            }
+        } else {
+            previousVolume = (Number(lastPerformance.sets) || 0) *
+                (Number(lastPerformance.reps) || 0) *
+                (Number(lastPerformance.weight) || 1);
+        }
 
         if (previousVolume === 0) {
             exerciseDetails.push({

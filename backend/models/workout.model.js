@@ -9,6 +9,11 @@ const exerciseSchema = new Schema({
     sets: { type: Number, min: 1 },
     reps: { type: Number, min: 1 },
     weight: { type: Number, min: 0 },
+    // Detailed sets data
+    setsData: [{
+        reps: { type: Number, min: 0 },
+        weight: { type: Number, min: 0 }
+    }],
     // Cardio fields
     duration: { type: Number, min: 0 },
     caloriesBurned: { type: Number, min: 0 }

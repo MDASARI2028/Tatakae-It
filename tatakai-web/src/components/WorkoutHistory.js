@@ -62,9 +62,25 @@ const WorkoutHistory = ({ filterDate, setFilterDate, onEdit, showToast }) => {
                 }
 
                 // Calculate volume (sets × reps × weight)
-                // If weight is 0 (bodyweight), treat as 1 for volume calc to count reps
-                const weight = Number(ex.weight) || 1;
-                const volume = (Number(ex.sets) || 0) * (Number(ex.reps) || 0) * weight;
+                let volume = 0;
+                if (ex.setsData && ex.setsData.length > 0) {
+                    volume = ex.setsData.reduce((acc, s) => {
+                        const w = Number(s.weight) || 0; // if 0 weight, should we count it? 
+                        // Logic in backend: 
+                        // if weight is 0 (bodyweight), maybe fallback to 1?
+                        // The original logic here was `Number(ex.weight) || 1`.
+                        // Let's stick to `Number(s.weight) || 0` and if total returns 0 (and not empty), maybe apply fallback?
+                        return acc + ((Number(s.reps) || 0) * w);
+                    }, 0);
+
+                    // Fallback for bodyweight exercises if volume is 0
+                    if (volume === 0) {
+                        volume = ex.setsData.reduce((acc, s) => acc + (Number(s.reps) || 0) * 1, 0);
+                    }
+                } else {
+                    const weight = Number(ex.weight) || 1;
+                    volume = (Number(ex.sets) || 0) * (Number(ex.reps) || 0) * weight;
+                }
                 sessionAggregates[name] += volume;
             });
 

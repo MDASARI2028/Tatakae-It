@@ -28,7 +28,18 @@ const WorkoutLogger = ({ template }) => {
         notes: '',
         date: getLocalDateString()
     };
-    const initialExercisesState = [{ name: '', sets: '', reps: '', weight: '' }];
+
+    // Initial state with setsData
+    const initialExercisesState = [{
+        name: '',
+        sets: 1,
+        reps: '',
+        weight: '',
+        setsData: [
+            { reps: '', weight: '' }
+        ]
+    }];
+
     const initialCardioExercises = [{ name: '', duration: '', caloriesBurned: '' }];
 
     const [workoutData, setWorkoutData] = useState(initialWorkoutState);
@@ -39,18 +50,63 @@ const WorkoutLogger = ({ template }) => {
     const [activeStep, setActiveStep] = useState(1);
 
     const handleWorkoutChange = (e) => setWorkoutData({ ...workoutData, [e.target.name]: e.target.value });
+
     const handleExerciseChange = (index, e) => {
-        const updatedExercises = exercises.map((ex, i) => i === index ? { ...ex, [e.target.name]: e.target.value } : ex);
+        const { name, value } = e.target;
+        const updatedExercises = [...exercises];
+        updatedExercises[index] = { ...updatedExercises[index], [name]: value };
+
+        // If sets count changes, resize setsData
+        if (name === 'sets') {
+            const newSetsCount = parseInt(value) || 0;
+            const currentSetsData = updatedExercises[index].setsData || [];
+
+            if (newSetsCount > currentSetsData.length) {
+                // Add more sets, copying the last set's values for convenience if available
+                const lastSet = currentSetsData.length > 0 ? currentSetsData[currentSetsData.length - 1] : { reps: '', weight: '' };
+                const setsToAdd = new Array(newSetsCount - currentSetsData.length).fill(null).map(() => ({ ...lastSet }));
+                updatedExercises[index].setsData = [...currentSetsData, ...setsToAdd];
+            } else if (newSetsCount < currentSetsData.length) {
+                // Remove sets
+                updatedExercises[index].setsData = currentSetsData.slice(0, newSetsCount);
+            }
+        }
+
         setExercises(updatedExercises);
     };
-    const addExercise = () => setExercises([...exercises, { name: '', sets: '', reps: '', weight: '' }]);
+
+    const handleSetChange = (exerciseIndex, setIndex, field, value) => {
+        const updatedExercises = [...exercises];
+        if (!updatedExercises[exerciseIndex].setsData) {
+            updatedExercises[exerciseIndex].setsData = [];
+        }
+        updatedExercises[exerciseIndex].setsData[setIndex] = {
+            ...updatedExercises[exerciseIndex].setsData[setIndex],
+            [field]: value
+        };
+        setExercises(updatedExercises);
+    };
+
+    const addExercise = () => setExercises([...exercises, {
+        name: '',
+        sets: 1,
+        reps: '',
+        weight: '',
+        setsData: [
+            { reps: '', weight: '' }
+        ]
+    }]);
+
     const addCardioExercise = () => setCardioExercises([...cardioExercises, { name: '', duration: '', caloriesBurned: '' }]);
+
     const removeExercise = (index) => {
         if (exercises.length > 1) setExercises(exercises.filter((_, i) => i !== index));
     };
+
     const removeCardioExercise = (index) => {
         if (cardioExercises.length > 1) setCardioExercises(cardioExercises.filter((_, i) => i !== index));
     };
+
     const handleCardioExerciseChange = (index, e) => {
         const updated = cardioExercises.map((ex, i) => i === index ? { ...ex, [e.target.name]: e.target.value } : ex);
         setCardioExercises(updated);
@@ -64,7 +120,27 @@ const WorkoutLogger = ({ template }) => {
         // Format exercises based on workout type
         let formattedExercises = [];
         if (workoutData.type === 'Strength Training') {
-            formattedExercises = exercises.filter(ex => ex.name.trim() !== '');
+            formattedExercises = exercises
+                .filter(ex => ex.name.trim() !== '')
+                .map(ex => {
+                    // Calculate summaries from setsData
+                    let summaryReps = ex.reps;
+                    let summaryWeight = ex.weight;
+
+                    if (ex.setsData && ex.setsData.length > 0) {
+                        const totalReps = ex.setsData.reduce((acc, s) => acc + (Number(s.reps) || 0), 0);
+                        const maxWeight = ex.setsData.reduce((max, s) => Math.max(max, (Number(s.weight) || 0)), 0);
+
+                        summaryReps = Math.round(totalReps / ex.setsData.length);
+                        summaryWeight = maxWeight;
+                    }
+
+                    return {
+                        ...ex,
+                        reps: summaryReps,
+                        weight: summaryWeight
+                    };
+                });
         } else if (workoutData.type === 'Cardio') {
             // Only send cardio-specific fields
             formattedExercises = cardioExercises
@@ -110,13 +186,24 @@ const WorkoutLogger = ({ template }) => {
                 notes: template.notes || '',
                 date: getLocalDateString()
             });
-            // Deep clone the exercises array to avoid reference issues
-            const clonedExercises = template.exercises.map(ex => ({
-                name: ex.name || '',
-                sets: ex.sets || 3,
-                reps: ex.reps || 10,
-                weight: ex.weight || 10
-            }));
+            // Deep clone the exercises array
+            const clonedExercises = template.exercises.map(ex => {
+                const setsCount = ex.sets || 3;
+                // Generate setsData from template summary if setsData doesn't exist in template
+                // (Templates might need migration later or we just infer)
+                const inferredSetsData = ex.setsData || new Array(setsCount).fill({
+                    reps: ex.reps || 10,
+                    weight: ex.weight || 10
+                });
+
+                return {
+                    name: ex.name || '',
+                    sets: setsCount,
+                    reps: ex.reps || 10,
+                    weight: ex.weight || 10,
+                    setsData: inferredSetsData
+                };
+            });
             setExercises(clonedExercises.length > 0 ? clonedExercises : initialExercisesState);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -301,49 +388,49 @@ const WorkoutLogger = ({ template }) => {
                                             ↻
                                         </button>
                                     </div>
-                                    <p className="template-selector-hint">Start with a saved workout template</p>
 
                                     {loading ? (
                                         <div className="template-loading">
                                             <span className="api-loader-spinner"></span> Loading templates...
                                         </div>
-                                    ) : templateError ? (
-                                        <div className="template-error">
-                                            <p>{templateError}</p>
-                                            <button type="button" onClick={refreshTemplates} className="btn-retry">Retry</button>
-                                        </div>
-                                    ) : templates && templates.length > 0 ? (
-                                        <select
-                                            className="template-selector-dropdown"
-                                            onChange={(e) => {
-                                                const selectedTemplate = templates.find(t => t._id === e.target.value);
-                                                if (selectedTemplate) {
-                                                    // Load template exercises
-                                                    const clonedExercises = selectedTemplate.exercises.map(ex => ({
-                                                        name: ex.name || '',
-                                                        sets: ex.sets || '',
-                                                        reps: ex.reps || '',
-                                                        weight: ex.weight || ''
-                                                    }));
-                                                    setExercises(clonedExercises.length > 0 ? clonedExercises : initialExercisesState);
-                                                    setWorkoutData({
-                                                        ...workoutData,
-                                                        type: selectedTemplate.workoutType || 'Strength Training',
-                                                        notes: selectedTemplate.notes || ''
-                                                    });
-                                                }
-                                            }}
-                                            defaultValue=""
-                                        >
-                                            <option value="" disabled>Choose a template...</option>
-                                            {templates.map(t => (
-                                                <option key={t._id} value={t._id}>{t.templateName}</option>
-                                            ))}
-                                        </select>
                                     ) : (
-                                        <div className="no-templates-message">
-                                            <p>No templates found. Save a workout as a template to see it here!</p>
-                                        </div>
+                                        templates && templates.length > 0 && (
+                                            <select
+                                                className="template-selector-dropdown"
+                                                onChange={(e) => {
+                                                    const selectedTemplate = templates.find(t => t._id === e.target.value);
+                                                    if (selectedTemplate) {
+                                                        const clonedExercises = selectedTemplate.exercises.map(ex => {
+                                                            const setsCount = ex.sets || 3;
+                                                            // For templates, we generate setsData based on the summary reps/weight
+                                                            const inferredSetsData = new Array(setsCount).fill({
+                                                                reps: ex.reps || 10,
+                                                                weight: ex.weight || 10
+                                                            });
+                                                            return {
+                                                                name: ex.name || '',
+                                                                sets: setsCount,
+                                                                reps: ex.reps || 10,
+                                                                weight: ex.weight || 10,
+                                                                setsData: inferredSetsData
+                                                            };
+                                                        });
+                                                        setExercises(clonedExercises.length > 0 ? clonedExercises : initialExercisesState);
+                                                        setWorkoutData({
+                                                            ...workoutData,
+                                                            type: selectedTemplate.workoutType || 'Strength Training',
+                                                            notes: selectedTemplate.notes || ''
+                                                        });
+                                                    }
+                                                }}
+                                                defaultValue=""
+                                            >
+                                                <option value="" disabled>Choose a template...</option>
+                                                {templates.map(t => (
+                                                    <option key={t._id} value={t._id}>{t.templateName}</option>
+                                                ))}
+                                            </select>
+                                        )
                                     )}
                                 </div>
                             )}
@@ -367,7 +454,7 @@ const WorkoutLogger = ({ template }) => {
                                                             type="text"
                                                             name="name"
                                                             className="form-input-enhanced exercise-name-input"
-                                                            placeholder="Exercise Name (e.g., Running, Cycling)"
+                                                            placeholder="Exercise Name (e.g., Running)"
                                                             value={exercise.name}
                                                             onChange={(e) => handleCardioExerciseChange(index, e)}
                                                             required
@@ -476,34 +563,51 @@ const WorkoutLogger = ({ template }) => {
                                                         ✕
                                                     </motion.button>
                                                 </div>
-                                                <div className="exercise-stats">
-                                                    <input
-                                                        type="number"
-                                                        name="sets"
-                                                        className="form-input-enhanced stat-input"
-                                                        placeholder="Sets"
-                                                        value={exercise.sets}
-                                                        onChange={(e) => handleExerciseChange(index, e)}
-                                                        min="1"
-                                                    />
-                                                    <input
-                                                        type="number"
-                                                        name="reps"
-                                                        className="form-input-enhanced stat-input"
-                                                        placeholder="Reps"
-                                                        value={exercise.reps}
-                                                        onChange={(e) => handleExerciseChange(index, e)}
-                                                        min="1"
-                                                    />
-                                                    <input
-                                                        type="number"
-                                                        name="weight"
-                                                        className="form-input-enhanced stat-input"
-                                                        placeholder="Weight (kg)"
-                                                        value={exercise.weight}
-                                                        onChange={(e) => handleExerciseChange(index, e)}
-                                                        min="0"
-                                                    />
+
+                                                <div className="exercise-sets-config">
+                                                    <div className="form-group-enhanced compact">
+                                                        <label>Number of Sets:</label>
+                                                        <input
+                                                            type="number"
+                                                            name="sets"
+                                                            className="form-input-enhanced sets-count-input"
+                                                            value={exercise.sets}
+                                                            onChange={(e) => handleExerciseChange(index, e)}
+                                                            min="1"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="sets-list">
+                                                    <div className="sets-header-row">
+                                                        <span className="set-label">Set</span>
+                                                        <span className="set-label">Reps</span>
+                                                        <span className="set-label">Weight (kg)</span>
+                                                    </div>
+                                                    {exercise.setsData && exercise.setsData.map((set, setIndex) => (
+                                                        <motion.div
+                                                            key={setIndex}
+                                                            className="set-row"
+                                                            initial={{ opacity: 0, x: -10 }}
+                                                            animate={{ opacity: 1, x: 0 }}
+                                                        >
+                                                            <div className="set-number-badge">{setIndex + 1}</div>
+                                                            <input
+                                                                type="number"
+                                                                className="form-input-enhanced set-input"
+                                                                placeholder="Reps"
+                                                                value={set.reps}
+                                                                onChange={(e) => handleSetChange(index, setIndex, 'reps', e.target.value)}
+                                                            />
+                                                            <input
+                                                                type="number"
+                                                                className="form-input-enhanced set-input"
+                                                                placeholder="Kg"
+                                                                value={set.weight}
+                                                                onChange={(e) => handleSetChange(index, setIndex, 'weight', e.target.value)}
+                                                            />
+                                                        </motion.div>
+                                                    ))}
                                                 </div>
                                             </motion.div>
                                         ))}

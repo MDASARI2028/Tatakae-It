@@ -393,6 +393,11 @@ const WorkoutLogger = ({ template }) => {
                                         <div className="template-loading">
                                             <span className="api-loader-spinner"></span> Loading templates...
                                         </div>
+                                    ) : templateError ? (
+                                        <div className="template-error">
+                                            <p>{templateError}</p>
+                                            <button type="button" onClick={refreshTemplates} className="btn-retry">Retry</button>
+                                        </div>
                                     ) : (
                                         templates && templates.length > 0 && (
                                             <select

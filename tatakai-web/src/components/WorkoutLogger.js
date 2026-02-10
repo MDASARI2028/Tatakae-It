@@ -5,7 +5,7 @@ import { WorkoutContext } from '../context/WorkoutContext';
 import { TemplateContext } from '../context/TemplateContext';
 import { useLevelUp } from '../context/LevelUpContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaDumbbell, FaRunning, FaClock, FaFeatherAlt, FaCheck, FaDownload, FaEdit, FaTrash, FaTimes, FaSave, FaPlus } from 'react-icons/fa';
+import { FaDumbbell, FaRunning, FaClock, FaFeatherAlt, FaCheck, FaDownload, FaEdit, FaTrash, FaTimes, FaSave } from 'react-icons/fa';
 import './WorkoutLogger.css';
 
 const WorkoutLogger = ({ template }) => {

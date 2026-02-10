@@ -304,7 +304,17 @@ const WorkoutHistory = ({ filterDate, setFilterDate, onEdit, showToast }) => {
                                                             <span className="exercise-stats">
                                                                 {workout.type === 'Cardio'
                                                                     ? `${ex.duration || 0} min • ${ex.caloriesBurned || 0} cal`
-                                                                    : `${ex.sets}×${ex.reps} @ ${ex.weight}kg`
+                                                                    : (ex.setsData && ex.setsData.length > 0)
+                                                                        ? (
+                                                                            <span className="sets-detail-list">
+                                                                                {ex.setsData.map((s, i) => (
+                                                                                    <span key={i} className="set-tag">
+                                                                                        {s.reps || 0}x{s.weight || 0}kg{i < ex.setsData.length - 1 ? ', ' : ''}
+                                                                                    </span>
+                                                                                ))}
+                                                                            </span>
+                                                                        )
+                                                                        : `${ex.sets || 0} sets × ${ex.reps || 0} reps @ ${ex.weight || 0}kg`
                                                                 }
                                                             </span>
                                                             {overload && (

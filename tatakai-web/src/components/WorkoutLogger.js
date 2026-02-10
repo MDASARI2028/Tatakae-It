@@ -5,12 +5,12 @@ import { WorkoutContext } from '../context/WorkoutContext';
 import { TemplateContext } from '../context/TemplateContext';
 import { useLevelUp } from '../context/LevelUpContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaDumbbell, FaRunning, FaClock, FaFeatherAlt, FaCheck, FaDownload } from 'react-icons/fa';
+import { FaDumbbell, FaRunning, FaClock, FaFeatherAlt, FaCheck, FaDownload, FaEdit, FaTrash, FaTimes, FaSave, FaPlus } from 'react-icons/fa';
 import './WorkoutLogger.css';
 
 const WorkoutLogger = ({ template }) => {
     const { addWorkout } = useContext(WorkoutContext);
-    const { templates, loading, error: templateError, refreshTemplates } = useContext(TemplateContext);
+    const { templates, loading, error: templateError, refreshTemplates, deleteTemplate, updateTemplate, saveAsTemplate } = useContext(TemplateContext);
     const { calculateDailyXP } = useLevelUp();
 
     // Helper to get local date string (YYYY-MM-DD) without UTC conversion
@@ -48,6 +48,61 @@ const WorkoutLogger = ({ template }) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [activeStep, setActiveStep] = useState(1);
+
+    // Template Management State
+    const [showTemplateManager, setShowTemplateManager] = useState(false);
+    const [editingTemplateId, setEditingTemplateId] = useState(null);
+    const [editTemplateName, setEditTemplateName] = useState('');
+
+    const handleStartEditTemplate = (t) => {
+        setEditingTemplateId(t._id);
+        setEditTemplateName(t.templateName);
+    };
+
+    const handleSaveTemplateEdit = async () => {
+        if (!editTemplateName.trim()) return;
+        const res = await updateTemplate(editingTemplateId, { templateName: editTemplateName });
+        if (res.success) {
+            setSuccess('Template updated successfully');
+            setEditingTemplateId(null);
+            setEditTemplateName('');
+            // Clear success msg after 3s
+            setTimeout(() => setSuccess(''), 3000);
+        } else {
+            setError(res.error || 'Failed to update template');
+            setTimeout(() => setError(''), 3000);
+        }
+    };
+
+    const handleDeleteTemplate = async (id) => {
+        if (window.confirm('Are you sure you want to delete this template?')) {
+            const res = await deleteTemplate(id);
+            if (res.success) {
+                setSuccess('Template deleted');
+                setTimeout(() => setSuccess(''), 3000);
+            } else {
+                setError(res.error || 'Failed to delete template');
+                setTimeout(() => setError(''), 3000);
+            }
+        }
+    };
+
+    const handleSaveAsNewTemplate = async () => {
+        const workoutToSave = {
+            type: workoutData.type,
+            notes: workoutData.notes,
+            exercises: workoutData.type === 'Cardio' ? cardioExercises : exercises.filter(e => e.name.trim() !== '')
+        };
+
+        const res = await saveAsTemplate(workoutToSave);
+        if (res.success) {
+            setSuccess('Saved as template!');
+            setTimeout(() => setSuccess(''), 3000);
+        } else {
+            setError(res.error || 'Failed to save template');
+            setTimeout(() => setError(''), 3000);
+        }
+    };
 
     const handleWorkoutChange = (e) => setWorkoutData({ ...workoutData, [e.target.name]: e.target.value });
 
@@ -375,19 +430,76 @@ const WorkoutLogger = ({ template }) => {
                             {workoutData.type === 'Strength Training' && !template && (
                                 <div className="template-selector-section">
                                     <div className="template-label-row">
-                                        <label className="template-selector-label">
+                                        <div className="template-label-group">
                                             <FaDownload className="template-label-icon" />
-                                            Load from Template
-                                        </label>
-                                        <button
-                                            type="button"
-                                            className="refresh-templates-btn"
-                                            onClick={refreshTemplates}
-                                            title="Refresh Templates"
-                                        >
-                                            ↻
-                                        </button>
+                                            <label className="template-selector-label">Load from Template</label>
+                                        </div>
+                                        <div className="template-actions">
+                                            <button
+                                                type="button"
+                                                className={`manage-templates-btn ${showTemplateManager ? 'active' : ''}`}
+                                                onClick={() => setShowTemplateManager(!showTemplateManager)}
+                                                title="Manage Templates"
+                                            >
+                                                <FaEdit /> Manage
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="refresh-templates-btn"
+                                                onClick={refreshTemplates}
+                                                title="Refresh Templates"
+                                            >
+                                                ↻
+                                            </button>
+                                        </div>
                                     </div>
+
+                                    {/* Template Manager Panel */}
+                                    <AnimatePresence>
+                                        {showTemplateManager && (
+                                            <motion.div
+                                                className="template-manager-panel"
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                            >
+                                                <h4 className="manager-title">Manage Templates</h4>
+                                                {templates.length === 0 ? (
+                                                    <p className="no-templates-manager">No templates found.</p>
+                                                ) : (
+                                                    <ul className="template-manage-list">
+                                                        {templates.map(t => (
+                                                            <li key={t._id} className="template-manage-item">
+                                                                {editingTemplateId === t._id ? (
+                                                                    <div className="template-edit-row">
+                                                                        <input
+                                                                            type="text"
+                                                                            value={editTemplateName}
+                                                                            onChange={(e) => setEditTemplateName(e.target.value)}
+                                                                            className="template-edit-input"
+                                                                            autoFocus
+                                                                        />
+                                                                        <div className="edit-actions">
+                                                                            <button onClick={handleSaveTemplateEdit} className="btn-icon-save" title="Save"><FaSave /></button>
+                                                                            <button onClick={() => setEditingTemplateId(null)} className="btn-icon-cancel" title="Cancel"><FaTimes /></button>
+                                                                        </div>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="template-view-row">
+                                                                        <span className="template-name-display">{t.templateName}</span>
+                                                                        <div className="template-item-actions">
+                                                                            <button onClick={() => handleStartEditTemplate(t)} className="btn-icon-edit" title="Rename"><FaEdit /></button>
+                                                                            <button onClick={() => handleDeleteTemplate(t._id)} className="btn-icon-delete" title="Delete"><FaTrash /></button>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
 
                                     {loading ? (
                                         <div className="template-loading">
@@ -695,6 +807,15 @@ const WorkoutLogger = ({ template }) => {
                                     whileHover={{ scale: 1.05 }}
                                 >
                                     ← Back
+                                </motion.button>
+                                <motion.button
+                                    type="button"
+                                    className="btn-save-template-step"
+                                    onClick={handleSaveAsNewTemplate}
+                                    whileHover={{ scale: 1.05 }}
+                                    title="Save current setup as a new template"
+                                >
+                                    <FaSave /> Save Template
                                 </motion.button>
                                 <motion.button
                                     type="submit"

@@ -49,4 +49,56 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
+
+// @route   DELETE /api/templates/:id
+// @desc    Delete a template
+// @access  Private
+router.delete('/:id', auth, async (req, res) => {
+    try {
+        const template = await Template.findById(req.params.id);
+        if (!template) return res.status(404).json({ msg: 'Template not found' });
+
+        // Ensure user owns template
+        if (template.user.toString() !== req.user.id) {
+            return res.status(401).json({ msg: 'User not authorized' });
+        }
+
+        await template.deleteOne();
+        res.json({ msg: 'Template removed' });
+    } catch (err) {
+        console.error(err.message);
+        if (err.kind === 'ObjectId') return res.status(404).json({ msg: 'Template not found' });
+        res.status(500).send('Server Error');
+    }
+});
+
+// @route   PUT /api/templates/:id
+// @desc    Update a template
+// @access  Private
+router.put('/:id', auth, async (req, res) => {
+    try {
+        const { templateName, workoutType, notes, exercises } = req.body;
+
+        let template = await Template.findById(req.params.id);
+        if (!template) return res.status(404).json({ msg: 'Template not found' });
+
+        // Ensure user owns template
+        if (template.user.toString() !== req.user.id) {
+            return res.status(401).json({ msg: 'User not authorized' });
+        }
+
+        template.templateName = templateName || template.templateName;
+        template.workoutType = workoutType || template.workoutType;
+        template.notes = notes !== undefined ? notes : template.notes;
+        template.exercises = exercises || template.exercises;
+
+        await template.save();
+        res.json(template);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 module.exports = router;

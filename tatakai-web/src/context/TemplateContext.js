@@ -66,8 +66,31 @@ export const TemplateProvider = ({ children }) => {
         }
     };
 
+    const deleteTemplate = async (id) => {
+        try {
+            await api.delete(`/api/templates/${id}`);
+            // Optimistically update
+            setTemplates(prev => prev.filter(t => t._id !== id));
+            return { success: true };
+        } catch (error) {
+            console.error("Error deleting template:", error);
+            return { success: false, error: error.response?.data?.msg || "Failed to delete template" };
+        }
+    };
+
+    const updateTemplate = async (id, updatedData) => {
+        try {
+            const res = await api.put(`/api/templates/${id}`, updatedData);
+            setTemplates(prev => prev.map(t => t._id === id ? res.data : t));
+            return { success: true, data: res.data };
+        } catch (error) {
+            console.error("Error updating template:", error);
+            return { success: false, error: error.response?.data?.msg || "Failed to update template" };
+        }
+    };
+
     return (
-        <TemplateContext.Provider value={{ templates, loading, error, refreshTemplates, saveAsTemplate }}>
+        <TemplateContext.Provider value={{ templates, loading, error, refreshTemplates, saveAsTemplate, deleteTemplate, updateTemplate }}>
             {children}
         </TemplateContext.Provider>
     );

@@ -17,11 +17,11 @@ app.use(cors({
 app.use(express.json());
 
 const uri = process.env.MONGO_URI;
-mongoose.connect(uri);
+mongoose.connect(uri)
+  .then(() => console.log("[SYSTEM] MongoDB database connection established successfully."))
+  .catch(err => console.error("[SYSTEM] MongoDB Connection Error:", err));
+
 const connection = mongoose.connection;
-connection.once('open', () => {
-  console.log("[SYSTEM] MongoDB database connection established successfully.");
-});
 
 app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/workouts', require('./routes/workout.routes'));

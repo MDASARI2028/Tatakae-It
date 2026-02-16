@@ -1,5 +1,11 @@
 {
     "version": 2,
+    "crons": [
+        {
+            "path": "/api/demo/seed-daily",
+            "schedule": "0 10 * * *"
+        }
+    ],
     "builds": [
         {
             "src": "server.js",

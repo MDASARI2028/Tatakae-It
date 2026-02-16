@@ -32,6 +32,7 @@ app.use('/api/hydration', require('./routes/hydration.routes.js'));
 app.use('/api/recipes', require('./routes/recipe.routes.js'));
 app.use('/api/food-search', require('./routes/foodSearch.routes.js'));
 app.use('/api/levelup', require('./routes/levelup.routes.js'));
+app.use('/api/demo', require('./routes/demo.routes.js'));
 
 // Default route for root to prevent "Cannot GET /" confusion
 app.get('/', (req, res) => {
